@@ -1,0 +1,3 @@
+[submodule "pebbles"]
+	path = pebbles
+	url = https://github.com/blarney-lang/pebbles
