@@ -18,6 +18,12 @@ also a [CUDA-like C++ library](soc/SIMTight/inc/NoCL.h) and a set of
 sample [compute kernels](soc/SIMTight/apps/) ported to this library.
 When CHERI is enabled, the kernels all run in pure capability mode.
 
+The SoC is implemented in Haskell using the
+[Blarney](https://github.com/blarney-lang/blarney) hardware
+description library and the
+[Pebbles](//github.com/blarney-lang/pebbles) RISC-V processor
+framework.
+
 ## Standard Build
 
 We'll need Verilator, the RISC-V SDK, and a fairly recent version
@@ -103,10 +109,12 @@ Notice that when running on FPGA, performance stats are also emitted.
 ## CHERI Build
 
 To enable CHERI, a little bit of additional preparation is required.
-First, edit [inc/Config.h](inc/Config.h) and:
+First, edit [inc/Config.h](inc/Config.h) and apply the following
+settings:
 
-  * change `#define EnableCHERI 0` to `#define EnableCHERI 1`;
-  * change `#define UseClang 0` to `#define UseClang 1`.
+  * `#define EnableCHERI 1`
+  * `#define EnableTaggedMem 1`
+  * `#define UseClang 1`
 
 Second, install the CHERI-Clang compiler using
 [cheribuild](https://github.com/CTSRD-CHERI/cheribuild).  Assuming all

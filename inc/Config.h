@@ -66,7 +66,7 @@ NOTE("Tagged memory")
 NOTE("=============")
 
 NOTE("Is tagged memory enabled?")
-#define EnableTaggedMem 1
+#define EnableTaggedMem 0
 
 NOTE("Tag cache: line size")
 #define TagCacheLogBeatsPerLine 1
