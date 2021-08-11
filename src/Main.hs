@@ -12,11 +12,11 @@ import Blarney.Stream
 import Blarney.SourceSink
 import Blarney.Connectable
 import Blarney.Interconnect
+import Blarney.Avalon.Stream
 import qualified Blarney.Vector as V
 
 -- Pebbles imports
 import Pebbles.IO.JTAGUART
-import Pebbles.Pipeline.Interface
 import Pebbles.Memory.SBDCache
 import Pebbles.Memory.Alignment
 import Pebbles.Memory.Interface
@@ -27,6 +27,8 @@ import Pebbles.Memory.CoalescingUnit
 import Pebbles.Memory.DRAM.Bus
 import Pebbles.Memory.DRAM.Wrapper
 import Pebbles.Memory.DRAM.Interface
+import Pebbles.Pipeline.Interface
+import Pebbles.Pipeline.SIMT.Management
 
 -- SIMTight imports
 import Core.SIMT
@@ -55,30 +57,109 @@ data SoCOuts =
   }
   deriving (Generic, Interface)
 
--- SoC top-level module
--- ====================
+-- Sub-domain interfaces
+-- =====================
 
--- | SoC top-level
-makeTop :: SoCIns -> Module SoCOuts
-makeTop socIns = mdo
-  -- Instruction memory alignment requirement
-  staticAssert (MemBase `mod` (4 * 2^CPUInstrMemLogWords) == 0)
-    "makeTop: Instruction memory alignment requirement not met"
+-- The SoC is split into two clock domains: one for the CPU and data
+-- cache, and the other for the SIMT core and everything else.  The
+-- domains are connected using Avalon streams, allowing clock-crossing
+-- to be handled externally by the Intel tools.
 
+-- | Inputs to the CPU domain
+data CPUDomainIns =
+  CPUDomainIns {
+    cpuDomainUARTIns :: AvalonJTAGUARTIns
+  , cpuDomainFromDRAM :: AvlStream (DRAMResp ())
+  , cpuDomainFromSIMT :: AvlStream SIMTResp
+  }
+  deriving (Generic, Interface)
+
+-- | Outputs from the CPU domain
+data CPUDomainOuts =
+  CPUDomainOuts {
+    cpuDomainUARTOuts :: AvalonJTAGUARTOuts
+  , cpuDomainToDRAM :: AvlStream (DRAMReq ())
+  , cpuDomainToSIMT :: AvlStream SIMTReq
+  }
+  deriving (Generic, Interface)
+
+-- | Inputs to the SIMT domain
+data SIMTDomainIns =
+  SIMTDomainIns {
+    simtDomainDRAMIns :: AvalonDRAMIns
+  , simtDomainMgmtReqsFromCPU :: AvlStream SIMTReq
+  , simtDomainDRAMReqsFromCPU :: AvlStream (DRAMReq ())
+  }
+  deriving (Generic, Interface)
+
+-- | Outputs from the SIMT domain
+data SIMTDomainOuts =
+  SIMTDomainOuts {
+    simtDomainDRAMOuts :: AvalonDRAMOuts
+  , simtDomainMgmtRespsToCPU :: AvlStream SIMTResp
+  , simtDomainDRAMRespsToCPU :: AvlStream (DRAMResp ())
+  }
+  deriving (Generic, Interface)
+
+-- CPU domain
+-- ==========
+
+-- | CPU domain containing scalar core and L1 data cache
+makeCPUDomain :: CPUDomainIns -> Module CPUDomainOuts
+makeCPUDomain = makeBoundary "CPUDomain" \ins -> mdo
   -- Scalar core
   cpuOuts <- makeCPUCore
     ScalarCoreIns {
       scalarUartIn = fromUART
     , scalarMemUnit = cpuMemUnit
-    , scalarSIMTResps = simtMgmtResps
+    , scalarSIMTResps = ins.cpuDomainFromSIMT.fromAvlStream
+    }
+ 
+  -- Data cache
+  (cpuMemUnit, dramReqs) <- makeCPUDataCache
+    (ins.cpuDomainFromDRAM.fromAvlStream)
+
+  -- Avalon JTAG UART wrapper module
+  (fromUART, avlUARTOuts) <- makeJTAGUART
+    (cpuOuts.scalarUartOut)
+    (ins.cpuDomainUARTIns)
+
+  return
+    CPUDomainOuts {
+      cpuDomainUARTOuts = avlUARTOuts
+    , cpuDomainToDRAM = dramReqs.toAvlStream
+    , cpuDomainToSIMT = cpuOuts.scalarSIMTReqs.toAvlStream
     }
 
-  -- Data cache
-  (cpuMemUnit, dramReqs0) <- makeCPUDataCache dramResps0
+-- CPU core (synthesis boundary)
+makeCPUCore = makeBoundary "CPUCore" (makeScalarCore config)
+  where
+    config =
+      ScalarCoreConfig {
+        scalarCoreInstrMemInitFile = Just "boot.mif"
+      , scalarCoreInstrMemLogNumInstrs = CPUInstrMemLogWords
+      , scalarCoreInitialPC = MemBase
+      , scalarCoreEnableCHERI = EnableCHERI == 1
+      , scalarCoreCapRegInitFile =
+          if EnableCHERI == 1
+            then Just (scalarCapRegInitFile ++ ".mif")
+            else Nothing
+      }
+
+-- CPU data cache (synthesis boundary)
+makeCPUDataCache = makeBoundary "CPUDataCache" (makeSBDCache @InstrInfo)
+
+-- SIMT domain
+-- ===========
+
+makeSIMTDomain :: SIMTDomainIns -> Module SIMTDomainOuts
+makeSIMTDomain = makeBoundary "SIMTDomain" \ins -> mdo
+  let dramReqs0 = ins.simtDomainDRAMReqsFromCPU.fromAvlStream
+  let simtMgmtReqs = ins.simtDomainMgmtReqsFromCPU.fromAvlStream
 
   -- SIMT core
   simtMgmtResps <- makeSIMTAccelerator
-    (cpuOuts.scalarSIMTReqs)
+    simtMgmtReqs
     simtMemUnits
 
   -- SIMT memory subsystem
@@ -99,37 +180,15 @@ makeTop socIns = mdo
   -- it performs its own buffering)
   (dramFinalResps, avlDRAMOuts) <-
     if EnableTaggedMem == 1
-      then makeDRAMUnstoppable dramFinalReqs (socIns.socDRAMIns)
-      else makeDRAM dramFinalReqs (socIns.socDRAMIns)
-
-  -- Avalon JTAG UART wrapper module
-  (fromUART, avlUARTOuts) <- makeJTAGUART
-    (cpuOuts.scalarUartOut)
-    (socIns.socUARTIns)
+      then makeDRAMUnstoppable dramFinalReqs (ins.simtDomainDRAMIns)
+      else makeDRAM dramFinalReqs (ins.simtDomainDRAMIns)
 
   return
-    SoCOuts {
-      socUARTOuts = avlUARTOuts
-    , socDRAMOuts = avlDRAMOuts
+    SIMTDomainOuts {
+      simtDomainDRAMOuts = avlDRAMOuts
+    , simtDomainMgmtRespsToCPU = simtMgmtResps.toAvlStream
+    , simtDomainDRAMRespsToCPU = dramResps0.toAvlStream
     }
-
--- CPU core (synthesis boundary)
-makeCPUCore = makeBoundary "CPUCore" (makeScalarCore config)
-  where
-    config =
-      ScalarCoreConfig {
-        scalarCoreInstrMemInitFile = Just "boot.mif"
-      , scalarCoreInstrMemLogNumInstrs = CPUInstrMemLogWords
-      , scalarCoreInitialPC = MemBase
-      , scalarCoreEnableCHERI = EnableCHERI == 1
-      , scalarCoreCapRegInitFile =
-          if EnableCHERI == 1
-            then Just (scalarCapRegInitFile ++ ".mif")
-            else Nothing
-      }
-
--- CPU data cache (synthesis boundary)
-makeCPUDataCache = makeBoundary "CPUDataCache" (makeSBDCache @InstrInfo)
 
 -- SIMT accelerator (synthesis boundary)
 makeSIMTAccelerator = makeBoundary "SIMTAccelerator" (makeSIMTCore config)
@@ -239,6 +298,40 @@ makeSIMTCoalescingUnit isBankedSRAMAccess =
 makeSIMTBankedSRAMs route =
   makeBoundary "SIMTBankedSRAMs"
     (makeBankedSRAMs @(BankInfo SIMTMemReqId) route)
+
+-- SoC top-level module
+-- ====================
+
+-- | SoC top-level. This module should contain only connections,
+-- not logic, because the Quartus project may instantiate the CPU and
+-- SIMT domains directly, with only clock-crossing logic between the two.
+makeTop :: SoCIns -> Module SoCOuts
+makeTop socIns = mdo
+  -- Instruction memory alignment requirement
+  staticAssert (MemBase `mod` (4 * 2^CPUInstrMemLogWords) == 0)
+    "makeTop: Instruction memory alignment requirement not met"
+
+  -- CPU domain
+  cpuOuts <- makeCPUDomain
+    CPUDomainIns {
+      cpuDomainUARTIns = socIns.socUARTIns
+    , cpuDomainFromDRAM = simtOuts.simtDomainDRAMRespsToCPU
+    , cpuDomainFromSIMT = simtOuts.simtDomainMgmtRespsToCPU
+    }
+
+  -- SIMT domain
+  simtOuts <- makeSIMTDomain
+    SIMTDomainIns {
+      simtDomainDRAMIns = socIns.socDRAMIns
+    , simtDomainMgmtReqsFromCPU = cpuOuts.cpuDomainToSIMT
+    , simtDomainDRAMReqsFromCPU = cpuOuts.cpuDomainToDRAM
+    }
+
+  return
+    SoCOuts {
+      socUARTOuts = cpuOuts.cpuDomainUARTOuts
+    , socDRAMOuts = simtOuts.simtDomainDRAMOuts
+    }
 
 -- Initialisation files
 -- ====================

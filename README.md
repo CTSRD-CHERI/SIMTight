@@ -4,7 +4,6 @@ SIMTight is a prototype GPGPU being developed on the [CAPcelerate
 project](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/V000381/1)
 to explore the use of [CHERI capabilities](http://cheri-cpu.org) in
 SIMT-style accelerators popularised by NVIDIA and AMD.
-
 The SIMTight SoC consists of a scalar CPU and a 32-lane 64-warp GPGPU
 sharing DRAM, both supporting the CHERI-RISC-V ISA.
 
@@ -16,7 +15,6 @@ LUT).  A sample project is provided for the
 also a [CUDA-like C++ library](soc/SIMTight/inc/NoCL.h) and a set of
 sample [compute kernels](soc/SIMTight/apps/) ported to this library.
 When CHERI is enabled, the kernels run in pure capability mode.
-
 The SoC is implemented in Haskell using the
 [Blarney](https://github.com/blarney-lang/blarney) hardware
 description library and the
