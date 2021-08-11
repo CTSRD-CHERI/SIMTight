@@ -65,7 +65,7 @@ NOTE("Number of cache lines (line size == DRAM beat size)")
 NOTE("Tagged memory")
 NOTE("=============")
 
-NOTE("Is tagged memory enabled?")
+NOTE("Is tagged memory enabled? (Needed for CHERI)")
 #define EnableTaggedMem 0
 
 NOTE("Tag cache: line size")
@@ -86,7 +86,7 @@ NOTE("Tag cache: max number of pending requests per way")
 NOTE("CHERI support")
 NOTE("=============")
 
-NOTE("Is CHERI enabled? (If so, see UseClang parameter)")
+NOTE("Is CHERI enabled? (If so, see UseClang and EnableTaggedMem settings)")
 #define EnableCHERI 0
 
 NOTE("Compiler")
