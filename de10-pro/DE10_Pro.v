@@ -64,9 +64,9 @@ module DE10_Pro(
 wire reset_n;
 wire ddr4_local_reset_req;
 
-wire ddr4_b_local_reset_done;
-wire ddr4_b_status_local_cal_fail;
-wire ddr4_b_status_local_cal_success;
+wire ddr4_c_local_reset_done;
+wire ddr4_c_status_local_cal_fail;
+wire ddr4_c_status_local_cal_success;
 
 wire [11:0] ddr4_status;
 
@@ -78,33 +78,33 @@ reset_release reset_release (
 
 assign reset_n = !ninit_done && CPU_RESET_n;
 assign ddr4_status =
-  {ddr4_b_status_local_cal_fail,
-     ddr4_b_status_local_cal_success,
-       ddr4_b_local_reset_done};
+  {ddr4_c_status_local_cal_fail,
+     ddr4_c_status_local_cal_success,
+       ddr4_c_local_reset_done};
 
 DE10_Pro_QSYS DE10_Pro_QSYS_inst (
         .clk_clk(CLK_50_B3I),
         .reset_reset(~reset_n),
-        .emif_s10_ddr4_b_mem_mem_ck(DDR4C_CK),                          
-        .emif_s10_ddr4_b_mem_mem_ck_n(DDR4C_CK_n),                        
-        .emif_s10_ddr4_b_mem_mem_a(DDR4C_A),                           
-        .emif_s10_ddr4_b_mem_mem_act_n(DDR4C_ACT_n),                       
-        .emif_s10_ddr4_b_mem_mem_ba(DDR4C_BA),                          
-        .emif_s10_ddr4_b_mem_mem_bg(DDR4C_BG),                          
-        .emif_s10_ddr4_b_mem_mem_cke(DDR4C_CKE),                         
-        .emif_s10_ddr4_b_mem_mem_cs_n(DDR4C_CS_n),                        
-        .emif_s10_ddr4_b_mem_mem_odt(DDR4C_ODT),                         
-        .emif_s10_ddr4_b_mem_mem_reset_n(DDR4C_RESET_n),                     
-        .emif_s10_ddr4_b_mem_mem_par(DDR4C_PAR),                         
-        .emif_s10_ddr4_b_mem_mem_alert_n(DDR4C_ALERT_n),                     
-        .emif_s10_ddr4_b_mem_mem_dqs(DDR4C_DQS),                         
-        .emif_s10_ddr4_b_mem_mem_dqs_n(DDR4C_DQS_n),                       
-        .emif_s10_ddr4_b_mem_mem_dq(DDR4C_DQ),                          
-        .emif_s10_ddr4_b_mem_mem_dbi_n(DDR4C_DBI_n),                       
-        .emif_s10_ddr4_b_oct_oct_rzqin(DDR4C_RZQ),                       
-        .emif_s10_ddr4_b_pll_ref_clk_clk(DDR4C_REFCLK_p),                     
-        .emif_s10_ddr4_b_status_local_cal_success(ddr4_b_status_local_cal_success),            
-        .emif_s10_ddr4_b_status_local_cal_fail(ddr4_b_status_local_cal_fail),   
+        .emif_s10_ddr4_c_mem_mem_ck(DDR4C_CK),                          
+        .emif_s10_ddr4_c_mem_mem_ck_n(DDR4C_CK_n),                        
+        .emif_s10_ddr4_c_mem_mem_a(DDR4C_A),                           
+        .emif_s10_ddr4_c_mem_mem_act_n(DDR4C_ACT_n),                       
+        .emif_s10_ddr4_c_mem_mem_ba(DDR4C_BA),                          
+        .emif_s10_ddr4_c_mem_mem_bg(DDR4C_BG),                          
+        .emif_s10_ddr4_c_mem_mem_cke(DDR4C_CKE),                         
+        .emif_s10_ddr4_c_mem_mem_cs_n(DDR4C_CS_n),                        
+        .emif_s10_ddr4_c_mem_mem_odt(DDR4C_ODT),                         
+        .emif_s10_ddr4_c_mem_mem_reset_n(DDR4C_RESET_n),                     
+        .emif_s10_ddr4_c_mem_mem_par(DDR4C_PAR),                         
+        .emif_s10_ddr4_c_mem_mem_alert_n(DDR4C_ALERT_n),                     
+        .emif_s10_ddr4_c_mem_mem_dqs(DDR4C_DQS),                         
+        .emif_s10_ddr4_c_mem_mem_dqs_n(DDR4C_DQS_n),                       
+        .emif_s10_ddr4_c_mem_mem_dq(DDR4C_DQ),                          
+        .emif_s10_ddr4_c_mem_mem_dbi_n(DDR4C_DBI_n),                       
+        .emif_s10_ddr4_c_oct_oct_rzqin(DDR4C_RZQ),                       
+        .emif_s10_ddr4_c_pll_ref_clk_clk(DDR4C_REFCLK_p),                     
+        .emif_s10_ddr4_c_status_local_cal_success(ddr4_c_status_local_cal_success),            
+        .emif_s10_ddr4_c_status_local_cal_fail(ddr4_c_status_local_cal_fail),   
         .iopll_0_locked_export()
     );
 

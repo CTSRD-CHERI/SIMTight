@@ -117,7 +117,7 @@
       }
       datum baseAddress
       {
-         value = "8589934592";
+         value = "0";
          type = "String";
       }
    }
@@ -254,46 +254,46 @@
  <interface name="emif_s10_ddr4_a_status" internal="emif_s10_ddr4_a.status" />
  <interface
    name="emif_s10_ddr4_b_local_reset_req"
-   internal="emif_s10_ddr4_b.local_reset_req"
-   type="conduit"
-   dir="end" />
+   internal="emif_s10_ddr4_b.local_reset_req" />
  <interface
    name="emif_s10_ddr4_b_local_reset_status"
-   internal="emif_s10_ddr4_b.local_reset_status"
-   type="conduit"
-   dir="end" />
- <interface
-   name="emif_s10_ddr4_b_mem"
-   internal="emif_s10_ddr4_b.mem"
-   type="conduit"
-   dir="end" />
- <interface
-   name="emif_s10_ddr4_b_oct"
-   internal="emif_s10_ddr4_b.oct"
-   type="conduit"
-   dir="end" />
+   internal="emif_s10_ddr4_b.local_reset_status" />
+ <interface name="emif_s10_ddr4_b_mem" internal="emif_s10_ddr4_b.mem" />
+ <interface name="emif_s10_ddr4_b_oct" internal="emif_s10_ddr4_b.oct" />
  <interface
    name="emif_s10_ddr4_b_pll_ref_clk"
-   internal="emif_s10_ddr4_b.pll_ref_clk"
+   internal="emif_s10_ddr4_b.pll_ref_clk" />
+ <interface name="emif_s10_ddr4_b_status" internal="emif_s10_ddr4_b.status" />
+ <interface
+   name="emif_s10_ddr4_c_local_reset_req"
+   internal="emif_s10_ddr4_c.local_reset_req"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="emif_s10_ddr4_c_local_reset_status"
+   internal="emif_s10_ddr4_c.local_reset_status"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="emif_s10_ddr4_c_mem"
+   internal="emif_s10_ddr4_c.mem"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="emif_s10_ddr4_c_oct"
+   internal="emif_s10_ddr4_c.oct"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="emif_s10_ddr4_c_pll_ref_clk"
+   internal="emif_s10_ddr4_c.pll_ref_clk"
    type="clock"
    dir="end" />
  <interface
-   name="emif_s10_ddr4_b_status"
-   internal="emif_s10_ddr4_b.status"
+   name="emif_s10_ddr4_c_status"
+   internal="emif_s10_ddr4_c.status"
    type="conduit"
    dir="end" />
- <interface
-   name="emif_s10_ddr4_c_local_reset_req"
-   internal="emif_s10_ddr4_c.local_reset_req" />
- <interface
-   name="emif_s10_ddr4_c_local_reset_status"
-   internal="emif_s10_ddr4_c.local_reset_status" />
- <interface name="emif_s10_ddr4_c_mem" internal="emif_s10_ddr4_c.mem" />
- <interface name="emif_s10_ddr4_c_oct" internal="emif_s10_ddr4_c.oct" />
- <interface
-   name="emif_s10_ddr4_c_pll_ref_clk"
-   internal="emif_s10_ddr4_c.pll_ref_clk" />
- <interface name="emif_s10_ddr4_c_status" internal="emif_s10_ddr4_c.status" />
  <interface
    name="emif_s10_ddr4_d_local_reset_req"
    internal="emif_s10_ddr4_d.local_reset_req" />
@@ -5241,7 +5241,7 @@
    name="emif_s10_ddr4_b"
    kind="altera_generic_component"
    version="1.0"
-   enabled="1">
+   enabled="0">
   <parameter name="componentDefinition"><![CDATA[<componentDefinition>
     <boundary>
         <interfaces>
@@ -6781,7 +6781,7 @@
    name="emif_s10_ddr4_c"
    kind="altera_generic_component"
    version="1.0"
-   enabled="0">
+   enabled="1">
   <parameter name="componentDefinition"><![CDATA[<componentDefinition>
     <boundary>
         <interfaces>
@@ -14475,6 +14475,26 @@
  <connection
    kind="avalon"
    version="19.2"
+   start="mm_clockcross_DDR4.m0"
+   end="emif_s10_ddr4_c.ctrl_amm_0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0000" />
+  <parameter name="defaultConnection" value="false" />
+  <parameter name="domainAlias" value="" />
+  <parameter name="qsys_mm.burstAdapterImplementation" value="GENERIC_CONVERTER" />
+  <parameter name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
+  <parameter name="qsys_mm.enableEccProtection" value="FALSE" />
+  <parameter name="qsys_mm.enableInstrumentation" value="FALSE" />
+  <parameter name="qsys_mm.insertDefaultSlave" value="FALSE" />
+  <parameter name="qsys_mm.interconnectResetSource" value="DEFAULT" />
+  <parameter name="qsys_mm.interconnectType" value="STANDARD" />
+  <parameter name="qsys_mm.maxAdditionalLatency" value="1" />
+  <parameter name="qsys_mm.syncResets" value="FALSE" />
+  <parameter name="qsys_mm.widthAdapterImplementation" value="GENERIC_CONVERTER" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="19.2"
    start="mm_clockcross_50Mhz.m0"
    end="ddr4_local_reset_req.s1">
   <parameter name="arbitrationPriority" value="1" />
@@ -14535,7 +14555,7 @@
  <connection
    kind="clock"
    version="19.2"
-   start="emif_s10_ddr4_b.emif_usr_clk"
+   start="emif_s10_ddr4_c.emif_usr_clk"
    end="mm_clockcross_DDR4.m0_clk" />
  <connection
    kind="clock"
@@ -14595,6 +14615,16 @@
  <connection
    kind="reset"
    version="19.2"
+   start="emif_s10_ddr4_c.emif_usr_reset_n"
+   end="mm_clockcross_50Mhz.m0_reset" />
+ <connection
+   kind="reset"
+   version="19.2"
+   start="emif_s10_ddr4_c.emif_usr_reset_n"
+   end="mm_clockcross_DDR4.m0_reset" />
+ <connection
+   kind="reset"
+   version="19.2"
    start="emif_s10_ddr4_b.emif_usr_reset_n"
    end="SIMTight_0.reset" />
  <connection
@@ -14605,12 +14635,32 @@
  <connection
    kind="reset"
    version="19.2"
+   start="emif_s10_ddr4_c.emif_usr_reset_n"
+   end="SIMTight_0.reset" />
+ <connection
+   kind="reset"
+   version="19.2"
+   start="emif_s10_ddr4_c.emif_usr_reset_n"
+   end="jtag_uart_0.reset" />
+ <connection
+   kind="reset"
+   version="19.2"
    start="emif_s10_ddr4_b.emif_usr_reset_n"
    end="mm_clockcross_50Mhz.s0_reset" />
  <connection
    kind="reset"
    version="19.2"
    start="emif_s10_ddr4_b.emif_usr_reset_n"
+   end="mm_clockcross_DDR4.s0_reset" />
+ <connection
+   kind="reset"
+   version="19.2"
+   start="emif_s10_ddr4_c.emif_usr_reset_n"
+   end="mm_clockcross_50Mhz.s0_reset" />
+ <connection
+   kind="reset"
+   version="19.2"
+   start="emif_s10_ddr4_c.emif_usr_reset_n"
    end="mm_clockcross_DDR4.s0_reset" />
  <connection
    kind="reset"
