@@ -36,8 +36,8 @@ int main(int argc, char** argv) {
   uart.ifc.write = &top->out_socUARTOuts_avl_jtaguart_write;
 
   while (!Verilated::gotFinish()) {
-    top->reset = main_time < 1;
-    if (top->reset == 0) {
+    int reset = top->in0_socSIMTRst = top->in0_socCPURst = main_time < 1;
+    if (reset == 0) {
       dram.ifc.address = top->out_socDRAMOuts_avl_dram_address;
       dram.ifc.burstcount = top->out_socDRAMOuts_avl_dram_burstcount;
       dram.ifc.byteen = top->out_socDRAMOuts_avl_dram_byteen;
@@ -46,8 +46,8 @@ int main(int argc, char** argv) {
       dram.tick();
       uart.tick();
     }
-    top->clock = 0; top->eval();
-    top->clock = 1; top->eval();
+    top->in0_socSIMTClk = top->in0_socCPUClk = 0; top->eval();
+    top->in0_socSIMTClk = top->in0_socCPUClk = 1; top->eval();
     main_time++;
   }
 

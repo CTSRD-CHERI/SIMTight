@@ -7,10 +7,10 @@
   <ipxact:busInterfaces>
     <ipxact:busInterface>
       <ipxact:name>clk</ipxact:name>
-      <ipxact:busType vendor="altera" library="altera" name="clock" version="19.1"></ipxact:busType>
+      <ipxact:busType vendor="altera" library="altera" name="clock" version="19.2"></ipxact:busType>
       <ipxact:abstractionTypes>
         <ipxact:abstractionType>
-          <ipxact:abstractionRef vendor="altera" library="altera" name="clock" version="19.1"></ipxact:abstractionRef>
+          <ipxact:abstractionRef vendor="altera" library="altera" name="clock" version="19.2"></ipxact:abstractionRef>
           <ipxact:portMaps>
             <ipxact:portMap>
               <ipxact:logicalPort>
@@ -44,10 +44,10 @@
     </ipxact:busInterface>
     <ipxact:busInterface>
       <ipxact:name>reset</ipxact:name>
-      <ipxact:busType vendor="altera" library="altera" name="reset" version="19.1"></ipxact:busType>
+      <ipxact:busType vendor="altera" library="altera" name="reset" version="19.2"></ipxact:busType>
       <ipxact:abstractionTypes>
         <ipxact:abstractionType>
-          <ipxact:abstractionRef vendor="altera" library="altera" name="reset" version="19.1"></ipxact:abstractionRef>
+          <ipxact:abstractionRef vendor="altera" library="altera" name="reset" version="19.2"></ipxact:abstractionRef>
           <ipxact:portMaps>
             <ipxact:portMap>
               <ipxact:logicalPort>
@@ -76,10 +76,10 @@
     </ipxact:busInterface>
     <ipxact:busInterface>
       <ipxact:name>avalon_jtag_slave</ipxact:name>
-      <ipxact:busType vendor="altera" library="altera" name="avalon" version="19.1"></ipxact:busType>
+      <ipxact:busType vendor="altera" library="altera" name="avalon" version="19.2"></ipxact:busType>
       <ipxact:abstractionTypes>
         <ipxact:abstractionType>
-          <ipxact:abstractionRef vendor="altera" library="altera" name="avalon" version="19.1"></ipxact:abstractionRef>
+          <ipxact:abstractionRef vendor="altera" library="altera" name="avalon" version="19.2"></ipxact:abstractionRef>
           <ipxact:portMaps>
             <ipxact:portMap>
               <ipxact:logicalPort>
@@ -373,10 +373,10 @@
     </ipxact:busInterface>
     <ipxact:busInterface>
       <ipxact:name>irq</ipxact:name>
-      <ipxact:busType vendor="altera" library="altera" name="interrupt" version="19.1"></ipxact:busType>
+      <ipxact:busType vendor="altera" library="altera" name="interrupt" version="19.2"></ipxact:busType>
       <ipxact:abstractionTypes>
         <ipxact:abstractionType>
-          <ipxact:abstractionRef vendor="altera" library="altera" name="interrupt" version="19.1"></ipxact:abstractionRef>
+          <ipxact:abstractionRef vendor="altera" library="altera" name="interrupt" version="19.2"></ipxact:abstractionRef>
           <ipxact:portMaps>
             <ipxact:portMap>
               <ipxact:logicalPort>
@@ -737,7 +737,21 @@
         <ipxact:parameter parameterId="bonusData" type="string">
           <ipxact:name>bonusData</ipxact:name>
           <ipxact:displayName>bonusData</ipxact:displayName>
-          <ipxact:value>bonusData &#xd;&#xa;{&#xd;&#xa;   element $system&#xd;&#xa;   {&#xd;&#xa;      datum _originalDeviceFamily&#xd;&#xa;      {&#xd;&#xa;         value = "Stratix 10";&#xd;&#xa;         type = "String";&#xd;&#xa;      }&#xd;&#xa;   }&#xd;&#xa;   element jtag_uart_0&#xd;&#xa;   {&#xd;&#xa;   }&#xd;&#xa;}&#xd;&#xa;</ipxact:value>
+          <ipxact:value>bonusData 
+{
+   element $system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Stratix 10";
+         type = "String";
+      }
+   }
+   element jtag_uart_0
+   {
+   }
+}
+</ipxact:value>
         </ipxact:parameter>
         <ipxact:parameter parameterId="hideFromIPCatalog" type="bit">
           <ipxact:name>hideFromIPCatalog</ipxact:name>
@@ -747,12 +761,507 @@
         <ipxact:parameter parameterId="lockedInterfaceDefinition" type="string">
           <ipxact:name>lockedInterfaceDefinition</ipxact:name>
           <ipxact:displayName>lockedInterfaceDefinition</ipxact:displayName>
-          <ipxact:value>&lt;boundaryDefinition&gt;&#xa;    &lt;interfaces&gt;&#xa;        &lt;interface&gt;&#xa;            &lt;name&gt;clk&lt;/name&gt;&#xa;            &lt;type&gt;clock&lt;/type&gt;&#xa;            &lt;isStart&gt;false&lt;/isStart&gt;&#xa;            &lt;ports&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;clk&lt;/name&gt;&#xa;                    &lt;role&gt;clk&lt;/role&gt;&#xa;                    &lt;direction&gt;Input&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;            &lt;/ports&gt;&#xa;            &lt;assignments&gt;&#xa;                &lt;assignmentValueMap/&gt;&#xa;            &lt;/assignments&gt;&#xa;            &lt;parameters&gt;&#xa;                &lt;parameterValueMap&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;clockRate&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;externallyDriven&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;ptfSchematicName&lt;/key&gt;&#xa;                    &lt;/entry&gt;&#xa;                &lt;/parameterValueMap&gt;&#xa;            &lt;/parameters&gt;&#xa;        &lt;/interface&gt;&#xa;        &lt;interface&gt;&#xa;            &lt;name&gt;reset&lt;/name&gt;&#xa;            &lt;type&gt;reset&lt;/type&gt;&#xa;            &lt;isStart&gt;false&lt;/isStart&gt;&#xa;            &lt;ports&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;rst_n&lt;/name&gt;&#xa;                    &lt;role&gt;reset_n&lt;/role&gt;&#xa;                    &lt;direction&gt;Input&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;            &lt;/ports&gt;&#xa;            &lt;assignments&gt;&#xa;                &lt;assignmentValueMap/&gt;&#xa;            &lt;/assignments&gt;&#xa;            &lt;parameters&gt;&#xa;                &lt;parameterValueMap&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedClock&lt;/key&gt;&#xa;                        &lt;value&gt;clk&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;synchronousEdges&lt;/key&gt;&#xa;                        &lt;value&gt;DEASSERT&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                &lt;/parameterValueMap&gt;&#xa;            &lt;/parameters&gt;&#xa;        &lt;/interface&gt;&#xa;        &lt;interface&gt;&#xa;            &lt;name&gt;avalon_jtag_slave&lt;/name&gt;&#xa;            &lt;type&gt;avalon&lt;/type&gt;&#xa;            &lt;isStart&gt;false&lt;/isStart&gt;&#xa;            &lt;ports&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;av_chipselect&lt;/name&gt;&#xa;                    &lt;role&gt;chipselect&lt;/role&gt;&#xa;                    &lt;direction&gt;Input&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;av_address&lt;/name&gt;&#xa;                    &lt;role&gt;address&lt;/role&gt;&#xa;                    &lt;direction&gt;Input&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;av_read_n&lt;/name&gt;&#xa;                    &lt;role&gt;read_n&lt;/role&gt;&#xa;                    &lt;direction&gt;Input&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;av_readdata&lt;/name&gt;&#xa;                    &lt;role&gt;readdata&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;32&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;av_write_n&lt;/name&gt;&#xa;                    &lt;role&gt;write_n&lt;/role&gt;&#xa;                    &lt;direction&gt;Input&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;av_writedata&lt;/name&gt;&#xa;                    &lt;role&gt;writedata&lt;/role&gt;&#xa;                    &lt;direction&gt;Input&lt;/direction&gt;&#xa;                    &lt;width&gt;32&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;av_waitrequest&lt;/name&gt;&#xa;                    &lt;role&gt;waitrequest&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;            &lt;/ports&gt;&#xa;            &lt;assignments&gt;&#xa;                &lt;assignmentValueMap&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;embeddedsw.configuration.isFlash&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;embeddedsw.configuration.isMemoryDevice&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;embeddedsw.configuration.isNonVolatileStorage&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;embeddedsw.configuration.isPrintableDevice&lt;/key&gt;&#xa;                        &lt;value&gt;1&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                &lt;/assignmentValueMap&gt;&#xa;            &lt;/assignments&gt;&#xa;            &lt;parameters&gt;&#xa;                &lt;parameterValueMap&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;addressAlignment&lt;/key&gt;&#xa;                        &lt;value&gt;NATIVE&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;addressGroup&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;addressSpan&lt;/key&gt;&#xa;                        &lt;value&gt;2&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;addressUnits&lt;/key&gt;&#xa;                        &lt;value&gt;WORDS&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;alwaysBurstMaxBurst&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedClock&lt;/key&gt;&#xa;                        &lt;value&gt;clk&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedReset&lt;/key&gt;&#xa;                        &lt;value&gt;reset&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;bitsPerSymbol&lt;/key&gt;&#xa;                        &lt;value&gt;8&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;bridgedAddressOffset&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;bridgesToMaster&lt;/key&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;burstOnBurstBoundariesOnly&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;burstcountUnits&lt;/key&gt;&#xa;                        &lt;value&gt;WORDS&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;constantBurstBehavior&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;explicitAddressSpan&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;holdTime&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;interleaveBursts&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;isBigEndian&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;isFlash&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;isMemoryDevice&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;isNonVolatileStorage&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;linewrapBursts&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;maximumPendingReadTransactions&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;maximumPendingWriteTransactions&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;minimumReadLatency&lt;/key&gt;&#xa;                        &lt;value&gt;1&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;minimumResponseLatency&lt;/key&gt;&#xa;                        &lt;value&gt;1&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;minimumUninterruptedRunLength&lt;/key&gt;&#xa;                        &lt;value&gt;1&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;prSafe&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;printableDevice&lt;/key&gt;&#xa;                        &lt;value&gt;true&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;readLatency&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;readWaitStates&lt;/key&gt;&#xa;                        &lt;value&gt;1&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;readWaitTime&lt;/key&gt;&#xa;                        &lt;value&gt;1&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;registerIncomingSignals&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;registerOutgoingSignals&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;setupTime&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;timingUnits&lt;/key&gt;&#xa;                        &lt;value&gt;Cycles&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;transparentBridge&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;waitrequestAllowance&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;wellBehavedWaitrequest&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;writeLatency&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;writeWaitStates&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;writeWaitTime&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                &lt;/parameterValueMap&gt;&#xa;            &lt;/parameters&gt;&#xa;            &lt;cmsisInfo&gt;&#xa;                &lt;cmsisSrcFileContents&gt;&amp;lt;?xml version="1.0" encoding="utf-8"?&amp;gt;    &#xa;&amp;lt;device schemaVersion="1.1" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="CMSIS-SVD_Schema_1_1.xsd" &amp;gt;&#xa;  &amp;lt;peripherals&amp;gt;&#xa;   &amp;lt;peripheral&amp;gt;&#xa;      &amp;lt;name&amp;gt;altera_avalon_jtag_uart&amp;lt;/name&amp;gt;&amp;lt;baseAddress&amp;gt;0x00000000&amp;lt;/baseAddress&amp;gt; &#xa;      &amp;lt;addressBlock&amp;gt;&#xa;        &amp;lt;offset&amp;gt;0x0&amp;lt;/offset&amp;gt;&#xa;        &amp;lt;size&amp;gt;8&amp;lt;/size&amp;gt;&#xa;        &amp;lt;usage&amp;gt;registers&amp;lt;/usage&amp;gt;&#xa;      &amp;lt;/addressBlock&amp;gt;&#xa;      &amp;lt;registers&amp;gt;&#xa;        &amp;lt;register&amp;gt;     &#xa;         &amp;lt;name&amp;gt;DATA&amp;lt;/name&amp;gt;  &#xa;         &amp;lt;displayName&amp;gt;Data&amp;lt;/displayName&amp;gt;&#xa;         &amp;lt;description&amp;gt;Embedded software accesses the read and write FIFOs via the data register. A read from the data register returns the first character from the FIFO (if one is available) in the DATA field. Reading also returns information about the number of characters remaining in the FIFO in the RAVAIL field. A write to the data register stores the value of the DATA field in the write FIFO. If the write FIFO is full, the character is lost.&amp;lt;/description&amp;gt;&#xa;         &amp;lt;addressOffset&amp;gt;0x0&amp;lt;/addressOffset&amp;gt;&#xa;         &amp;lt;size&amp;gt;32&amp;lt;/size&amp;gt;&#xa;         &amp;lt;access&amp;gt;read-write&amp;lt;/access&amp;gt;&#xa;         &amp;lt;resetValue&amp;gt;0x0&amp;lt;/resetValue&amp;gt;&#xa;         &amp;lt;resetMask&amp;gt;0xffffffff&amp;lt;/resetMask&amp;gt; &#xa;         &amp;lt;fields&amp;gt;&#xa;           &amp;lt;field&amp;gt;&amp;lt;name&amp;gt;data&amp;lt;/name&amp;gt;&#xa;           &amp;lt;description&amp;gt;The value to transfer to/from the JTAG core. When writing, the DATA field holds a character to be written to the write FIFO. When reading, the DATA field holds a character read from the read FIFO.&amp;lt;/description&amp;gt;&#xa;            &amp;lt;bitOffset&amp;gt;0x0&amp;lt;/bitOffset&amp;gt;&#xa;            &amp;lt;bitWidth&amp;gt;8&amp;lt;/bitWidth&amp;gt;&#xa;            &amp;lt;access&amp;gt;read-write&amp;lt;/access&amp;gt;&#xa;        &amp;lt;/field&amp;gt;&#xa;           &amp;lt;field&amp;gt;&amp;lt;name&amp;gt;rvalid&amp;lt;/name&amp;gt;&#xa;           &amp;lt;description&amp;gt;Indicates whether the DATA field is valid. If RVALID=1, the DATA field is valid, otherwise DATA is undefined.&amp;lt;/description&amp;gt;&#xa;            &amp;lt;bitOffset&amp;gt;0xf&amp;lt;/bitOffset&amp;gt;&#xa;            &amp;lt;bitWidth&amp;gt;1&amp;lt;/bitWidth&amp;gt;&#xa;            &amp;lt;access&amp;gt;read-only&amp;lt;/access&amp;gt;&#xa;        &amp;lt;/field&amp;gt;&#xa;           &amp;lt;field&amp;gt;&amp;lt;name&amp;gt;ravail&amp;lt;/name&amp;gt;&#xa;           &amp;lt;description&amp;gt;The number of characters remaining in the read FIFO (after the current read).&amp;lt;/description&amp;gt;&#xa;            &amp;lt;bitOffset&amp;gt;0x10&amp;lt;/bitOffset&amp;gt;&#xa;            &amp;lt;bitWidth&amp;gt;16&amp;lt;/bitWidth&amp;gt;&#xa;            &amp;lt;access&amp;gt;read-only&amp;lt;/access&amp;gt;&#xa;        &amp;lt;/field&amp;gt;&#xa;       &amp;lt;/fields&amp;gt;&#xa;     &amp;lt;/register&amp;gt; &#xa;        &amp;lt;register&amp;gt;     &#xa;         &amp;lt;name&amp;gt;CONTROL&amp;lt;/name&amp;gt;  &#xa;         &amp;lt;displayName&amp;gt;Control&amp;lt;/displayName&amp;gt;&#xa;         &amp;lt;description&amp;gt;Embedded software controls the JTAG UART core's interrupt generation and reads status information via the control register. A read from the control register returns the status of the read and write FIFOs. Writes to the register can be used to enable/disable interrupts, or clear the AC bit.&amp;lt;/description&amp;gt;&#xa;         &amp;lt;addressOffset&amp;gt;0x4&amp;lt;/addressOffset&amp;gt;&#xa;         &amp;lt;size&amp;gt;32&amp;lt;/size&amp;gt;&#xa;         &amp;lt;access&amp;gt;read-write&amp;lt;/access&amp;gt;&#xa;         &amp;lt;resetValue&amp;gt;0x0&amp;lt;/resetValue&amp;gt;&#xa;         &amp;lt;resetMask&amp;gt;0xffffffff&amp;lt;/resetMask&amp;gt; &#xa;         &amp;lt;fields&amp;gt;&#xa;           &amp;lt;field&amp;gt;&amp;lt;name&amp;gt;re&amp;lt;/name&amp;gt;&#xa;            &amp;lt;description&amp;gt;Interrupt-enable bit for read interrupts.&amp;lt;/description&amp;gt;&#xa;            &amp;lt;bitOffset&amp;gt;0x0&amp;lt;/bitOffset&amp;gt;&#xa;            &amp;lt;bitWidth&amp;gt;1&amp;lt;/bitWidth&amp;gt;&#xa;            &amp;lt;access&amp;gt;read-write&amp;lt;/access&amp;gt;&#xa;        &amp;lt;/field&amp;gt;&#xa;           &amp;lt;field&amp;gt;&amp;lt;name&amp;gt;we&amp;lt;/name&amp;gt;&#xa;            &amp;lt;description&amp;gt;Interrupt-enable bit for write interrupts&amp;lt;/description&amp;gt;&#xa;            &amp;lt;bitOffset&amp;gt;0x1&amp;lt;/bitOffset&amp;gt;&#xa;            &amp;lt;bitWidth&amp;gt;1&amp;lt;/bitWidth&amp;gt;&#xa;            &amp;lt;access&amp;gt;read-write&amp;lt;/access&amp;gt;&#xa;        &amp;lt;/field&amp;gt;&#xa;           &amp;lt;field&amp;gt;&amp;lt;name&amp;gt;ri&amp;lt;/name&amp;gt;&#xa;            &amp;lt;description&amp;gt;Indicates that the read interrupt is pending.&amp;lt;/description&amp;gt;&#xa;            &amp;lt;bitOffset&amp;gt;0x8&amp;lt;/bitOffset&amp;gt;&#xa;            &amp;lt;bitWidth&amp;gt;1&amp;lt;/bitWidth&amp;gt;&#xa;            &amp;lt;access&amp;gt;read-only&amp;lt;/access&amp;gt;&#xa;        &amp;lt;/field&amp;gt;&#xa;           &amp;lt;field&amp;gt;&amp;lt;name&amp;gt;wi&amp;lt;/name&amp;gt;&#xa;            &amp;lt;description&amp;gt;Indicates that the write interrupt is pending.&amp;lt;/description&amp;gt;&#xa;            &amp;lt;bitOffset&amp;gt;0x9&amp;lt;/bitOffset&amp;gt;&#xa;            &amp;lt;bitWidth&amp;gt;1&amp;lt;/bitWidth&amp;gt;&#xa;            &amp;lt;access&amp;gt;read-only&amp;lt;/access&amp;gt;&#xa;        &amp;lt;/field&amp;gt;&#xa;           &amp;lt;field&amp;gt;&amp;lt;name&amp;gt;ac&amp;lt;/name&amp;gt;&#xa;            &amp;lt;description&amp;gt;Indicates that there has been JTAG activity since the bit was cleared. Writing 1 to AC clears it to 0.&amp;lt;/description&amp;gt;&#xa;            &amp;lt;bitOffset&amp;gt;0xa&amp;lt;/bitOffset&amp;gt;&#xa;            &amp;lt;bitWidth&amp;gt;1&amp;lt;/bitWidth&amp;gt;&#xa;            &amp;lt;access&amp;gt;read-write&amp;lt;/access&amp;gt;&#xa;        &amp;lt;/field&amp;gt;&#xa;           &amp;lt;field&amp;gt;&amp;lt;name&amp;gt;wspace&amp;lt;/name&amp;gt;&#xa;            &amp;lt;description&amp;gt;The number of spaces available in the write FIFO&amp;lt;/description&amp;gt;&#xa;            &amp;lt;bitOffset&amp;gt;0x10&amp;lt;/bitOffset&amp;gt;&#xa;            &amp;lt;bitWidth&amp;gt;16&amp;lt;/bitWidth&amp;gt;&#xa;            &amp;lt;access&amp;gt;read-only&amp;lt;/access&amp;gt;&#xa;        &amp;lt;/field&amp;gt;&#xa;       &amp;lt;/fields&amp;gt;&#xa;     &amp;lt;/register&amp;gt;            &#xa;    &amp;lt;/registers&amp;gt;&#xa;   &amp;lt;/peripheral&amp;gt;&#xa;  &amp;lt;/peripherals&amp;gt;&#xa;&amp;lt;/device&amp;gt; &lt;/cmsisSrcFileContents&gt;&#xa;                &lt;addressGroup&gt;&lt;/addressGroup&gt;&#xa;                &lt;cmsisVars/&gt;&#xa;            &lt;/cmsisInfo&gt;&#xa;        &lt;/interface&gt;&#xa;        &lt;interface&gt;&#xa;            &lt;name&gt;irq&lt;/name&gt;&#xa;            &lt;type&gt;interrupt&lt;/type&gt;&#xa;            &lt;isStart&gt;false&lt;/isStart&gt;&#xa;            &lt;ports&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;av_irq&lt;/name&gt;&#xa;                    &lt;role&gt;irq&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;            &lt;/ports&gt;&#xa;            &lt;assignments&gt;&#xa;                &lt;assignmentValueMap/&gt;&#xa;            &lt;/assignments&gt;&#xa;            &lt;parameters&gt;&#xa;                &lt;parameterValueMap&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedAddressablePoint&lt;/key&gt;&#xa;                        &lt;value&gt;DE10_Pro_QSYS_jtag_uart_0.avalon_jtag_slave&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedClock&lt;/key&gt;&#xa;                        &lt;value&gt;clk&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedReset&lt;/key&gt;&#xa;                        &lt;value&gt;reset&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;bridgedReceiverOffset&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;bridgesToReceiver&lt;/key&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;irqScheme&lt;/key&gt;&#xa;                        &lt;value&gt;NONE&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                &lt;/parameterValueMap&gt;&#xa;            &lt;/parameters&gt;&#xa;        &lt;/interface&gt;&#xa;    &lt;/interfaces&gt;&#xa;&lt;/boundaryDefinition&gt;</ipxact:value>
+          <ipxact:value>&lt;boundaryDefinition&gt;
+    &lt;interfaces&gt;
+        &lt;interface&gt;
+            &lt;name&gt;clk&lt;/name&gt;
+            &lt;type&gt;clock&lt;/type&gt;
+            &lt;isStart&gt;false&lt;/isStart&gt;
+            &lt;ports&gt;
+                &lt;port&gt;
+                    &lt;name&gt;clk&lt;/name&gt;
+                    &lt;role&gt;clk&lt;/role&gt;
+                    &lt;direction&gt;Input&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                &lt;/port&gt;
+            &lt;/ports&gt;
+            &lt;assignments&gt;
+                &lt;assignmentValueMap/&gt;
+            &lt;/assignments&gt;
+            &lt;parameters&gt;
+                &lt;parameterValueMap&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;clockRate&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;externallyDriven&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;ptfSchematicName&lt;/key&gt;
+                    &lt;/entry&gt;
+                &lt;/parameterValueMap&gt;
+            &lt;/parameters&gt;
+        &lt;/interface&gt;
+        &lt;interface&gt;
+            &lt;name&gt;reset&lt;/name&gt;
+            &lt;type&gt;reset&lt;/type&gt;
+            &lt;isStart&gt;false&lt;/isStart&gt;
+            &lt;ports&gt;
+                &lt;port&gt;
+                    &lt;name&gt;rst_n&lt;/name&gt;
+                    &lt;role&gt;reset_n&lt;/role&gt;
+                    &lt;direction&gt;Input&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                &lt;/port&gt;
+            &lt;/ports&gt;
+            &lt;assignments&gt;
+                &lt;assignmentValueMap/&gt;
+            &lt;/assignments&gt;
+            &lt;parameters&gt;
+                &lt;parameterValueMap&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedClock&lt;/key&gt;
+                        &lt;value&gt;clk&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;synchronousEdges&lt;/key&gt;
+                        &lt;value&gt;DEASSERT&lt;/value&gt;
+                    &lt;/entry&gt;
+                &lt;/parameterValueMap&gt;
+            &lt;/parameters&gt;
+        &lt;/interface&gt;
+        &lt;interface&gt;
+            &lt;name&gt;avalon_jtag_slave&lt;/name&gt;
+            &lt;type&gt;avalon&lt;/type&gt;
+            &lt;isStart&gt;false&lt;/isStart&gt;
+            &lt;ports&gt;
+                &lt;port&gt;
+                    &lt;name&gt;av_chipselect&lt;/name&gt;
+                    &lt;role&gt;chipselect&lt;/role&gt;
+                    &lt;direction&gt;Input&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;av_address&lt;/name&gt;
+                    &lt;role&gt;address&lt;/role&gt;
+                    &lt;direction&gt;Input&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;av_read_n&lt;/name&gt;
+                    &lt;role&gt;read_n&lt;/role&gt;
+                    &lt;direction&gt;Input&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;av_readdata&lt;/name&gt;
+                    &lt;role&gt;readdata&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;32&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;av_write_n&lt;/name&gt;
+                    &lt;role&gt;write_n&lt;/role&gt;
+                    &lt;direction&gt;Input&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;av_writedata&lt;/name&gt;
+                    &lt;role&gt;writedata&lt;/role&gt;
+                    &lt;direction&gt;Input&lt;/direction&gt;
+                    &lt;width&gt;32&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;av_waitrequest&lt;/name&gt;
+                    &lt;role&gt;waitrequest&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                &lt;/port&gt;
+            &lt;/ports&gt;
+            &lt;assignments&gt;
+                &lt;assignmentValueMap&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;embeddedsw.configuration.isFlash&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;embeddedsw.configuration.isMemoryDevice&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;embeddedsw.configuration.isNonVolatileStorage&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;embeddedsw.configuration.isPrintableDevice&lt;/key&gt;
+                        &lt;value&gt;1&lt;/value&gt;
+                    &lt;/entry&gt;
+                &lt;/assignmentValueMap&gt;
+            &lt;/assignments&gt;
+            &lt;parameters&gt;
+                &lt;parameterValueMap&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;addressAlignment&lt;/key&gt;
+                        &lt;value&gt;NATIVE&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;addressGroup&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;addressSpan&lt;/key&gt;
+                        &lt;value&gt;2&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;addressUnits&lt;/key&gt;
+                        &lt;value&gt;WORDS&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;alwaysBurstMaxBurst&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedClock&lt;/key&gt;
+                        &lt;value&gt;clk&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedReset&lt;/key&gt;
+                        &lt;value&gt;reset&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;bitsPerSymbol&lt;/key&gt;
+                        &lt;value&gt;8&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;bridgedAddressOffset&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;bridgesToMaster&lt;/key&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;burstOnBurstBoundariesOnly&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;burstcountUnits&lt;/key&gt;
+                        &lt;value&gt;WORDS&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;constantBurstBehavior&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;explicitAddressSpan&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;holdTime&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;interleaveBursts&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;isBigEndian&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;isFlash&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;isMemoryDevice&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;isNonVolatileStorage&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;linewrapBursts&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;maximumPendingReadTransactions&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;maximumPendingWriteTransactions&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;minimumReadLatency&lt;/key&gt;
+                        &lt;value&gt;1&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;minimumResponseLatency&lt;/key&gt;
+                        &lt;value&gt;1&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;minimumUninterruptedRunLength&lt;/key&gt;
+                        &lt;value&gt;1&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;prSafe&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;printableDevice&lt;/key&gt;
+                        &lt;value&gt;true&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;readLatency&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;readWaitStates&lt;/key&gt;
+                        &lt;value&gt;1&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;readWaitTime&lt;/key&gt;
+                        &lt;value&gt;1&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;registerIncomingSignals&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;registerOutgoingSignals&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;setupTime&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;timingUnits&lt;/key&gt;
+                        &lt;value&gt;Cycles&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;transparentBridge&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;waitrequestAllowance&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;wellBehavedWaitrequest&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;writeLatency&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;writeWaitStates&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;writeWaitTime&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                &lt;/parameterValueMap&gt;
+            &lt;/parameters&gt;
+            &lt;cmsisInfo&gt;
+                &lt;cmsisSrcFileContents&gt;&amp;lt;?xml version="1.0" encoding="utf-8"?&amp;gt;    
+&amp;lt;device schemaVersion="1.1" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="CMSIS-SVD_Schema_1_1.xsd" &amp;gt;
+  &amp;lt;peripherals&amp;gt;
+   &amp;lt;peripheral&amp;gt;
+      &amp;lt;name&amp;gt;altera_avalon_jtag_uart&amp;lt;/name&amp;gt;&amp;lt;baseAddress&amp;gt;0x00000000&amp;lt;/baseAddress&amp;gt; 
+      &amp;lt;addressBlock&amp;gt;
+        &amp;lt;offset&amp;gt;0x0&amp;lt;/offset&amp;gt;
+        &amp;lt;size&amp;gt;8&amp;lt;/size&amp;gt;
+        &amp;lt;usage&amp;gt;registers&amp;lt;/usage&amp;gt;
+      &amp;lt;/addressBlock&amp;gt;
+      &amp;lt;registers&amp;gt;
+        &amp;lt;register&amp;gt;     
+         &amp;lt;name&amp;gt;DATA&amp;lt;/name&amp;gt;  
+         &amp;lt;displayName&amp;gt;Data&amp;lt;/displayName&amp;gt;
+         &amp;lt;description&amp;gt;Embedded software accesses the read and write FIFOs via the data register. A read from the data register returns the first character from the FIFO (if one is available) in the DATA field. Reading also returns information about the number of characters remaining in the FIFO in the RAVAIL field. A write to the data register stores the value of the DATA field in the write FIFO. If the write FIFO is full, the character is lost.&amp;lt;/description&amp;gt;
+         &amp;lt;addressOffset&amp;gt;0x0&amp;lt;/addressOffset&amp;gt;
+         &amp;lt;size&amp;gt;32&amp;lt;/size&amp;gt;
+         &amp;lt;access&amp;gt;read-write&amp;lt;/access&amp;gt;
+         &amp;lt;resetValue&amp;gt;0x0&amp;lt;/resetValue&amp;gt;
+         &amp;lt;resetMask&amp;gt;0xffffffff&amp;lt;/resetMask&amp;gt; 
+         &amp;lt;fields&amp;gt;
+           &amp;lt;field&amp;gt;&amp;lt;name&amp;gt;data&amp;lt;/name&amp;gt;
+           &amp;lt;description&amp;gt;The value to transfer to/from the JTAG core. When writing, the DATA field holds a character to be written to the write FIFO. When reading, the DATA field holds a character read from the read FIFO.&amp;lt;/description&amp;gt;
+            &amp;lt;bitOffset&amp;gt;0x0&amp;lt;/bitOffset&amp;gt;
+            &amp;lt;bitWidth&amp;gt;8&amp;lt;/bitWidth&amp;gt;
+            &amp;lt;access&amp;gt;read-write&amp;lt;/access&amp;gt;
+        &amp;lt;/field&amp;gt;
+           &amp;lt;field&amp;gt;&amp;lt;name&amp;gt;rvalid&amp;lt;/name&amp;gt;
+           &amp;lt;description&amp;gt;Indicates whether the DATA field is valid. If RVALID=1, the DATA field is valid, otherwise DATA is undefined.&amp;lt;/description&amp;gt;
+            &amp;lt;bitOffset&amp;gt;0xf&amp;lt;/bitOffset&amp;gt;
+            &amp;lt;bitWidth&amp;gt;1&amp;lt;/bitWidth&amp;gt;
+            &amp;lt;access&amp;gt;read-only&amp;lt;/access&amp;gt;
+        &amp;lt;/field&amp;gt;
+           &amp;lt;field&amp;gt;&amp;lt;name&amp;gt;ravail&amp;lt;/name&amp;gt;
+           &amp;lt;description&amp;gt;The number of characters remaining in the read FIFO (after the current read).&amp;lt;/description&amp;gt;
+            &amp;lt;bitOffset&amp;gt;0x10&amp;lt;/bitOffset&amp;gt;
+            &amp;lt;bitWidth&amp;gt;16&amp;lt;/bitWidth&amp;gt;
+            &amp;lt;access&amp;gt;read-only&amp;lt;/access&amp;gt;
+        &amp;lt;/field&amp;gt;
+       &amp;lt;/fields&amp;gt;
+     &amp;lt;/register&amp;gt; 
+        &amp;lt;register&amp;gt;     
+         &amp;lt;name&amp;gt;CONTROL&amp;lt;/name&amp;gt;  
+         &amp;lt;displayName&amp;gt;Control&amp;lt;/displayName&amp;gt;
+         &amp;lt;description&amp;gt;Embedded software controls the JTAG UART core's interrupt generation and reads status information via the control register. A read from the control register returns the status of the read and write FIFOs. Writes to the register can be used to enable/disable interrupts, or clear the AC bit.&amp;lt;/description&amp;gt;
+         &amp;lt;addressOffset&amp;gt;0x4&amp;lt;/addressOffset&amp;gt;
+         &amp;lt;size&amp;gt;32&amp;lt;/size&amp;gt;
+         &amp;lt;access&amp;gt;read-write&amp;lt;/access&amp;gt;
+         &amp;lt;resetValue&amp;gt;0x0&amp;lt;/resetValue&amp;gt;
+         &amp;lt;resetMask&amp;gt;0xffffffff&amp;lt;/resetMask&amp;gt; 
+         &amp;lt;fields&amp;gt;
+           &amp;lt;field&amp;gt;&amp;lt;name&amp;gt;re&amp;lt;/name&amp;gt;
+            &amp;lt;description&amp;gt;Interrupt-enable bit for read interrupts.&amp;lt;/description&amp;gt;
+            &amp;lt;bitOffset&amp;gt;0x0&amp;lt;/bitOffset&amp;gt;
+            &amp;lt;bitWidth&amp;gt;1&amp;lt;/bitWidth&amp;gt;
+            &amp;lt;access&amp;gt;read-write&amp;lt;/access&amp;gt;
+        &amp;lt;/field&amp;gt;
+           &amp;lt;field&amp;gt;&amp;lt;name&amp;gt;we&amp;lt;/name&amp;gt;
+            &amp;lt;description&amp;gt;Interrupt-enable bit for write interrupts&amp;lt;/description&amp;gt;
+            &amp;lt;bitOffset&amp;gt;0x1&amp;lt;/bitOffset&amp;gt;
+            &amp;lt;bitWidth&amp;gt;1&amp;lt;/bitWidth&amp;gt;
+            &amp;lt;access&amp;gt;read-write&amp;lt;/access&amp;gt;
+        &amp;lt;/field&amp;gt;
+           &amp;lt;field&amp;gt;&amp;lt;name&amp;gt;ri&amp;lt;/name&amp;gt;
+            &amp;lt;description&amp;gt;Indicates that the read interrupt is pending.&amp;lt;/description&amp;gt;
+            &amp;lt;bitOffset&amp;gt;0x8&amp;lt;/bitOffset&amp;gt;
+            &amp;lt;bitWidth&amp;gt;1&amp;lt;/bitWidth&amp;gt;
+            &amp;lt;access&amp;gt;read-only&amp;lt;/access&amp;gt;
+        &amp;lt;/field&amp;gt;
+           &amp;lt;field&amp;gt;&amp;lt;name&amp;gt;wi&amp;lt;/name&amp;gt;
+            &amp;lt;description&amp;gt;Indicates that the write interrupt is pending.&amp;lt;/description&amp;gt;
+            &amp;lt;bitOffset&amp;gt;0x9&amp;lt;/bitOffset&amp;gt;
+            &amp;lt;bitWidth&amp;gt;1&amp;lt;/bitWidth&amp;gt;
+            &amp;lt;access&amp;gt;read-only&amp;lt;/access&amp;gt;
+        &amp;lt;/field&amp;gt;
+           &amp;lt;field&amp;gt;&amp;lt;name&amp;gt;ac&amp;lt;/name&amp;gt;
+            &amp;lt;description&amp;gt;Indicates that there has been JTAG activity since the bit was cleared. Writing 1 to AC clears it to 0.&amp;lt;/description&amp;gt;
+            &amp;lt;bitOffset&amp;gt;0xa&amp;lt;/bitOffset&amp;gt;
+            &amp;lt;bitWidth&amp;gt;1&amp;lt;/bitWidth&amp;gt;
+            &amp;lt;access&amp;gt;read-write&amp;lt;/access&amp;gt;
+        &amp;lt;/field&amp;gt;
+           &amp;lt;field&amp;gt;&amp;lt;name&amp;gt;wspace&amp;lt;/name&amp;gt;
+            &amp;lt;description&amp;gt;The number of spaces available in the write FIFO&amp;lt;/description&amp;gt;
+            &amp;lt;bitOffset&amp;gt;0x10&amp;lt;/bitOffset&amp;gt;
+            &amp;lt;bitWidth&amp;gt;16&amp;lt;/bitWidth&amp;gt;
+            &amp;lt;access&amp;gt;read-only&amp;lt;/access&amp;gt;
+        &amp;lt;/field&amp;gt;
+       &amp;lt;/fields&amp;gt;
+     &amp;lt;/register&amp;gt;            
+    &amp;lt;/registers&amp;gt;
+   &amp;lt;/peripheral&amp;gt;
+  &amp;lt;/peripherals&amp;gt;
+&amp;lt;/device&amp;gt; &lt;/cmsisSrcFileContents&gt;
+                &lt;addressGroup&gt;&lt;/addressGroup&gt;
+                &lt;cmsisVars/&gt;
+            &lt;/cmsisInfo&gt;
+        &lt;/interface&gt;
+        &lt;interface&gt;
+            &lt;name&gt;irq&lt;/name&gt;
+            &lt;type&gt;interrupt&lt;/type&gt;
+            &lt;isStart&gt;false&lt;/isStart&gt;
+            &lt;ports&gt;
+                &lt;port&gt;
+                    &lt;name&gt;av_irq&lt;/name&gt;
+                    &lt;role&gt;irq&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                &lt;/port&gt;
+            &lt;/ports&gt;
+            &lt;assignments&gt;
+                &lt;assignmentValueMap/&gt;
+            &lt;/assignments&gt;
+            &lt;parameters&gt;
+                &lt;parameterValueMap&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedAddressablePoint&lt;/key&gt;
+                        &lt;value&gt;DE10_Pro_QSYS_jtag_uart_0.avalon_jtag_slave&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedClock&lt;/key&gt;
+                        &lt;value&gt;clk&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedReset&lt;/key&gt;
+                        &lt;value&gt;reset&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;bridgedReceiverOffset&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;bridgesToReceiver&lt;/key&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;irqScheme&lt;/key&gt;
+                        &lt;value&gt;NONE&lt;/value&gt;
+                    &lt;/entry&gt;
+                &lt;/parameterValueMap&gt;
+            &lt;/parameters&gt;
+        &lt;/interface&gt;
+    &lt;/interfaces&gt;
+&lt;/boundaryDefinition&gt;</ipxact:value>
         </ipxact:parameter>
         <ipxact:parameter parameterId="systemInfos" type="string">
           <ipxact:name>systemInfos</ipxact:name>
           <ipxact:displayName>systemInfos</ipxact:displayName>
-          <ipxact:value>&lt;systemInfosDefinition&gt;&#xa;    &lt;connPtSystemInfos&gt;&#xa;        &lt;entry&gt;&#xa;            &lt;key&gt;avalon_jtag_slave&lt;/key&gt;&#xa;            &lt;value&gt;&#xa;                &lt;connectionPointName&gt;avalon_jtag_slave&lt;/connectionPointName&gt;&#xa;                &lt;suppliedSystemInfos/&gt;&#xa;                &lt;consumedSystemInfos&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;ADDRESS_MAP&lt;/key&gt;&#xa;                        &lt;value&gt;&amp;lt;address-map&amp;gt;&amp;lt;slave name='avalon_jtag_slave' start='0x0' end='0x8' datawidth='32' /&amp;gt;&amp;lt;/address-map&amp;gt;&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;ADDRESS_WIDTH&lt;/key&gt;&#xa;                        &lt;value&gt;3&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;MAX_SLAVE_DATA_WIDTH&lt;/key&gt;&#xa;                        &lt;value&gt;32&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                &lt;/consumedSystemInfos&gt;&#xa;            &lt;/value&gt;&#xa;        &lt;/entry&gt;&#xa;        &lt;entry&gt;&#xa;            &lt;key&gt;clk&lt;/key&gt;&#xa;            &lt;value&gt;&#xa;                &lt;connectionPointName&gt;clk&lt;/connectionPointName&gt;&#xa;                &lt;suppliedSystemInfos&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;CLOCK_RATE&lt;/key&gt;&#xa;                        &lt;value&gt;50000000&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                &lt;/suppliedSystemInfos&gt;&#xa;                &lt;consumedSystemInfos/&gt;&#xa;            &lt;/value&gt;&#xa;        &lt;/entry&gt;&#xa;    &lt;/connPtSystemInfos&gt;&#xa;&lt;/systemInfosDefinition&gt;</ipxact:value>
+          <ipxact:value>&lt;systemInfosDefinition&gt;
+    &lt;connPtSystemInfos&gt;
+        &lt;entry&gt;
+            &lt;key&gt;avalon_jtag_slave&lt;/key&gt;
+            &lt;value&gt;
+                &lt;connectionPointName&gt;avalon_jtag_slave&lt;/connectionPointName&gt;
+                &lt;suppliedSystemInfos/&gt;
+                &lt;consumedSystemInfos&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;ADDRESS_MAP&lt;/key&gt;
+                        &lt;value&gt;&amp;lt;address-map&amp;gt;&amp;lt;slave name='avalon_jtag_slave' start='0x0' end='0x8' datawidth='32' /&amp;gt;&amp;lt;/address-map&amp;gt;&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;ADDRESS_WIDTH&lt;/key&gt;
+                        &lt;value&gt;3&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;MAX_SLAVE_DATA_WIDTH&lt;/key&gt;
+                        &lt;value&gt;32&lt;/value&gt;
+                    &lt;/entry&gt;
+                &lt;/consumedSystemInfos&gt;
+            &lt;/value&gt;
+        &lt;/entry&gt;
+        &lt;entry&gt;
+            &lt;key&gt;clk&lt;/key&gt;
+            &lt;value&gt;
+                &lt;connectionPointName&gt;clk&lt;/connectionPointName&gt;
+                &lt;suppliedSystemInfos&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;CLOCK_RATE&lt;/key&gt;
+                        &lt;value&gt;50000000&lt;/value&gt;
+                    &lt;/entry&gt;
+                &lt;/suppliedSystemInfos&gt;
+                &lt;consumedSystemInfos/&gt;
+            &lt;/value&gt;
+        &lt;/entry&gt;
+    &lt;/connPtSystemInfos&gt;
+&lt;/systemInfosDefinition&gt;</ipxact:value>
         </ipxact:parameter>
       </ipxact:parameters>
     </altera:altera_system_parameters>

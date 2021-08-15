@@ -11,6 +11,7 @@ sim: Main.cpp ../src/SIMTight.v boot.hex
     -y $(BLARNEY_ROOT)/Verilog \
     -y $(PEBBLES_ROOT)/src/CHERI/Verilog \
     -y $(PEBBLES_ROOT)/src/Pebbles/Instructions/Units/DivUnit \
+    -y ip \
     --x-assign unique --x-initial unique \
     -CFLAGS "$(SIM_CFLAGS)"
 	make -C obj_dir -j -f VSIMTight.mk sim

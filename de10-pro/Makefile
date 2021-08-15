@@ -16,6 +16,7 @@ many: checkenv qsys
 
 .PHONY: qsys
 qsys: checkenv
+	make -C ip
 	make -C $(SIMTIGHT_ROOT)/src
 	make -C $(SIMTIGHT_ROOT)/boot
 	qsys-generate -syn DE10_Pro_QSYS.qsys --quartus-project=$(QPF)
@@ -42,6 +43,7 @@ clean:
 	rm -f DE10_Pro.qws *.rpt *.csv *.mif
 	ls ip/DE10_Pro_QSYS/ | grep -v -E '\.ip$$' \
     | xargs -i rm -rf ip/DE10_Pro_QSYS/{}
+	make -C ip clean
 
 # Raise error if QUARTUS_ROOTDIR not set
 .PHONY: checkenv

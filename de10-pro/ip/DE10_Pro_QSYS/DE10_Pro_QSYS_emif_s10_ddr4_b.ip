@@ -7,10 +7,10 @@
   <ipxact:busInterfaces>
     <ipxact:busInterface>
       <ipxact:name>local_reset_req</ipxact:name>
-      <ipxact:busType vendor="altera" library="altera" name="conduit" version="19.1"></ipxact:busType>
+      <ipxact:busType vendor="altera" library="altera" name="conduit" version="19.2"></ipxact:busType>
       <ipxact:abstractionTypes>
         <ipxact:abstractionType>
-          <ipxact:abstractionRef vendor="altera" library="altera" name="conduit" version="19.1"></ipxact:abstractionRef>
+          <ipxact:abstractionRef vendor="altera" library="altera" name="conduit" version="19.2"></ipxact:abstractionRef>
           <ipxact:portMaps>
             <ipxact:portMap>
               <ipxact:logicalPort>
@@ -44,10 +44,10 @@
     </ipxact:busInterface>
     <ipxact:busInterface>
       <ipxact:name>local_reset_status</ipxact:name>
-      <ipxact:busType vendor="altera" library="altera" name="conduit" version="19.1"></ipxact:busType>
+      <ipxact:busType vendor="altera" library="altera" name="conduit" version="19.2"></ipxact:busType>
       <ipxact:abstractionTypes>
         <ipxact:abstractionType>
-          <ipxact:abstractionRef vendor="altera" library="altera" name="conduit" version="19.1"></ipxact:abstractionRef>
+          <ipxact:abstractionRef vendor="altera" library="altera" name="conduit" version="19.2"></ipxact:abstractionRef>
           <ipxact:portMaps>
             <ipxact:portMap>
               <ipxact:logicalPort>
@@ -81,10 +81,10 @@
     </ipxact:busInterface>
     <ipxact:busInterface>
       <ipxact:name>pll_ref_clk</ipxact:name>
-      <ipxact:busType vendor="altera" library="altera" name="clock" version="19.1"></ipxact:busType>
+      <ipxact:busType vendor="altera" library="altera" name="clock" version="19.2"></ipxact:busType>
       <ipxact:abstractionTypes>
         <ipxact:abstractionType>
-          <ipxact:abstractionRef vendor="altera" library="altera" name="clock" version="19.1"></ipxact:abstractionRef>
+          <ipxact:abstractionRef vendor="altera" library="altera" name="clock" version="19.2"></ipxact:abstractionRef>
           <ipxact:portMaps>
             <ipxact:portMap>
               <ipxact:logicalPort>
@@ -118,10 +118,10 @@
     </ipxact:busInterface>
     <ipxact:busInterface>
       <ipxact:name>oct</ipxact:name>
-      <ipxact:busType vendor="altera" library="altera" name="conduit" version="19.1"></ipxact:busType>
+      <ipxact:busType vendor="altera" library="altera" name="conduit" version="19.2"></ipxact:busType>
       <ipxact:abstractionTypes>
         <ipxact:abstractionType>
-          <ipxact:abstractionRef vendor="altera" library="altera" name="conduit" version="19.1"></ipxact:abstractionRef>
+          <ipxact:abstractionRef vendor="altera" library="altera" name="conduit" version="19.2"></ipxact:abstractionRef>
           <ipxact:portMaps>
             <ipxact:portMap>
               <ipxact:logicalPort>
@@ -155,10 +155,10 @@
     </ipxact:busInterface>
     <ipxact:busInterface>
       <ipxact:name>mem</ipxact:name>
-      <ipxact:busType vendor="altera" library="altera" name="conduit" version="19.1"></ipxact:busType>
+      <ipxact:busType vendor="altera" library="altera" name="conduit" version="19.2"></ipxact:busType>
       <ipxact:abstractionTypes>
         <ipxact:abstractionType>
-          <ipxact:abstractionRef vendor="altera" library="altera" name="conduit" version="19.1"></ipxact:abstractionRef>
+          <ipxact:abstractionRef vendor="altera" library="altera" name="conduit" version="19.2"></ipxact:abstractionRef>
           <ipxact:portMaps>
             <ipxact:portMap>
               <ipxact:logicalPort>
@@ -312,10 +312,10 @@
     </ipxact:busInterface>
     <ipxact:busInterface>
       <ipxact:name>status</ipxact:name>
-      <ipxact:busType vendor="altera" library="altera" name="conduit" version="19.1"></ipxact:busType>
+      <ipxact:busType vendor="altera" library="altera" name="conduit" version="19.2"></ipxact:busType>
       <ipxact:abstractionTypes>
         <ipxact:abstractionType>
-          <ipxact:abstractionRef vendor="altera" library="altera" name="conduit" version="19.1"></ipxact:abstractionRef>
+          <ipxact:abstractionRef vendor="altera" library="altera" name="conduit" version="19.2"></ipxact:abstractionRef>
           <ipxact:portMaps>
             <ipxact:portMap>
               <ipxact:logicalPort>
@@ -357,10 +357,10 @@
     </ipxact:busInterface>
     <ipxact:busInterface>
       <ipxact:name>emif_usr_reset_n</ipxact:name>
-      <ipxact:busType vendor="altera" library="altera" name="reset" version="19.1"></ipxact:busType>
+      <ipxact:busType vendor="altera" library="altera" name="reset" version="19.2"></ipxact:busType>
       <ipxact:abstractionTypes>
         <ipxact:abstractionType>
-          <ipxact:abstractionRef vendor="altera" library="altera" name="reset" version="19.1"></ipxact:abstractionRef>
+          <ipxact:abstractionRef vendor="altera" library="altera" name="reset" version="19.2"></ipxact:abstractionRef>
           <ipxact:portMaps>
             <ipxact:portMap>
               <ipxact:logicalPort>
@@ -399,10 +399,10 @@
     </ipxact:busInterface>
     <ipxact:busInterface>
       <ipxact:name>emif_usr_clk</ipxact:name>
-      <ipxact:busType vendor="altera" library="altera" name="clock" version="19.1"></ipxact:busType>
+      <ipxact:busType vendor="altera" library="altera" name="clock" version="19.2"></ipxact:busType>
       <ipxact:abstractionTypes>
         <ipxact:abstractionType>
-          <ipxact:abstractionRef vendor="altera" library="altera" name="clock" version="19.1"></ipxact:abstractionRef>
+          <ipxact:abstractionRef vendor="altera" library="altera" name="clock" version="19.2"></ipxact:abstractionRef>
           <ipxact:portMaps>
             <ipxact:portMap>
               <ipxact:logicalPort>
@@ -446,10 +446,10 @@
     </ipxact:busInterface>
     <ipxact:busInterface>
       <ipxact:name>ctrl_ecc_user_interrupt_0</ipxact:name>
-      <ipxact:busType vendor="altera" library="altera" name="conduit" version="19.1"></ipxact:busType>
+      <ipxact:busType vendor="altera" library="altera" name="conduit" version="19.2"></ipxact:busType>
       <ipxact:abstractionTypes>
         <ipxact:abstractionType>
-          <ipxact:abstractionRef vendor="altera" library="altera" name="conduit" version="19.1"></ipxact:abstractionRef>
+          <ipxact:abstractionRef vendor="altera" library="altera" name="conduit" version="19.2"></ipxact:abstractionRef>
           <ipxact:portMaps>
             <ipxact:portMap>
               <ipxact:logicalPort>
@@ -483,10 +483,10 @@
     </ipxact:busInterface>
     <ipxact:busInterface>
       <ipxact:name>ctrl_amm_0</ipxact:name>
-      <ipxact:busType vendor="altera" library="altera" name="avalon" version="19.1"></ipxact:busType>
+      <ipxact:busType vendor="altera" library="altera" name="avalon" version="19.2"></ipxact:busType>
       <ipxact:abstractionTypes>
         <ipxact:abstractionType>
-          <ipxact:abstractionRef vendor="altera" library="altera" name="avalon" version="19.1"></ipxact:abstractionRef>
+          <ipxact:abstractionRef vendor="altera" library="altera" name="avalon" version="19.2"></ipxact:abstractionRef>
           <ipxact:portMaps>
             <ipxact:portMap>
               <ipxact:logicalPort>
@@ -9994,7 +9994,21 @@
         <ipxact:parameter parameterId="bonusData" type="string">
           <ipxact:name>bonusData</ipxact:name>
           <ipxact:displayName>bonusData</ipxact:displayName>
-          <ipxact:value>bonusData &#xd;&#xa;{&#xd;&#xa;   element $system&#xd;&#xa;   {&#xd;&#xa;      datum _originalDeviceFamily&#xd;&#xa;      {&#xd;&#xa;         value = "Stratix 10";&#xd;&#xa;         type = "String";&#xd;&#xa;      }&#xd;&#xa;   }&#xd;&#xa;   element DE10_Pro_QSYS_emif_s10_ddr4_b&#xd;&#xa;   {&#xd;&#xa;   }&#xd;&#xa;}&#xd;&#xa;</ipxact:value>
+          <ipxact:value>bonusData 
+{
+   element $system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Stratix 10";
+         type = "String";
+      }
+   }
+   element DE10_Pro_QSYS_emif_s10_ddr4_b
+   {
+   }
+}
+</ipxact:value>
         </ipxact:parameter>
         <ipxact:parameter parameterId="hideFromIPCatalog" type="bit">
           <ipxact:name>hideFromIPCatalog</ipxact:name>
@@ -10004,12 +10018,747 @@
         <ipxact:parameter parameterId="lockedInterfaceDefinition" type="string">
           <ipxact:name>lockedInterfaceDefinition</ipxact:name>
           <ipxact:displayName>lockedInterfaceDefinition</ipxact:displayName>
-          <ipxact:value>&lt;boundaryDefinition&gt;&#xa;    &lt;interfaces&gt;&#xa;        &lt;interface&gt;&#xa;            &lt;name&gt;local_reset_req&lt;/name&gt;&#xa;            &lt;type&gt;conduit&lt;/type&gt;&#xa;            &lt;isStart&gt;false&lt;/isStart&gt;&#xa;            &lt;ports&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;local_reset_req&lt;/name&gt;&#xa;                    &lt;role&gt;local_reset_req&lt;/role&gt;&#xa;                    &lt;direction&gt;Input&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;            &lt;/ports&gt;&#xa;            &lt;assignments&gt;&#xa;                &lt;assignmentValueMap/&gt;&#xa;            &lt;/assignments&gt;&#xa;            &lt;parameters&gt;&#xa;                &lt;parameterValueMap&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedClock&lt;/key&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedReset&lt;/key&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;prSafe&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                &lt;/parameterValueMap&gt;&#xa;            &lt;/parameters&gt;&#xa;        &lt;/interface&gt;&#xa;        &lt;interface&gt;&#xa;            &lt;name&gt;local_reset_status&lt;/name&gt;&#xa;            &lt;type&gt;conduit&lt;/type&gt;&#xa;            &lt;isStart&gt;false&lt;/isStart&gt;&#xa;            &lt;ports&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;local_reset_done&lt;/name&gt;&#xa;                    &lt;role&gt;local_reset_done&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;            &lt;/ports&gt;&#xa;            &lt;assignments&gt;&#xa;                &lt;assignmentValueMap/&gt;&#xa;            &lt;/assignments&gt;&#xa;            &lt;parameters&gt;&#xa;                &lt;parameterValueMap&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedClock&lt;/key&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedReset&lt;/key&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;prSafe&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                &lt;/parameterValueMap&gt;&#xa;            &lt;/parameters&gt;&#xa;        &lt;/interface&gt;&#xa;        &lt;interface&gt;&#xa;            &lt;name&gt;pll_ref_clk&lt;/name&gt;&#xa;            &lt;type&gt;clock&lt;/type&gt;&#xa;            &lt;isStart&gt;false&lt;/isStart&gt;&#xa;            &lt;ports&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;pll_ref_clk&lt;/name&gt;&#xa;                    &lt;role&gt;clk&lt;/role&gt;&#xa;                    &lt;direction&gt;Input&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;            &lt;/ports&gt;&#xa;            &lt;assignments&gt;&#xa;                &lt;assignmentValueMap/&gt;&#xa;            &lt;/assignments&gt;&#xa;            &lt;parameters&gt;&#xa;                &lt;parameterValueMap&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;clockRate&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;externallyDriven&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;ptfSchematicName&lt;/key&gt;&#xa;                    &lt;/entry&gt;&#xa;                &lt;/parameterValueMap&gt;&#xa;            &lt;/parameters&gt;&#xa;        &lt;/interface&gt;&#xa;        &lt;interface&gt;&#xa;            &lt;name&gt;oct&lt;/name&gt;&#xa;            &lt;type&gt;conduit&lt;/type&gt;&#xa;            &lt;isStart&gt;false&lt;/isStart&gt;&#xa;            &lt;ports&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;oct_rzqin&lt;/name&gt;&#xa;                    &lt;role&gt;oct_rzqin&lt;/role&gt;&#xa;                    &lt;direction&gt;Input&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;            &lt;/ports&gt;&#xa;            &lt;assignments&gt;&#xa;                &lt;assignmentValueMap/&gt;&#xa;            &lt;/assignments&gt;&#xa;            &lt;parameters&gt;&#xa;                &lt;parameterValueMap&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedClock&lt;/key&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedReset&lt;/key&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;prSafe&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                &lt;/parameterValueMap&gt;&#xa;            &lt;/parameters&gt;&#xa;        &lt;/interface&gt;&#xa;        &lt;interface&gt;&#xa;            &lt;name&gt;mem&lt;/name&gt;&#xa;            &lt;type&gt;conduit&lt;/type&gt;&#xa;            &lt;isStart&gt;false&lt;/isStart&gt;&#xa;            &lt;ports&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;mem_ck&lt;/name&gt;&#xa;                    &lt;role&gt;mem_ck&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;mem_ck_n&lt;/name&gt;&#xa;                    &lt;role&gt;mem_ck_n&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;mem_a&lt;/name&gt;&#xa;                    &lt;role&gt;mem_a&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;17&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;mem_act_n&lt;/name&gt;&#xa;                    &lt;role&gt;mem_act_n&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;mem_ba&lt;/name&gt;&#xa;                    &lt;role&gt;mem_ba&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;2&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;mem_bg&lt;/name&gt;&#xa;                    &lt;role&gt;mem_bg&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;2&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;mem_cke&lt;/name&gt;&#xa;                    &lt;role&gt;mem_cke&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;mem_cs_n&lt;/name&gt;&#xa;                    &lt;role&gt;mem_cs_n&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;mem_odt&lt;/name&gt;&#xa;                    &lt;role&gt;mem_odt&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;mem_reset_n&lt;/name&gt;&#xa;                    &lt;role&gt;mem_reset_n&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;mem_par&lt;/name&gt;&#xa;                    &lt;role&gt;mem_par&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;mem_alert_n&lt;/name&gt;&#xa;                    &lt;role&gt;mem_alert_n&lt;/role&gt;&#xa;                    &lt;direction&gt;Input&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;mem_dqs&lt;/name&gt;&#xa;                    &lt;role&gt;mem_dqs&lt;/role&gt;&#xa;                    &lt;direction&gt;Bidir&lt;/direction&gt;&#xa;                    &lt;width&gt;9&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;mem_dqs_n&lt;/name&gt;&#xa;                    &lt;role&gt;mem_dqs_n&lt;/role&gt;&#xa;                    &lt;direction&gt;Bidir&lt;/direction&gt;&#xa;                    &lt;width&gt;9&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;mem_dq&lt;/name&gt;&#xa;                    &lt;role&gt;mem_dq&lt;/role&gt;&#xa;                    &lt;direction&gt;Bidir&lt;/direction&gt;&#xa;                    &lt;width&gt;72&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;mem_dbi_n&lt;/name&gt;&#xa;                    &lt;role&gt;mem_dbi_n&lt;/role&gt;&#xa;                    &lt;direction&gt;Bidir&lt;/direction&gt;&#xa;                    &lt;width&gt;9&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;            &lt;/ports&gt;&#xa;            &lt;assignments&gt;&#xa;                &lt;assignmentValueMap/&gt;&#xa;            &lt;/assignments&gt;&#xa;            &lt;parameters&gt;&#xa;                &lt;parameterValueMap&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedClock&lt;/key&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedReset&lt;/key&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;prSafe&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                &lt;/parameterValueMap&gt;&#xa;            &lt;/parameters&gt;&#xa;        &lt;/interface&gt;&#xa;        &lt;interface&gt;&#xa;            &lt;name&gt;status&lt;/name&gt;&#xa;            &lt;type&gt;conduit&lt;/type&gt;&#xa;            &lt;isStart&gt;false&lt;/isStart&gt;&#xa;            &lt;ports&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;local_cal_success&lt;/name&gt;&#xa;                    &lt;role&gt;local_cal_success&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;local_cal_fail&lt;/name&gt;&#xa;                    &lt;role&gt;local_cal_fail&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;            &lt;/ports&gt;&#xa;            &lt;assignments&gt;&#xa;                &lt;assignmentValueMap/&gt;&#xa;            &lt;/assignments&gt;&#xa;            &lt;parameters&gt;&#xa;                &lt;parameterValueMap&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedClock&lt;/key&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedReset&lt;/key&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;prSafe&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                &lt;/parameterValueMap&gt;&#xa;            &lt;/parameters&gt;&#xa;        &lt;/interface&gt;&#xa;        &lt;interface&gt;&#xa;            &lt;name&gt;emif_usr_reset_n&lt;/name&gt;&#xa;            &lt;type&gt;reset&lt;/type&gt;&#xa;            &lt;isStart&gt;true&lt;/isStart&gt;&#xa;            &lt;ports&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;emif_usr_reset_n&lt;/name&gt;&#xa;                    &lt;role&gt;reset_n&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;            &lt;/ports&gt;&#xa;            &lt;assignments&gt;&#xa;                &lt;assignmentValueMap/&gt;&#xa;            &lt;/assignments&gt;&#xa;            &lt;parameters&gt;&#xa;                &lt;parameterValueMap&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedClock&lt;/key&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedDirectReset&lt;/key&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedResetSinks&lt;/key&gt;&#xa;                        &lt;value&gt;none&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;synchronousEdges&lt;/key&gt;&#xa;                        &lt;value&gt;NONE&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                &lt;/parameterValueMap&gt;&#xa;            &lt;/parameters&gt;&#xa;        &lt;/interface&gt;&#xa;        &lt;interface&gt;&#xa;            &lt;name&gt;emif_usr_clk&lt;/name&gt;&#xa;            &lt;type&gt;clock&lt;/type&gt;&#xa;            &lt;isStart&gt;true&lt;/isStart&gt;&#xa;            &lt;ports&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;emif_usr_clk&lt;/name&gt;&#xa;                    &lt;role&gt;clk&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;            &lt;/ports&gt;&#xa;            &lt;assignments&gt;&#xa;                &lt;assignmentValueMap/&gt;&#xa;            &lt;/assignments&gt;&#xa;            &lt;parameters&gt;&#xa;                &lt;parameterValueMap&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedDirectClock&lt;/key&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;clockRate&lt;/key&gt;&#xa;                        &lt;value&gt;333333333&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;clockRateKnown&lt;/key&gt;&#xa;                        &lt;value&gt;true&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;externallyDriven&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;ptfSchematicName&lt;/key&gt;&#xa;                    &lt;/entry&gt;&#xa;                &lt;/parameterValueMap&gt;&#xa;            &lt;/parameters&gt;&#xa;        &lt;/interface&gt;&#xa;        &lt;interface&gt;&#xa;            &lt;name&gt;ctrl_ecc_user_interrupt_0&lt;/name&gt;&#xa;            &lt;type&gt;conduit&lt;/type&gt;&#xa;            &lt;isStart&gt;false&lt;/isStart&gt;&#xa;            &lt;ports&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;ctrl_ecc_user_interrupt_0&lt;/name&gt;&#xa;                    &lt;role&gt;ctrl_ecc_user_interrupt&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;            &lt;/ports&gt;&#xa;            &lt;assignments&gt;&#xa;                &lt;assignmentValueMap/&gt;&#xa;            &lt;/assignments&gt;&#xa;            &lt;parameters&gt;&#xa;                &lt;parameterValueMap&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedClock&lt;/key&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedReset&lt;/key&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;prSafe&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                &lt;/parameterValueMap&gt;&#xa;            &lt;/parameters&gt;&#xa;        &lt;/interface&gt;&#xa;        &lt;interface&gt;&#xa;            &lt;name&gt;ctrl_amm_0&lt;/name&gt;&#xa;            &lt;type&gt;avalon&lt;/type&gt;&#xa;            &lt;isStart&gt;false&lt;/isStart&gt;&#xa;            &lt;ports&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;amm_ready_0&lt;/name&gt;&#xa;                    &lt;role&gt;waitrequest_n&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;amm_read_0&lt;/name&gt;&#xa;                    &lt;role&gt;read&lt;/role&gt;&#xa;                    &lt;direction&gt;Input&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;amm_write_0&lt;/name&gt;&#xa;                    &lt;role&gt;write&lt;/role&gt;&#xa;                    &lt;direction&gt;Input&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;amm_address_0&lt;/name&gt;&#xa;                    &lt;role&gt;address&lt;/role&gt;&#xa;                    &lt;direction&gt;Input&lt;/direction&gt;&#xa;                    &lt;width&gt;26&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;amm_readdata_0&lt;/name&gt;&#xa;                    &lt;role&gt;readdata&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;512&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;amm_writedata_0&lt;/name&gt;&#xa;                    &lt;role&gt;writedata&lt;/role&gt;&#xa;                    &lt;direction&gt;Input&lt;/direction&gt;&#xa;                    &lt;width&gt;512&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;amm_burstcount_0&lt;/name&gt;&#xa;                    &lt;role&gt;burstcount&lt;/role&gt;&#xa;                    &lt;direction&gt;Input&lt;/direction&gt;&#xa;                    &lt;width&gt;7&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;amm_byteenable_0&lt;/name&gt;&#xa;                    &lt;role&gt;byteenable&lt;/role&gt;&#xa;                    &lt;direction&gt;Input&lt;/direction&gt;&#xa;                    &lt;width&gt;64&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;                &lt;port&gt;&#xa;                    &lt;name&gt;amm_readdatavalid_0&lt;/name&gt;&#xa;                    &lt;role&gt;readdatavalid&lt;/role&gt;&#xa;                    &lt;direction&gt;Output&lt;/direction&gt;&#xa;                    &lt;width&gt;1&lt;/width&gt;&#xa;                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;&#xa;                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;&#xa;                &lt;/port&gt;&#xa;            &lt;/ports&gt;&#xa;            &lt;assignments&gt;&#xa;                &lt;assignmentValueMap&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;embeddedsw.configuration.isFlash&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;embeddedsw.configuration.isMemoryDevice&lt;/key&gt;&#xa;                        &lt;value&gt;1&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;embeddedsw.configuration.isNonVolatileStorage&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;embeddedsw.configuration.isPrintableDevice&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                &lt;/assignmentValueMap&gt;&#xa;            &lt;/assignments&gt;&#xa;            &lt;parameters&gt;&#xa;                &lt;parameterValueMap&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;addressAlignment&lt;/key&gt;&#xa;                        &lt;value&gt;DYNAMIC&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;addressGroup&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;addressSpan&lt;/key&gt;&#xa;                        &lt;value&gt;4294967296&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;addressUnits&lt;/key&gt;&#xa;                        &lt;value&gt;WORDS&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;alwaysBurstMaxBurst&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedClock&lt;/key&gt;&#xa;                        &lt;value&gt;emif_usr_clk&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;associatedReset&lt;/key&gt;&#xa;                        &lt;value&gt;emif_usr_reset_n&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;bitsPerSymbol&lt;/key&gt;&#xa;                        &lt;value&gt;8&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;bridgedAddressOffset&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;bridgesToMaster&lt;/key&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;burstOnBurstBoundariesOnly&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;burstcountUnits&lt;/key&gt;&#xa;                        &lt;value&gt;WORDS&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;constantBurstBehavior&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;explicitAddressSpan&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;holdTime&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;interleaveBursts&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;isBigEndian&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;isFlash&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;isMemoryDevice&lt;/key&gt;&#xa;                        &lt;value&gt;true&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;isNonVolatileStorage&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;linewrapBursts&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;maximumPendingReadTransactions&lt;/key&gt;&#xa;                        &lt;value&gt;64&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;maximumPendingWriteTransactions&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;minimumReadLatency&lt;/key&gt;&#xa;                        &lt;value&gt;1&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;minimumResponseLatency&lt;/key&gt;&#xa;                        &lt;value&gt;1&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;minimumUninterruptedRunLength&lt;/key&gt;&#xa;                        &lt;value&gt;1&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;prSafe&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;printableDevice&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;readLatency&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;readWaitStates&lt;/key&gt;&#xa;                        &lt;value&gt;1&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;readWaitTime&lt;/key&gt;&#xa;                        &lt;value&gt;1&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;registerIncomingSignals&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;registerOutgoingSignals&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;setupTime&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;timingUnits&lt;/key&gt;&#xa;                        &lt;value&gt;Cycles&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;transparentBridge&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;waitrequestAllowance&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;wellBehavedWaitrequest&lt;/key&gt;&#xa;                        &lt;value&gt;false&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;writeLatency&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;writeWaitStates&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;writeWaitTime&lt;/key&gt;&#xa;                        &lt;value&gt;0&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                &lt;/parameterValueMap&gt;&#xa;            &lt;/parameters&gt;&#xa;        &lt;/interface&gt;&#xa;    &lt;/interfaces&gt;&#xa;&lt;/boundaryDefinition&gt;</ipxact:value>
+          <ipxact:value>&lt;boundaryDefinition&gt;
+    &lt;interfaces&gt;
+        &lt;interface&gt;
+            &lt;name&gt;local_reset_req&lt;/name&gt;
+            &lt;type&gt;conduit&lt;/type&gt;
+            &lt;isStart&gt;false&lt;/isStart&gt;
+            &lt;ports&gt;
+                &lt;port&gt;
+                    &lt;name&gt;local_reset_req&lt;/name&gt;
+                    &lt;role&gt;local_reset_req&lt;/role&gt;
+                    &lt;direction&gt;Input&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                &lt;/port&gt;
+            &lt;/ports&gt;
+            &lt;assignments&gt;
+                &lt;assignmentValueMap/&gt;
+            &lt;/assignments&gt;
+            &lt;parameters&gt;
+                &lt;parameterValueMap&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedClock&lt;/key&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedReset&lt;/key&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;prSafe&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                &lt;/parameterValueMap&gt;
+            &lt;/parameters&gt;
+        &lt;/interface&gt;
+        &lt;interface&gt;
+            &lt;name&gt;local_reset_status&lt;/name&gt;
+            &lt;type&gt;conduit&lt;/type&gt;
+            &lt;isStart&gt;false&lt;/isStart&gt;
+            &lt;ports&gt;
+                &lt;port&gt;
+                    &lt;name&gt;local_reset_done&lt;/name&gt;
+                    &lt;role&gt;local_reset_done&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                &lt;/port&gt;
+            &lt;/ports&gt;
+            &lt;assignments&gt;
+                &lt;assignmentValueMap/&gt;
+            &lt;/assignments&gt;
+            &lt;parameters&gt;
+                &lt;parameterValueMap&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedClock&lt;/key&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedReset&lt;/key&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;prSafe&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                &lt;/parameterValueMap&gt;
+            &lt;/parameters&gt;
+        &lt;/interface&gt;
+        &lt;interface&gt;
+            &lt;name&gt;pll_ref_clk&lt;/name&gt;
+            &lt;type&gt;clock&lt;/type&gt;
+            &lt;isStart&gt;false&lt;/isStart&gt;
+            &lt;ports&gt;
+                &lt;port&gt;
+                    &lt;name&gt;pll_ref_clk&lt;/name&gt;
+                    &lt;role&gt;clk&lt;/role&gt;
+                    &lt;direction&gt;Input&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                &lt;/port&gt;
+            &lt;/ports&gt;
+            &lt;assignments&gt;
+                &lt;assignmentValueMap/&gt;
+            &lt;/assignments&gt;
+            &lt;parameters&gt;
+                &lt;parameterValueMap&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;clockRate&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;externallyDriven&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;ptfSchematicName&lt;/key&gt;
+                    &lt;/entry&gt;
+                &lt;/parameterValueMap&gt;
+            &lt;/parameters&gt;
+        &lt;/interface&gt;
+        &lt;interface&gt;
+            &lt;name&gt;oct&lt;/name&gt;
+            &lt;type&gt;conduit&lt;/type&gt;
+            &lt;isStart&gt;false&lt;/isStart&gt;
+            &lt;ports&gt;
+                &lt;port&gt;
+                    &lt;name&gt;oct_rzqin&lt;/name&gt;
+                    &lt;role&gt;oct_rzqin&lt;/role&gt;
+                    &lt;direction&gt;Input&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                &lt;/port&gt;
+            &lt;/ports&gt;
+            &lt;assignments&gt;
+                &lt;assignmentValueMap/&gt;
+            &lt;/assignments&gt;
+            &lt;parameters&gt;
+                &lt;parameterValueMap&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedClock&lt;/key&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedReset&lt;/key&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;prSafe&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                &lt;/parameterValueMap&gt;
+            &lt;/parameters&gt;
+        &lt;/interface&gt;
+        &lt;interface&gt;
+            &lt;name&gt;mem&lt;/name&gt;
+            &lt;type&gt;conduit&lt;/type&gt;
+            &lt;isStart&gt;false&lt;/isStart&gt;
+            &lt;ports&gt;
+                &lt;port&gt;
+                    &lt;name&gt;mem_ck&lt;/name&gt;
+                    &lt;role&gt;mem_ck&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;mem_ck_n&lt;/name&gt;
+                    &lt;role&gt;mem_ck_n&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;mem_a&lt;/name&gt;
+                    &lt;role&gt;mem_a&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;17&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;mem_act_n&lt;/name&gt;
+                    &lt;role&gt;mem_act_n&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;mem_ba&lt;/name&gt;
+                    &lt;role&gt;mem_ba&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;2&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;mem_bg&lt;/name&gt;
+                    &lt;role&gt;mem_bg&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;2&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;mem_cke&lt;/name&gt;
+                    &lt;role&gt;mem_cke&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;mem_cs_n&lt;/name&gt;
+                    &lt;role&gt;mem_cs_n&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;mem_odt&lt;/name&gt;
+                    &lt;role&gt;mem_odt&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;mem_reset_n&lt;/name&gt;
+                    &lt;role&gt;mem_reset_n&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;mem_par&lt;/name&gt;
+                    &lt;role&gt;mem_par&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;mem_alert_n&lt;/name&gt;
+                    &lt;role&gt;mem_alert_n&lt;/role&gt;
+                    &lt;direction&gt;Input&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;mem_dqs&lt;/name&gt;
+                    &lt;role&gt;mem_dqs&lt;/role&gt;
+                    &lt;direction&gt;Bidir&lt;/direction&gt;
+                    &lt;width&gt;9&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;mem_dqs_n&lt;/name&gt;
+                    &lt;role&gt;mem_dqs_n&lt;/role&gt;
+                    &lt;direction&gt;Bidir&lt;/direction&gt;
+                    &lt;width&gt;9&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;mem_dq&lt;/name&gt;
+                    &lt;role&gt;mem_dq&lt;/role&gt;
+                    &lt;direction&gt;Bidir&lt;/direction&gt;
+                    &lt;width&gt;72&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;mem_dbi_n&lt;/name&gt;
+                    &lt;role&gt;mem_dbi_n&lt;/role&gt;
+                    &lt;direction&gt;Bidir&lt;/direction&gt;
+                    &lt;width&gt;9&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+            &lt;/ports&gt;
+            &lt;assignments&gt;
+                &lt;assignmentValueMap/&gt;
+            &lt;/assignments&gt;
+            &lt;parameters&gt;
+                &lt;parameterValueMap&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedClock&lt;/key&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedReset&lt;/key&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;prSafe&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                &lt;/parameterValueMap&gt;
+            &lt;/parameters&gt;
+        &lt;/interface&gt;
+        &lt;interface&gt;
+            &lt;name&gt;status&lt;/name&gt;
+            &lt;type&gt;conduit&lt;/type&gt;
+            &lt;isStart&gt;false&lt;/isStart&gt;
+            &lt;ports&gt;
+                &lt;port&gt;
+                    &lt;name&gt;local_cal_success&lt;/name&gt;
+                    &lt;role&gt;local_cal_success&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;local_cal_fail&lt;/name&gt;
+                    &lt;role&gt;local_cal_fail&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                &lt;/port&gt;
+            &lt;/ports&gt;
+            &lt;assignments&gt;
+                &lt;assignmentValueMap/&gt;
+            &lt;/assignments&gt;
+            &lt;parameters&gt;
+                &lt;parameterValueMap&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedClock&lt;/key&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedReset&lt;/key&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;prSafe&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                &lt;/parameterValueMap&gt;
+            &lt;/parameters&gt;
+        &lt;/interface&gt;
+        &lt;interface&gt;
+            &lt;name&gt;emif_usr_reset_n&lt;/name&gt;
+            &lt;type&gt;reset&lt;/type&gt;
+            &lt;isStart&gt;true&lt;/isStart&gt;
+            &lt;ports&gt;
+                &lt;port&gt;
+                    &lt;name&gt;emif_usr_reset_n&lt;/name&gt;
+                    &lt;role&gt;reset_n&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                &lt;/port&gt;
+            &lt;/ports&gt;
+            &lt;assignments&gt;
+                &lt;assignmentValueMap/&gt;
+            &lt;/assignments&gt;
+            &lt;parameters&gt;
+                &lt;parameterValueMap&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedClock&lt;/key&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedDirectReset&lt;/key&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedResetSinks&lt;/key&gt;
+                        &lt;value&gt;none&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;synchronousEdges&lt;/key&gt;
+                        &lt;value&gt;NONE&lt;/value&gt;
+                    &lt;/entry&gt;
+                &lt;/parameterValueMap&gt;
+            &lt;/parameters&gt;
+        &lt;/interface&gt;
+        &lt;interface&gt;
+            &lt;name&gt;emif_usr_clk&lt;/name&gt;
+            &lt;type&gt;clock&lt;/type&gt;
+            &lt;isStart&gt;true&lt;/isStart&gt;
+            &lt;ports&gt;
+                &lt;port&gt;
+                    &lt;name&gt;emif_usr_clk&lt;/name&gt;
+                    &lt;role&gt;clk&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                &lt;/port&gt;
+            &lt;/ports&gt;
+            &lt;assignments&gt;
+                &lt;assignmentValueMap/&gt;
+            &lt;/assignments&gt;
+            &lt;parameters&gt;
+                &lt;parameterValueMap&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedDirectClock&lt;/key&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;clockRate&lt;/key&gt;
+                        &lt;value&gt;333333333&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;clockRateKnown&lt;/key&gt;
+                        &lt;value&gt;true&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;externallyDriven&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;ptfSchematicName&lt;/key&gt;
+                    &lt;/entry&gt;
+                &lt;/parameterValueMap&gt;
+            &lt;/parameters&gt;
+        &lt;/interface&gt;
+        &lt;interface&gt;
+            &lt;name&gt;ctrl_ecc_user_interrupt_0&lt;/name&gt;
+            &lt;type&gt;conduit&lt;/type&gt;
+            &lt;isStart&gt;false&lt;/isStart&gt;
+            &lt;ports&gt;
+                &lt;port&gt;
+                    &lt;name&gt;ctrl_ecc_user_interrupt_0&lt;/name&gt;
+                    &lt;role&gt;ctrl_ecc_user_interrupt&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                &lt;/port&gt;
+            &lt;/ports&gt;
+            &lt;assignments&gt;
+                &lt;assignmentValueMap/&gt;
+            &lt;/assignments&gt;
+            &lt;parameters&gt;
+                &lt;parameterValueMap&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedClock&lt;/key&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedReset&lt;/key&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;prSafe&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                &lt;/parameterValueMap&gt;
+            &lt;/parameters&gt;
+        &lt;/interface&gt;
+        &lt;interface&gt;
+            &lt;name&gt;ctrl_amm_0&lt;/name&gt;
+            &lt;type&gt;avalon&lt;/type&gt;
+            &lt;isStart&gt;false&lt;/isStart&gt;
+            &lt;ports&gt;
+                &lt;port&gt;
+                    &lt;name&gt;amm_ready_0&lt;/name&gt;
+                    &lt;role&gt;waitrequest_n&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;amm_read_0&lt;/name&gt;
+                    &lt;role&gt;read&lt;/role&gt;
+                    &lt;direction&gt;Input&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;amm_write_0&lt;/name&gt;
+                    &lt;role&gt;write&lt;/role&gt;
+                    &lt;direction&gt;Input&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;amm_address_0&lt;/name&gt;
+                    &lt;role&gt;address&lt;/role&gt;
+                    &lt;direction&gt;Input&lt;/direction&gt;
+                    &lt;width&gt;26&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;amm_readdata_0&lt;/name&gt;
+                    &lt;role&gt;readdata&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;512&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;amm_writedata_0&lt;/name&gt;
+                    &lt;role&gt;writedata&lt;/role&gt;
+                    &lt;direction&gt;Input&lt;/direction&gt;
+                    &lt;width&gt;512&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;amm_burstcount_0&lt;/name&gt;
+                    &lt;role&gt;burstcount&lt;/role&gt;
+                    &lt;direction&gt;Input&lt;/direction&gt;
+                    &lt;width&gt;7&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;amm_byteenable_0&lt;/name&gt;
+                    &lt;role&gt;byteenable&lt;/role&gt;
+                    &lt;direction&gt;Input&lt;/direction&gt;
+                    &lt;width&gt;64&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                &lt;/port&gt;
+                &lt;port&gt;
+                    &lt;name&gt;amm_readdatavalid_0&lt;/name&gt;
+                    &lt;role&gt;readdatavalid&lt;/role&gt;
+                    &lt;direction&gt;Output&lt;/direction&gt;
+                    &lt;width&gt;1&lt;/width&gt;
+                    &lt;lowerBound&gt;0&lt;/lowerBound&gt;
+                    &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                &lt;/port&gt;
+            &lt;/ports&gt;
+            &lt;assignments&gt;
+                &lt;assignmentValueMap&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;embeddedsw.configuration.isFlash&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;embeddedsw.configuration.isMemoryDevice&lt;/key&gt;
+                        &lt;value&gt;1&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;embeddedsw.configuration.isNonVolatileStorage&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;embeddedsw.configuration.isPrintableDevice&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                &lt;/assignmentValueMap&gt;
+            &lt;/assignments&gt;
+            &lt;parameters&gt;
+                &lt;parameterValueMap&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;addressAlignment&lt;/key&gt;
+                        &lt;value&gt;DYNAMIC&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;addressGroup&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;addressSpan&lt;/key&gt;
+                        &lt;value&gt;4294967296&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;addressUnits&lt;/key&gt;
+                        &lt;value&gt;WORDS&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;alwaysBurstMaxBurst&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedClock&lt;/key&gt;
+                        &lt;value&gt;emif_usr_clk&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;associatedReset&lt;/key&gt;
+                        &lt;value&gt;emif_usr_reset_n&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;bitsPerSymbol&lt;/key&gt;
+                        &lt;value&gt;8&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;bridgedAddressOffset&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;bridgesToMaster&lt;/key&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;burstOnBurstBoundariesOnly&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;burstcountUnits&lt;/key&gt;
+                        &lt;value&gt;WORDS&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;constantBurstBehavior&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;explicitAddressSpan&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;holdTime&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;interleaveBursts&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;isBigEndian&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;isFlash&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;isMemoryDevice&lt;/key&gt;
+                        &lt;value&gt;true&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;isNonVolatileStorage&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;linewrapBursts&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;maximumPendingReadTransactions&lt;/key&gt;
+                        &lt;value&gt;64&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;maximumPendingWriteTransactions&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;minimumReadLatency&lt;/key&gt;
+                        &lt;value&gt;1&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;minimumResponseLatency&lt;/key&gt;
+                        &lt;value&gt;1&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;minimumUninterruptedRunLength&lt;/key&gt;
+                        &lt;value&gt;1&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;prSafe&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;printableDevice&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;readLatency&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;readWaitStates&lt;/key&gt;
+                        &lt;value&gt;1&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;readWaitTime&lt;/key&gt;
+                        &lt;value&gt;1&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;registerIncomingSignals&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;registerOutgoingSignals&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;setupTime&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;timingUnits&lt;/key&gt;
+                        &lt;value&gt;Cycles&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;transparentBridge&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;waitrequestAllowance&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;wellBehavedWaitrequest&lt;/key&gt;
+                        &lt;value&gt;false&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;writeLatency&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;writeWaitStates&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;writeWaitTime&lt;/key&gt;
+                        &lt;value&gt;0&lt;/value&gt;
+                    &lt;/entry&gt;
+                &lt;/parameterValueMap&gt;
+            &lt;/parameters&gt;
+        &lt;/interface&gt;
+    &lt;/interfaces&gt;
+&lt;/boundaryDefinition&gt;</ipxact:value>
         </ipxact:parameter>
         <ipxact:parameter parameterId="systemInfos" type="string">
           <ipxact:name>systemInfos</ipxact:name>
           <ipxact:displayName>systemInfos</ipxact:displayName>
-          <ipxact:value>&lt;systemInfosDefinition&gt;&#xa;    &lt;connPtSystemInfos&gt;&#xa;        &lt;entry&gt;&#xa;            &lt;key&gt;ctrl_amm_0&lt;/key&gt;&#xa;            &lt;value&gt;&#xa;                &lt;connectionPointName&gt;ctrl_amm_0&lt;/connectionPointName&gt;&#xa;                &lt;suppliedSystemInfos/&gt;&#xa;                &lt;consumedSystemInfos&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;ADDRESS_MAP&lt;/key&gt;&#xa;                        &lt;value&gt;&amp;lt;address-map&amp;gt;&amp;lt;slave name='ctrl_amm_0' start='0x0' end='0x100000000' datawidth='512' /&amp;gt;&amp;lt;/address-map&amp;gt;&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;ADDRESS_WIDTH&lt;/key&gt;&#xa;                        &lt;value&gt;32&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;MAX_SLAVE_DATA_WIDTH&lt;/key&gt;&#xa;                        &lt;value&gt;512&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                &lt;/consumedSystemInfos&gt;&#xa;            &lt;/value&gt;&#xa;        &lt;/entry&gt;&#xa;        &lt;entry&gt;&#xa;            &lt;key&gt;emif_usr_clk&lt;/key&gt;&#xa;            &lt;value&gt;&#xa;                &lt;connectionPointName&gt;emif_usr_clk&lt;/connectionPointName&gt;&#xa;                &lt;suppliedSystemInfos/&gt;&#xa;                &lt;consumedSystemInfos&gt;&#xa;                    &lt;entry&gt;&#xa;                        &lt;key&gt;CLOCK_RATE&lt;/key&gt;&#xa;                        &lt;value&gt;333333333&lt;/value&gt;&#xa;                    &lt;/entry&gt;&#xa;                &lt;/consumedSystemInfos&gt;&#xa;            &lt;/value&gt;&#xa;        &lt;/entry&gt;&#xa;    &lt;/connPtSystemInfos&gt;&#xa;&lt;/systemInfosDefinition&gt;</ipxact:value>
+          <ipxact:value>&lt;systemInfosDefinition&gt;
+    &lt;connPtSystemInfos&gt;
+        &lt;entry&gt;
+            &lt;key&gt;ctrl_amm_0&lt;/key&gt;
+            &lt;value&gt;
+                &lt;connectionPointName&gt;ctrl_amm_0&lt;/connectionPointName&gt;
+                &lt;suppliedSystemInfos/&gt;
+                &lt;consumedSystemInfos&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;ADDRESS_MAP&lt;/key&gt;
+                        &lt;value&gt;&amp;lt;address-map&amp;gt;&amp;lt;slave name='ctrl_amm_0' start='0x0' end='0x100000000' datawidth='512' /&amp;gt;&amp;lt;/address-map&amp;gt;&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;ADDRESS_WIDTH&lt;/key&gt;
+                        &lt;value&gt;32&lt;/value&gt;
+                    &lt;/entry&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;MAX_SLAVE_DATA_WIDTH&lt;/key&gt;
+                        &lt;value&gt;512&lt;/value&gt;
+                    &lt;/entry&gt;
+                &lt;/consumedSystemInfos&gt;
+            &lt;/value&gt;
+        &lt;/entry&gt;
+        &lt;entry&gt;
+            &lt;key&gt;emif_usr_clk&lt;/key&gt;
+            &lt;value&gt;
+                &lt;connectionPointName&gt;emif_usr_clk&lt;/connectionPointName&gt;
+                &lt;suppliedSystemInfos/&gt;
+                &lt;consumedSystemInfos&gt;
+                    &lt;entry&gt;
+                        &lt;key&gt;CLOCK_RATE&lt;/key&gt;
+                        &lt;value&gt;333333333&lt;/value&gt;
+                    &lt;/entry&gt;
+                &lt;/consumedSystemInfos&gt;
+            &lt;/value&gt;
+        &lt;/entry&gt;
+    &lt;/connPtSystemInfos&gt;
+&lt;/systemInfosDefinition&gt;</ipxact:value>
         </ipxact:parameter>
       </ipxact:parameters>
     </altera:altera_system_parameters>

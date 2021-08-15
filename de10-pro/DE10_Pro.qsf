@@ -1737,3 +1737,4 @@ set_global_assignment -name SEARCH_PATH ../pebbles/blarney/Verilog/Altera/
 set_global_assignment -name SEARCH_PATH ../pebbles/src/CHERI/Verilog/
 set_global_assignment -name SEED 10
 set_global_assignment -name IP_FILE ip/IntelDivider.ip
+set_global_assignment -name IP_FILE ip/AvalonStreamClockCrosser.ip
