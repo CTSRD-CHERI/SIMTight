@@ -85,8 +85,7 @@ $ make                 # Assumes quartus is in your PATH
 $ make download-sof    # Assumes DE10-Pro is connected via USB
 ```
 
-We can now run a SIMT kernel on FPGA, almost exactly how we did so via
-the simulator.
+We can now run a SIMT kernel on FPGA:
 
 ```sh
 $ cd apps/Histogram
@@ -113,10 +112,8 @@ To enable CHERI, some additional preparation is required.  First, edit
   * `#define UseClang 1`
 
 Second, install the CHERI-Clang compiler using
-[cheribuild](https://github.com/CTSRD-CHERI/cheribuild) (the
-llvm-project version used must contain [this
-commit](https://github.com/CTSRD-CHERI/llvm-project/commit/892800be5c766e82b0335c10f311ed86b5e2d893)).
-Assuming all of [cheribuild's
+[cheribuild](https://github.com/CTSRD-CHERI/cheribuild).  Assuming all
+of [cheribuild's
 dependencies](https://github.com/CTSRD-CHERI/cheribuild#pre-build-setup)
 are met, we can simply do:
 
