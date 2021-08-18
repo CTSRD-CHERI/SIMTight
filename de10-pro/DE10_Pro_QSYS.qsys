@@ -321,36 +321,6 @@
     <boundary>
         <interfaces>
             <interface>
-                <name>reset</name>
-                <type>reset</type>
-                <isStart>false</isStart>
-                <ports>
-                    <port>
-                        <name>reset</name>
-                        <role>reset</role>
-                        <direction>Input</direction>
-                        <width>1</width>
-                        <lowerBound>0</lowerBound>
-                        <vhdlType>STD_LOGIC</vhdlType>
-                    </port>
-                </ports>
-                <assignments>
-                    <assignmentValueMap/>
-                </assignments>
-                <parameters>
-                    <parameterValueMap>
-                        <entry>
-                            <key>associatedClock</key>
-                            <value>clock_sink</value>
-                        </entry>
-                        <entry>
-                            <key>synchronousEdges</key>
-                            <value>DEASSERT</value>
-                        </entry>
-                    </parameterValueMap>
-                </parameters>
-            </interface>
-            <interface>
                 <name>dram_master</name>
                 <type>avalon</type>
                 <isStart>true</isStart>
@@ -369,7 +339,7 @@
                         <direction>Input</direction>
                         <width>1</width>
                         <lowerBound>0</lowerBound>
-                        <vhdlType>STD_LOGIC</vhdlType>
+                        <vhdlType>STD_LOGIC_VECTOR</vhdlType>
                     </port>
                     <port>
                         <name>in0_socDRAMIns_avl_dram_waitrequest</name>
@@ -377,7 +347,7 @@
                         <direction>Input</direction>
                         <width>1</width>
                         <lowerBound>0</lowerBound>
-                        <vhdlType>STD_LOGIC</vhdlType>
+                        <vhdlType>STD_LOGIC_VECTOR</vhdlType>
                     </port>
                     <port>
                         <name>out_socDRAMOuts_avl_dram_address</name>
@@ -409,7 +379,7 @@
                         <direction>Output</direction>
                         <width>1</width>
                         <lowerBound>0</lowerBound>
-                        <vhdlType>STD_LOGIC</vhdlType>
+                        <vhdlType>STD_LOGIC_VECTOR</vhdlType>
                     </port>
                     <port>
                         <name>out_socDRAMOuts_avl_dram_write</name>
@@ -417,7 +387,7 @@
                         <direction>Output</direction>
                         <width>1</width>
                         <lowerBound>0</lowerBound>
-                        <vhdlType>STD_LOGIC</vhdlType>
+                        <vhdlType>STD_LOGIC_VECTOR</vhdlType>
                     </port>
                     <port>
                         <name>out_socDRAMOuts_avl_dram_writedata</name>
@@ -450,11 +420,11 @@
                         </entry>
                         <entry>
                             <key>associatedClock</key>
-                            <value>clock_sink</value>
+                            <value>simt_clock</value>
                         </entry>
                         <entry>
                             <key>associatedReset</key>
-                            <value>reset</value>
+                            <value>simt_reset</value>
                         </entry>
                         <entry>
                             <key>bitsPerSymbol</key>
@@ -590,7 +560,7 @@
                         <direction>Input</direction>
                         <width>1</width>
                         <lowerBound>0</lowerBound>
-                        <vhdlType>STD_LOGIC</vhdlType>
+                        <vhdlType>STD_LOGIC_VECTOR</vhdlType>
                     </port>
                     <port>
                         <name>out_socUARTOuts_avl_jtaguart_address</name>
@@ -606,7 +576,7 @@
                         <direction>Output</direction>
                         <width>1</width>
                         <lowerBound>0</lowerBound>
-                        <vhdlType>STD_LOGIC</vhdlType>
+                        <vhdlType>STD_LOGIC_VECTOR</vhdlType>
                     </port>
                     <port>
                         <name>out_socUARTOuts_avl_jtaguart_write</name>
@@ -614,7 +584,7 @@
                         <direction>Output</direction>
                         <width>1</width>
                         <lowerBound>0</lowerBound>
-                        <vhdlType>STD_LOGIC</vhdlType>
+                        <vhdlType>STD_LOGIC_VECTOR</vhdlType>
                     </port>
                     <port>
                         <name>out_socUARTOuts_avl_jtaguart_writedata</name>
@@ -647,11 +617,11 @@
                         </entry>
                         <entry>
                             <key>associatedClock</key>
-                            <value>clock_sink</value>
+                            <value>cpu_clock</value>
                         </entry>
                         <entry>
                             <key>associatedReset</key>
-                            <value>reset</value>
+                            <value>cpu_reset</value>
                         </entry>
                         <entry>
                             <key>bitsPerSymbol</key>
@@ -769,17 +739,17 @@
                 </parameters>
             </interface>
             <interface>
-                <name>clock_sink</name>
+                <name>simt_clock</name>
                 <type>clock</type>
                 <isStart>false</isStart>
                 <ports>
                     <port>
-                        <name>clock</name>
+                        <name>in0_socSIMTClk</name>
                         <role>clk</role>
                         <direction>Input</direction>
                         <width>1</width>
                         <lowerBound>0</lowerBound>
-                        <vhdlType>STD_LOGIC</vhdlType>
+                        <vhdlType>STD_LOGIC_VECTOR</vhdlType>
                     </port>
                 </ports>
                 <assignments>
@@ -801,6 +771,99 @@
                     </parameterValueMap>
                 </parameters>
             </interface>
+            <interface>
+                <name>cpu_clock</name>
+                <type>clock</type>
+                <isStart>false</isStart>
+                <ports>
+                    <port>
+                        <name>in0_socCPUClk</name>
+                        <role>clk</role>
+                        <direction>Input</direction>
+                        <width>1</width>
+                        <lowerBound>0</lowerBound>
+                        <vhdlType>STD_LOGIC_VECTOR</vhdlType>
+                    </port>
+                </ports>
+                <assignments>
+                    <assignmentValueMap/>
+                </assignments>
+                <parameters>
+                    <parameterValueMap>
+                        <entry>
+                            <key>clockRate</key>
+                            <value>0</value>
+                        </entry>
+                        <entry>
+                            <key>externallyDriven</key>
+                            <value>false</value>
+                        </entry>
+                        <entry>
+                            <key>ptfSchematicName</key>
+                        </entry>
+                    </parameterValueMap>
+                </parameters>
+            </interface>
+            <interface>
+                <name>simt_reset</name>
+                <type>reset</type>
+                <isStart>false</isStart>
+                <ports>
+                    <port>
+                        <name>in0_socSIMTRst</name>
+                        <role>reset</role>
+                        <direction>Input</direction>
+                        <width>1</width>
+                        <lowerBound>0</lowerBound>
+                        <vhdlType>STD_LOGIC_VECTOR</vhdlType>
+                    </port>
+                </ports>
+                <assignments>
+                    <assignmentValueMap/>
+                </assignments>
+                <parameters>
+                    <parameterValueMap>
+                        <entry>
+                            <key>associatedClock</key>
+                            <value>simt_clock</value>
+                        </entry>
+                        <entry>
+                            <key>synchronousEdges</key>
+                            <value>DEASSERT</value>
+                        </entry>
+                    </parameterValueMap>
+                </parameters>
+            </interface>
+            <interface>
+                <name>cpu_reset</name>
+                <type>reset</type>
+                <isStart>false</isStart>
+                <ports>
+                    <port>
+                        <name>in0_socCPURst</name>
+                        <role>reset</role>
+                        <direction>Input</direction>
+                        <width>1</width>
+                        <lowerBound>0</lowerBound>
+                        <vhdlType>STD_LOGIC_VECTOR</vhdlType>
+                    </port>
+                </ports>
+                <assignments>
+                    <assignmentValueMap/>
+                </assignments>
+                <parameters>
+                    <parameterValueMap>
+                        <entry>
+                            <key>associatedClock</key>
+                            <value>cpu_clock</value>
+                        </entry>
+                        <entry>
+                            <key>synchronousEdges</key>
+                            <value>DEASSERT</value>
+                        </entry>
+                    </parameterValueMap>
+                </parameters>
+            </interface>
         </interfaces>
     </boundary>
     <originalModuleInfo>
@@ -817,36 +880,6 @@
 </componentDefinition>]]></parameter>
   <parameter name="defaultBoundary"><![CDATA[<boundaryDefinition>
     <interfaces>
-        <interface>
-            <name>reset</name>
-            <type>reset</type>
-            <isStart>false</isStart>
-            <ports>
-                <port>
-                    <name>reset</name>
-                    <role>reset</role>
-                    <direction>Input</direction>
-                    <width>1</width>
-                    <lowerBound>0</lowerBound>
-                    <vhdlType>STD_LOGIC</vhdlType>
-                </port>
-            </ports>
-            <assignments>
-                <assignmentValueMap/>
-            </assignments>
-            <parameters>
-                <parameterValueMap>
-                    <entry>
-                        <key>associatedClock</key>
-                        <value>clock_sink</value>
-                    </entry>
-                    <entry>
-                        <key>synchronousEdges</key>
-                        <value>DEASSERT</value>
-                    </entry>
-                </parameterValueMap>
-            </parameters>
-        </interface>
         <interface>
             <name>dram_master</name>
             <type>avalon</type>
@@ -866,7 +899,7 @@
                     <direction>Input</direction>
                     <width>1</width>
                     <lowerBound>0</lowerBound>
-                    <vhdlType>STD_LOGIC</vhdlType>
+                    <vhdlType>STD_LOGIC_VECTOR</vhdlType>
                 </port>
                 <port>
                     <name>in0_socDRAMIns_avl_dram_waitrequest</name>
@@ -874,7 +907,7 @@
                     <direction>Input</direction>
                     <width>1</width>
                     <lowerBound>0</lowerBound>
-                    <vhdlType>STD_LOGIC</vhdlType>
+                    <vhdlType>STD_LOGIC_VECTOR</vhdlType>
                 </port>
                 <port>
                     <name>out_socDRAMOuts_avl_dram_address</name>
@@ -906,7 +939,7 @@
                     <direction>Output</direction>
                     <width>1</width>
                     <lowerBound>0</lowerBound>
-                    <vhdlType>STD_LOGIC</vhdlType>
+                    <vhdlType>STD_LOGIC_VECTOR</vhdlType>
                 </port>
                 <port>
                     <name>out_socDRAMOuts_avl_dram_write</name>
@@ -914,7 +947,7 @@
                     <direction>Output</direction>
                     <width>1</width>
                     <lowerBound>0</lowerBound>
-                    <vhdlType>STD_LOGIC</vhdlType>
+                    <vhdlType>STD_LOGIC_VECTOR</vhdlType>
                 </port>
                 <port>
                     <name>out_socDRAMOuts_avl_dram_writedata</name>
@@ -947,11 +980,11 @@
                     </entry>
                     <entry>
                         <key>associatedClock</key>
-                        <value>clock_sink</value>
+                        <value>simt_clock</value>
                     </entry>
                     <entry>
                         <key>associatedReset</key>
-                        <value>reset</value>
+                        <value>simt_reset</value>
                     </entry>
                     <entry>
                         <key>bitsPerSymbol</key>
@@ -1087,7 +1120,7 @@
                     <direction>Input</direction>
                     <width>1</width>
                     <lowerBound>0</lowerBound>
-                    <vhdlType>STD_LOGIC</vhdlType>
+                    <vhdlType>STD_LOGIC_VECTOR</vhdlType>
                 </port>
                 <port>
                     <name>out_socUARTOuts_avl_jtaguart_address</name>
@@ -1103,7 +1136,7 @@
                     <direction>Output</direction>
                     <width>1</width>
                     <lowerBound>0</lowerBound>
-                    <vhdlType>STD_LOGIC</vhdlType>
+                    <vhdlType>STD_LOGIC_VECTOR</vhdlType>
                 </port>
                 <port>
                     <name>out_socUARTOuts_avl_jtaguart_write</name>
@@ -1111,7 +1144,7 @@
                     <direction>Output</direction>
                     <width>1</width>
                     <lowerBound>0</lowerBound>
-                    <vhdlType>STD_LOGIC</vhdlType>
+                    <vhdlType>STD_LOGIC_VECTOR</vhdlType>
                 </port>
                 <port>
                     <name>out_socUARTOuts_avl_jtaguart_writedata</name>
@@ -1144,11 +1177,11 @@
                     </entry>
                     <entry>
                         <key>associatedClock</key>
-                        <value>clock_sink</value>
+                        <value>cpu_clock</value>
                     </entry>
                     <entry>
                         <key>associatedReset</key>
-                        <value>reset</value>
+                        <value>cpu_reset</value>
                     </entry>
                     <entry>
                         <key>bitsPerSymbol</key>
@@ -1266,17 +1299,17 @@
             </parameters>
         </interface>
         <interface>
-            <name>clock_sink</name>
+            <name>simt_clock</name>
             <type>clock</type>
             <isStart>false</isStart>
             <ports>
                 <port>
-                    <name>clock</name>
+                    <name>in0_socSIMTClk</name>
                     <role>clk</role>
                     <direction>Input</direction>
                     <width>1</width>
                     <lowerBound>0</lowerBound>
-                    <vhdlType>STD_LOGIC</vhdlType>
+                    <vhdlType>STD_LOGIC_VECTOR</vhdlType>
                 </port>
             </ports>
             <assignments>
@@ -1294,6 +1327,99 @@
                     </entry>
                     <entry>
                         <key>ptfSchematicName</key>
+                    </entry>
+                </parameterValueMap>
+            </parameters>
+        </interface>
+        <interface>
+            <name>cpu_clock</name>
+            <type>clock</type>
+            <isStart>false</isStart>
+            <ports>
+                <port>
+                    <name>in0_socCPUClk</name>
+                    <role>clk</role>
+                    <direction>Input</direction>
+                    <width>1</width>
+                    <lowerBound>0</lowerBound>
+                    <vhdlType>STD_LOGIC_VECTOR</vhdlType>
+                </port>
+            </ports>
+            <assignments>
+                <assignmentValueMap/>
+            </assignments>
+            <parameters>
+                <parameterValueMap>
+                    <entry>
+                        <key>clockRate</key>
+                        <value>0</value>
+                    </entry>
+                    <entry>
+                        <key>externallyDriven</key>
+                        <value>false</value>
+                    </entry>
+                    <entry>
+                        <key>ptfSchematicName</key>
+                    </entry>
+                </parameterValueMap>
+            </parameters>
+        </interface>
+        <interface>
+            <name>simt_reset</name>
+            <type>reset</type>
+            <isStart>false</isStart>
+            <ports>
+                <port>
+                    <name>in0_socSIMTRst</name>
+                    <role>reset</role>
+                    <direction>Input</direction>
+                    <width>1</width>
+                    <lowerBound>0</lowerBound>
+                    <vhdlType>STD_LOGIC_VECTOR</vhdlType>
+                </port>
+            </ports>
+            <assignments>
+                <assignmentValueMap/>
+            </assignments>
+            <parameters>
+                <parameterValueMap>
+                    <entry>
+                        <key>associatedClock</key>
+                        <value>simt_clock</value>
+                    </entry>
+                    <entry>
+                        <key>synchronousEdges</key>
+                        <value>DEASSERT</value>
+                    </entry>
+                </parameterValueMap>
+            </parameters>
+        </interface>
+        <interface>
+            <name>cpu_reset</name>
+            <type>reset</type>
+            <isStart>false</isStart>
+            <ports>
+                <port>
+                    <name>in0_socCPURst</name>
+                    <role>reset</role>
+                    <direction>Input</direction>
+                    <width>1</width>
+                    <lowerBound>0</lowerBound>
+                    <vhdlType>STD_LOGIC_VECTOR</vhdlType>
+                </port>
+            </ports>
+            <assignments>
+                <assignmentValueMap/>
+            </assignments>
+            <parameters>
+                <parameterValueMap>
+                    <entry>
+                        <key>associatedClock</key>
+                        <value>cpu_clock</value>
+                    </entry>
+                    <entry>
+                        <key>synchronousEdges</key>
+                        <value>DEASSERT</value>
                     </entry>
                 </parameterValueMap>
             </parameters>
@@ -9866,6 +9992,78 @@
     <boundary>
         <interfaces>
             <interface>
+                <name>reset</name>
+                <type>reset</type>
+                <isStart>false</isStart>
+                <ports>
+                    <port>
+                        <name>rst</name>
+                        <role>reset</role>
+                        <direction>Input</direction>
+                        <width>1</width>
+                        <lowerBound>0</lowerBound>
+                        <vhdlType>STD_LOGIC</vhdlType>
+                    </port>
+                </ports>
+                <assignments>
+                    <assignmentValueMap>
+                        <entry>
+                            <key>ui.blockdiagram.direction</key>
+                            <value>input</value>
+                        </entry>
+                    </assignmentValueMap>
+                </assignments>
+                <parameters>
+                    <parameterValueMap>
+                        <entry>
+                            <key>associatedClock</key>
+                        </entry>
+                        <entry>
+                            <key>synchronousEdges</key>
+                            <value>NONE</value>
+                        </entry>
+                    </parameterValueMap>
+                </parameters>
+            </interface>
+            <interface>
+                <name>refclk</name>
+                <type>clock</type>
+                <isStart>false</isStart>
+                <ports>
+                    <port>
+                        <name>refclk</name>
+                        <role>clk</role>
+                        <direction>Input</direction>
+                        <width>1</width>
+                        <lowerBound>0</lowerBound>
+                        <vhdlType>STD_LOGIC</vhdlType>
+                    </port>
+                </ports>
+                <assignments>
+                    <assignmentValueMap>
+                        <entry>
+                            <key>ui.blockdiagram.direction</key>
+                            <value>input</value>
+                        </entry>
+                    </assignmentValueMap>
+                </assignments>
+                <parameters>
+                    <parameterValueMap>
+                        <entry>
+                            <key>clockRate</key>
+                            <value>50000000</value>
+                        </entry>
+                        <entry>
+                            <key>externallyDriven</key>
+                            <value>false</value>
+                        </entry>
+                        <entry>
+                            <key>ptfSchematicName</key>
+                        </entry>
+                    </parameterValueMap>
+                </parameters>
+            </interface>
+            <interface>
                 <name>locked</name>
                 <type>conduit</type>
                 <isStart>false</isStart>
@@ -9993,14 +10191,14 @@
                 </parameters>
             </interface>
             <interface>
-                <name>refclk</name>
+                <name>outclk2</name>
                 <type>clock</type>
-                <isStart>false</isStart>
+                <isStart>true</isStart>
                 <ports>
                     <port>
-                        <name>refclk</name>
+                        <name>outclk_2</name>
                         <role>clk</role>
-                        <direction>Input</direction>
+                        <direction>Output</direction>
                         <width>1</width>
                         <lowerBound>0</lowerBound>
                         <vhdlType>STD_LOGIC</vhdlType>
@@ -10010,15 +10208,22 @@
                     <assignmentValueMap>
                         <entry>
                             <key>ui.blockdiagram.direction</key>
-                            <value>input</value>
+                            <value>output</value>
                         </entry>
                     </assignmentValueMap>
                 </assignments>
                 <parameters>
                     <parameterValueMap>
                         <entry>
+                            <key>associatedDirectClock</key>
+                        </entry>
+                        <entry>
                             <key>clockRate</key>
-                            <value>50000000</value>
+                            <value>200000000</value>
+                        </entry>
+                        <entry>
+                            <key>clockRateKnown</key>
+                            <value>true</value>
                         </entry>
                         <entry>
                             <key>externallyDriven</key>
@@ -10026,40 +10231,6 @@
                         </entry>
                         <entry>
                             <key>ptfSchematicName</key>
-                        </entry>
-                    </parameterValueMap>
-                </parameters>
-            </interface>
-            <interface>
-                <name>reset</name>
-                <type>reset</type>
-                <isStart>false</isStart>
-                <ports>
-                    <port>
-                        <name>rst</name>
-                        <role>reset</role>
-                        <direction>Input</direction>
-                        <width>1</width>
-                        <lowerBound>0</lowerBound>
-                        <vhdlType>STD_LOGIC</vhdlType>
-                    </port>
-                </ports>
-                <assignments>
-                    <assignmentValueMap>
-                        <entry>
-                            <key>ui.blockdiagram.direction</key>
-                            <value>input</value>
-                        </entry>
-                    </assignmentValueMap>
-                </assignments>
-                <parameters>
-                    <parameterValueMap>
-                        <entry>
-                            <key>associatedClock</key>
-                        </entry>
-                        <entry>
-                            <key>synchronousEdges</key>
-                            <value>NONE</value>
                         </entry>
                     </parameterValueMap>
                 </parameters>
@@ -10128,11 +10299,96 @@
                     <consumedSystemInfos/>
                 </value>
             </entry>
+            <entry>
+                <key>outclk2</key>
+                <value>
+                    <connectionPointName>outclk2</connectionPointName>
+                    <suppliedSystemInfos>
+                        <entry>
+                            <key>CLOCK_RATE</key>
+                            <value>200000000</value>
+                        </entry>
+                    </suppliedSystemInfos>
+                    <consumedSystemInfos/>
+                </value>
+            </entry>
         </connPtSystemInfos>
     </systemInfos>
 </componentDefinition>]]></parameter>
   <parameter name="defaultBoundary"><![CDATA[<boundaryDefinition>
     <interfaces>
+        <interface>
+            <name>reset</name>
+            <type>reset</type>
+            <isStart>false</isStart>
+            <ports>
+                <port>
+                    <name>rst</name>
+                    <role>reset</role>
+                    <direction>Input</direction>
+                    <width>1</width>
+                    <lowerBound>0</lowerBound>
+                    <vhdlType>STD_LOGIC</vhdlType>
+                </port>
+            </ports>
+            <assignments>
+                <assignmentValueMap>
+                    <entry>
+                        <key>ui.blockdiagram.direction</key>
+                        <value>input</value>
+                    </entry>
+                </assignmentValueMap>
+            </assignments>
+            <parameters>
+                <parameterValueMap>
+                    <entry>
+                        <key>associatedClock</key>
+                    </entry>
+                    <entry>
+                        <key>synchronousEdges</key>
+                        <value>NONE</value>
+                    </entry>
+                </parameterValueMap>
+            </parameters>
+        </interface>
+        <interface>
+            <name>refclk</name>
+            <type>clock</type>
+            <isStart>false</isStart>
+            <ports>
+                <port>
+                    <name>refclk</name>
+                    <role>clk</role>
+                    <direction>Input</direction>
+                    <width>1</width>
+                    <lowerBound>0</lowerBound>
+                    <vhdlType>STD_LOGIC</vhdlType>
+                </port>
+            </ports>
+            <assignments>
+                <assignmentValueMap>
+                    <entry>
+                        <key>ui.blockdiagram.direction</key>
+                        <value>input</value>
+                    </entry>
+                </assignmentValueMap>
+            </assignments>
+            <parameters>
+                <parameterValueMap>
+                    <entry>
+                        <key>clockRate</key>
+                        <value>50000000</value>
+                    </entry>
+                    <entry>
+                        <key>externallyDriven</key>
+                        <value>false</value>
+                    </entry>
+                    <entry>
+                        <key>ptfSchematicName</key>
+                    </entry>
+                </parameterValueMap>
+            </parameters>
+        </interface>
         <interface>
             <name>locked</name>
             <type>conduit</type>
@@ -10261,14 +10517,14 @@
             </parameters>
         </interface>
         <interface>
-            <name>refclk</name>
+            <name>outclk2</name>
             <type>clock</type>
-            <isStart>false</isStart>
+            <isStart>true</isStart>
             <ports>
                 <port>
-                    <name>refclk</name>
+                    <name>outclk_2</name>
                     <role>clk</role>
-                    <direction>Input</direction>
+                    <direction>Output</direction>
                     <width>1</width>
                     <lowerBound>0</lowerBound>
                     <vhdlType>STD_LOGIC</vhdlType>
@@ -10278,15 +10534,22 @@
                 <assignmentValueMap>
                     <entry>
                         <key>ui.blockdiagram.direction</key>
-                        <value>input</value>
+                        <value>output</value>
                     </entry>
                 </assignmentValueMap>
             </assignments>
             <parameters>
                 <parameterValueMap>
                     <entry>
+                        <key>associatedDirectClock</key>
+                    </entry>
+                    <entry>
                         <key>clockRate</key>
-                        <value>50000000</value>
+                        <value>200000000</value>
+                    </entry>
+                    <entry>
+                        <key>clockRateKnown</key>
+                        <value>true</value>
                     </entry>
                     <entry>
                         <key>externallyDriven</key>
@@ -10294,40 +10557,6 @@
                     </entry>
                     <entry>
                         <key>ptfSchematicName</key>
-                    </entry>
-                </parameterValueMap>
-            </parameters>
-        </interface>
-        <interface>
-            <name>reset</name>
-            <type>reset</type>
-            <isStart>false</isStart>
-            <ports>
-                <port>
-                    <name>rst</name>
-                    <role>reset</role>
-                    <direction>Input</direction>
-                    <width>1</width>
-                    <lowerBound>0</lowerBound>
-                    <vhdlType>STD_LOGIC</vhdlType>
-                </port>
-            </ports>
-            <assignments>
-                <assignmentValueMap>
-                    <entry>
-                        <key>ui.blockdiagram.direction</key>
-                        <value>input</value>
-                    </entry>
-                </assignmentValueMap>
-            </assignments>
-            <parameters>
-                <parameterValueMap>
-                    <entry>
-                        <key>associatedClock</key>
-                    </entry>
-                    <entry>
-                        <key>synchronousEdges</key>
-                        <value>NONE</value>
                     </entry>
                 </parameterValueMap>
             </parameters>
@@ -14475,46 +14704,6 @@
  <connection
    kind="avalon"
    version="19.2"
-   start="mm_clockcross_50Mhz.m0"
-   end="ddr4_local_reset_req.s1">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0040" />
-  <parameter name="defaultConnection" value="false" />
-  <parameter name="domainAlias" value="" />
-  <parameter name="qsys_mm.burstAdapterImplementation" value="GENERIC_CONVERTER" />
-  <parameter name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
-  <parameter name="qsys_mm.enableEccProtection" value="FALSE" />
-  <parameter name="qsys_mm.enableInstrumentation" value="FALSE" />
-  <parameter name="qsys_mm.insertDefaultSlave" value="FALSE" />
-  <parameter name="qsys_mm.interconnectResetSource" value="DEFAULT" />
-  <parameter name="qsys_mm.interconnectType" value="STANDARD" />
-  <parameter name="qsys_mm.maxAdditionalLatency" value="1" />
-  <parameter name="qsys_mm.syncResets" value="FALSE" />
-  <parameter name="qsys_mm.widthAdapterImplementation" value="GENERIC_CONVERTER" />
- </connection>
- <connection
-   kind="avalon"
-   version="19.2"
-   start="mm_clockcross_50Mhz.m0"
-   end="ddr4_status.s1">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0030" />
-  <parameter name="defaultConnection" value="false" />
-  <parameter name="domainAlias" value="" />
-  <parameter name="qsys_mm.burstAdapterImplementation" value="GENERIC_CONVERTER" />
-  <parameter name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
-  <parameter name="qsys_mm.enableEccProtection" value="FALSE" />
-  <parameter name="qsys_mm.enableInstrumentation" value="FALSE" />
-  <parameter name="qsys_mm.insertDefaultSlave" value="FALSE" />
-  <parameter name="qsys_mm.interconnectResetSource" value="DEFAULT" />
-  <parameter name="qsys_mm.interconnectType" value="STANDARD" />
-  <parameter name="qsys_mm.maxAdditionalLatency" value="1" />
-  <parameter name="qsys_mm.syncResets" value="FALSE" />
-  <parameter name="qsys_mm.widthAdapterImplementation" value="GENERIC_CONVERTER" />
- </connection>
- <connection
-   kind="avalon"
-   version="19.2"
    start="SIMTight_0.uart_master"
    end="mm_clockcross_50Mhz.s0">
   <parameter name="arbitrationPriority" value="1" />
@@ -14556,22 +14745,12 @@
    kind="clock"
    version="19.2"
    start="iopll_0.outclk0"
-   end="ddr4_status.clk" />
- <connection
-   kind="clock"
-   version="19.2"
-   start="iopll_0.outclk0"
-   end="ddr4_local_reset_req.clk" />
- <connection
-   kind="clock"
-   version="19.2"
-   start="iopll_0.outclk0"
    end="mm_clockcross_50Mhz.m0_clk" />
  <connection
    kind="clock"
    version="19.2"
    start="iopll_0.outclk1"
-   end="SIMTight_0.clock_sink" />
+   end="SIMTight_0.cpu_clock" />
  <connection
    kind="clock"
    version="19.2"
@@ -14580,8 +14759,18 @@
  <connection
    kind="clock"
    version="19.2"
-   start="iopll_0.outclk1"
+   start="iopll_0.outclk2"
    end="mm_clockcross_DDR4.s0_clk" />
+ <connection
+   kind="clock"
+   version="19.2"
+   start="iopll_0.outclk2"
+   end="SIMTight_0.simt_clock" />
+ <connection
+   kind="reset"
+   version="19.2"
+   start="emif_s10_ddr4_b.emif_usr_reset_n"
+   end="SIMTight_0.cpu_reset" />
  <connection
    kind="reset"
    version="19.2"
@@ -14592,11 +14781,6 @@
    version="19.2"
    start="emif_s10_ddr4_b.emif_usr_reset_n"
    end="mm_clockcross_DDR4.m0_reset" />
- <connection
-   kind="reset"
-   version="19.2"
-   start="emif_s10_ddr4_b.emif_usr_reset_n"
-   end="SIMTight_0.reset" />
  <connection
    kind="reset"
    version="19.2"
@@ -14616,6 +14800,11 @@
    kind="reset"
    version="19.2"
    start="reset_in.out_reset"
+   end="SIMTight_0.cpu_reset" />
+ <connection
+   kind="reset"
+   version="19.2"
+   start="reset_in.out_reset"
    end="mm_clockcross_50Mhz.m0_reset" />
  <connection
    kind="reset"
@@ -14627,11 +14816,6 @@
    version="19.2"
    start="reset_in.out_reset"
    end="jtag_uart_0.reset" />
- <connection
-   kind="reset"
-   version="19.2"
-   start="reset_in.out_reset"
-   end="ddr4_status.reset" />
  <connection
    kind="reset"
    version="19.2"
@@ -14641,20 +14825,15 @@
    kind="reset"
    version="19.2"
    start="reset_in.out_reset"
-   end="ddr4_local_reset_req.reset" />
- <connection
-   kind="reset"
-   version="19.2"
-   start="reset_in.out_reset"
-   end="SIMTight_0.reset" />
- <connection
-   kind="reset"
-   version="19.2"
-   start="reset_in.out_reset"
    end="mm_clockcross_50Mhz.s0_reset" />
  <connection
    kind="reset"
    version="19.2"
    start="reset_in.out_reset"
    end="mm_clockcross_DDR4.s0_reset" />
+ <connection
+   kind="reset"
+   version="19.2"
+   start="reset_in.out_reset"
+   end="SIMTight_0.simt_reset" />
 </system>

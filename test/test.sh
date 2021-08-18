@@ -29,7 +29,7 @@ while :
 do
   case $1 in
     -h|--help)
-      echo "Run test-suite and Pebbles examples"
+      echo "Run test-suite and SIMTight examples"
       echo "  --sim      run in simuatlion (verilator)"
       echo "  --fpga     run on FPGA (de10-pro)"
       echo "  --no-pgm   don't reprogram FPGA"
@@ -92,7 +92,7 @@ cleanup() {
 # ===========
 
 # Compile and run the circuit generator
-echo -n "Pebbles build: "
+echo -n "SIMTight build: "
 make -s -C .. verilog > /dev/null
 assert $?
 

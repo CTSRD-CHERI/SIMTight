@@ -4,7 +4,6 @@ SIMTight is a prototype GPGPU being developed on the [CAPcelerate
 project](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/V000381/1)
 to explore the use of [CHERI capabilities](http://cheri-cpu.org) in
 SIMT-style accelerators popularised by NVIDIA and AMD.
-
 The SIMTight SoC consists of a scalar CPU and a 32-lane 64-warp GPGPU
 sharing DRAM, both supporting the CHERI-RISC-V ISA.
 
@@ -16,7 +15,6 @@ LUT).  A sample project is provided for the
 also a [CUDA-like C++ library](soc/SIMTight/inc/NoCL.h) and a set of
 sample [compute kernels](soc/SIMTight/apps/) ported to this library.
 When CHERI is enabled, the kernels run in pure capability mode.
-
 The SoC is implemented in Haskell using the
 [Blarney](https://github.com/blarney-lang/blarney) hardware
 description library and the
@@ -87,8 +85,7 @@ $ make                 # Assumes quartus is in your PATH
 $ make download-sof    # Assumes DE10-Pro is connected via USB
 ```
 
-We can now run a SIMT kernel on FPGA, almost exactly how we did so via
-the simulator.
+We can now run a SIMT kernel on FPGA:
 
 ```sh
 $ cd apps/Histogram
@@ -105,7 +102,7 @@ $ ./test.sh --fpga     # Assumes FPGA image built and FPGA connected via USB
 
 When running on FPGA, performance stats are also emitted.
 
-## Building with CHERI support
+## Building with CHERI support :cherries:
 
 To enable CHERI, some additional preparation is required.  First, edit
 [inc/Config.h](inc/Config.h) and apply the following settings:
@@ -133,6 +130,12 @@ need to add the compiler to our `PATH`:
 export PATH=~/cheri/output/sdk/bin:$PATH
 ```
 
-We musn't forget to `make clean` any time the configuration settings
-are changed.  At this point, all of the standard build instructions
-should work as before.
+Note that `~/cheri/llvm-project` must contain [this
+commit](https://github.com/CTSRD-CHERI/llvm-project/commit/892800be5c766e82b0335c10f311ed86b5e2d893).
+If it doesn't, then we need to do a `git checkout dev` in the
+`~/cheri/llvm-project` directory and rerun `cheribuild.py
+sdk-riscv64-purecap`.
+
+We musn't forget to `make clean` in the root of the SIMTight repo any
+time [inc/Config.h](inc/Config.h) is changed.  At this point, all of
+the standard build instructions should work as before.

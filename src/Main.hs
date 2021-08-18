@@ -16,7 +16,6 @@ import qualified Blarney.Vector as V
 
 -- Pebbles imports
 import Pebbles.IO.JTAGUART
-import Pebbles.Pipeline.Interface
 import Pebbles.Memory.SBDCache
 import Pebbles.Memory.Alignment
 import Pebbles.Memory.Interface
@@ -27,10 +26,13 @@ import Pebbles.Memory.CoalescingUnit
 import Pebbles.Memory.DRAM.Bus
 import Pebbles.Memory.DRAM.Wrapper
 import Pebbles.Memory.DRAM.Interface
+import Pebbles.Pipeline.Interface
+import Pebbles.Pipeline.SIMT.Management
 
 -- SIMTight imports
 import Core.SIMT
 import Core.Scalar
+import Util.ClockCross
 
 -- SoC top-level interface
 -- =======================
@@ -38,80 +40,106 @@ import Core.Scalar
 -- | SoC inputs
 data SoCIns =
   SoCIns {
-    -- | JTAG UART inputs
-    socUARTIns :: AvalonJTAGUARTIns
-    -- | DRAM inputs
+    socCPUClk :: Bit 1
+    -- ^ CPU domain clock
+  , socCPURst :: Bit 1
+    -- ^ CPU domain reset
+  , socSIMTClk :: Bit 1
+    -- ^ SIMT domain clock
+  , socSIMTRst :: Bit 1
+    -- ^ SIMT domain reset
+  , socUARTIns :: AvalonJTAGUARTIns
+    -- ^ JTAG UART inputs (CPU domain)
   , socDRAMIns :: AvalonDRAMIns
+    -- ^ DRAM inputs (SIMT domain)
   }
   deriving (Generic, Interface)
 
 -- | SoC outputs
 data SoCOuts =
   SoCOuts {
-    -- | JTAG UART outputs
     socUARTOuts :: AvalonJTAGUARTOuts
-    -- | DRAM outputs
+    -- ^ JTAG UART outputs (CPU domain)
   , socDRAMOuts :: AvalonDRAMOuts
+    -- ^ DRAM outputs (SIMT domain)
   }
   deriving (Generic, Interface)
 
--- SoC top-level module
--- ====================
+-- Sub-domain interfaces
+-- =====================
 
--- | SoC top-level
-makeTop :: SoCIns -> Module SoCOuts
-makeTop socIns = mdo
-  -- Instruction memory alignment requirement
-  staticAssert (MemBase `mod` (4 * 2^CPUInstrMemLogWords) == 0)
-    "makeTop: Instruction memory alignment requirement not met"
+-- The SoC is split into two clock domains: one for the CPU and data
+-- cache, and the other for the SIMT core and everything else.  The
+-- domains are connected using Avalon streams, allowing clock-crossing
+-- to be handled by Intel IP.
 
-  -- Scalar core
-  cpuOuts <- makeCPUCore
-    ScalarCoreIns {
-      scalarUartIn = fromUART
-    , scalarMemUnit = cpuMemUnit
-    , scalarSIMTResps = simtMgmtResps
-    }
+-- | Inputs to the CPU domain
+data CPUDomainIns =
+  CPUDomainIns {
+    cpuDomainUARTIns :: AvalonJTAGUARTIns
+  , cpuDomainFromDRAM :: Stream (DRAMResp ())
+  , cpuDomainFromSIMT :: Stream SIMTResp
+  }
+  deriving (Generic, Interface)
 
-  -- Data cache
-  (cpuMemUnit, dramReqs0) <- makeCPUDataCache dramResps0
+-- | Outputs from the CPU domain
+data CPUDomainOuts =
+  CPUDomainOuts {
+    cpuDomainUARTOuts :: AvalonJTAGUARTOuts
+  , cpuDomainToDRAM :: Stream (DRAMReq ())
+  , cpuDomainToSIMT :: Stream SIMTReq
+  }
+  deriving (Generic, Interface)
 
-  -- SIMT core
-  simtMgmtResps <- makeSIMTAccelerator
-    (cpuOuts.scalarSIMTReqs)
-    simtMemUnits
+-- | Inputs to the SIMT domain
+data SIMTDomainIns =
+  SIMTDomainIns {
+    simtDomainDRAMIns :: AvalonDRAMIns
+  , simtDomainMgmtReqsFromCPU :: Stream SIMTReq
+  , simtDomainDRAMReqsFromCPU :: Stream (DRAMReq ())
+  }
+  deriving (Generic, Interface)
 
-  -- SIMT memory subsystem
-  (simtMemUnits, dramReqs1) <- makeSIMTMemSubsystem dramResps1
+-- | Outputs from the SIMT domain
+data SIMTDomainOuts =
+  SIMTDomainOuts {
+    simtDomainDRAMOuts :: AvalonDRAMOuts
+  , simtDomainMgmtRespsToCPU :: Stream SIMTResp
+  , simtDomainDRAMRespsToCPU :: Stream (DRAMResp ())
+  }
+  deriving (Generic, Interface)
 
-  -- DRAM bus
-  ((dramResps0, dramResps1), dramReqs) <-
-    makeDRAMBus (dramReqs0, dramReqs1) dramResps
+-- CPU domain
+-- ==========
 
-  -- Optional tag controller
-  (dramResps, dramFinalReqs) <-
-    if EnableTaggedMem == 1
-      then makeTagController dramReqs dramFinalResps
-      else makeNullTagController dramReqs dramFinalResps
+-- | CPU domain containing scalar core and L1 data cache
+makeCPUDomain :: (Clock, Reset) -> CPUDomainIns -> Module CPUDomainOuts
+makeCPUDomain (clk, rst) =
+  makeBoundaryWithClockAndReset (clk, rst) "CPUDomain" \ins -> mdo
 
-  -- DRAM instance
-  -- (No DRAM buffering needed when tag controller is in use;
-  -- it performs its own buffering)
-  (dramFinalResps, avlDRAMOuts) <-
-    if EnableTaggedMem == 1
-      then makeDRAMUnstoppable dramFinalReqs (socIns.socDRAMIns)
-      else makeDRAM dramFinalReqs (socIns.socDRAMIns)
+    -- Scalar core
+    cpuOuts <- makeCPUCore
+      ScalarCoreIns {
+        scalarUartIn = fromUART
+      , scalarMemUnit = cpuMemUnit
+      , scalarSIMTResps = ins.cpuDomainFromSIMT
+      }
+ 
+    -- Data cache
+    (cpuMemUnit, dramReqs) <- makeCPUDataCache
+      (ins.cpuDomainFromDRAM)
 
-  -- Avalon JTAG UART wrapper module
-  (fromUART, avlUARTOuts) <- makeJTAGUART
-    (cpuOuts.scalarUartOut)
-    (socIns.socUARTIns)
+    -- Avalon JTAG UART wrapper module
+    (fromUART, avlUARTOuts) <- makeJTAGUART
+      (cpuOuts.scalarUartOut)
+      (ins.cpuDomainUARTIns)
 
-  return
-    SoCOuts {
-      socUARTOuts = avlUARTOuts
-    , socDRAMOuts = avlDRAMOuts
-    }
+    return
+      CPUDomainOuts {
+        cpuDomainUARTOuts = avlUARTOuts
+      , cpuDomainToDRAM = dramReqs
+      , cpuDomainToSIMT = cpuOuts.scalarSIMTReqs
+      }
 
 -- CPU core (synthesis boundary)
 makeCPUCore = makeBoundary "CPUCore" (makeScalarCore config)
@@ -130,6 +158,49 @@ makeCPUCore = makeBoundary "CPUCore" (makeScalarCore config)
 
 -- CPU data cache (synthesis boundary)
 makeCPUDataCache = makeBoundary "CPUDataCache" (makeSBDCache @InstrInfo)
+
+-- SIMT domain
+-- ===========
+
+makeSIMTDomain :: (Clock, Reset) -> SIMTDomainIns -> Module SIMTDomainOuts
+makeSIMTDomain (clk, rst) =
+  makeBoundaryWithClockAndReset (clk, rst) "SIMTDomain" \ins -> mdo
+
+    let dramReqs0 = ins.simtDomainDRAMReqsFromCPU
+    let simtMgmtReqs = ins.simtDomainMgmtReqsFromCPU
+
+    -- SIMT core
+    simtMgmtResps <- makeSIMTAccelerator
+      simtMgmtReqs
+      simtMemUnits
+
+    -- SIMT memory subsystem
+    (simtMemUnits, dramReqs1) <- makeSIMTMemSubsystem dramResps1
+
+    -- DRAM bus
+    ((dramResps0, dramResps1), dramReqs) <-
+      makeDRAMBus (dramReqs0, dramReqs1) dramResps
+
+    -- Optional tag controller
+    (dramResps, dramFinalReqs) <-
+      if EnableTaggedMem == 1
+        then makeTagController dramReqs dramFinalResps
+        else makeNullTagController dramReqs dramFinalResps
+
+    -- DRAM instance
+    -- (No DRAM buffering needed when tag controller is in use;
+    -- it performs its own buffering)
+    (dramFinalResps, avlDRAMOuts) <-
+      if EnableTaggedMem == 1
+        then makeDRAMUnstoppable dramFinalReqs (ins.simtDomainDRAMIns)
+        else makeDRAM dramFinalReqs (ins.simtDomainDRAMIns)
+
+    return
+      SIMTDomainOuts {
+        simtDomainDRAMOuts = avlDRAMOuts
+      , simtDomainMgmtRespsToCPU = simtMgmtResps
+      , simtDomainDRAMRespsToCPU = dramResps0
+      }
 
 -- SIMT accelerator (synthesis boundary)
 makeSIMTAccelerator = makeBoundary "SIMTAccelerator" (makeSIMTCore config)
@@ -239,6 +310,66 @@ makeSIMTCoalescingUnit isBankedSRAMAccess =
 makeSIMTBankedSRAMs route =
   makeBoundary "SIMTBankedSRAMs"
     (makeBankedSRAMs @(BankInfo SIMTMemReqId) route)
+
+-- SoC top-level module
+-- ====================
+
+-- | SoC top-level. No always blocks (implicit clock ignored).
+makeTop :: SoCIns -> Module SoCOuts
+makeTop socIns = mdo
+  -- Instruction memory alignment requirement
+  staticAssert (MemBase `mod` (4 * 2^CPUInstrMemLogWords) == 0)
+    "makeTop: Instruction memory alignment requirement not met"
+
+  -- Clock and reset for each domain
+  let cpuClkRst = (Clock $ socIns.socCPUClk, Reset $ socIns.socCPURst)
+  let simtClkRst = (Clock $ socIns.socSIMTClk, Reset $ socIns.socSIMTRst)
+
+  -- CPU domain
+  cpuOuts <- makeCPUDomain cpuClkRst
+    CPUDomainIns {
+      cpuDomainUARTIns = socIns.socUARTIns
+    , cpuDomainFromDRAM = dramResps
+    , cpuDomainFromSIMT = simtMgmtResps
+    }
+
+  -- SIMT domain
+  simtOuts <- makeSIMTDomain simtClkRst
+    SIMTDomainIns {
+      simtDomainDRAMIns = socIns.socDRAMIns
+    , simtDomainMgmtReqsFromCPU = simtMgmtReqs
+    , simtDomainDRAMReqsFromCPU = dramReqs
+    }
+
+  -- SIMT management reqs (CPU -> SIMT)
+  simtMgmtReqs <- makeAvalonStreamClockCrosser
+    cpuClkRst
+    simtClkRst
+    (cpuOuts.cpuDomainToSIMT)
+
+  -- SIMT management resps (SIMT -> CPU)
+  simtMgmtResps <- makeAvalonStreamClockCrosser
+    simtClkRst
+    cpuClkRst
+    (simtOuts.simtDomainMgmtRespsToCPU)
+
+  -- DRAM reqs (CPU -> SIMT)
+  dramReqs <- makeAvalonStreamClockCrosser
+    cpuClkRst
+    simtClkRst
+    (cpuOuts.cpuDomainToDRAM)
+
+  -- DRAM resps (SIMT -> CPU)
+  dramResps <- makeAvalonStreamClockCrosser
+    simtClkRst
+    cpuClkRst
+    (simtOuts.simtDomainDRAMRespsToCPU)
+
+  return
+    SoCOuts {
+      socUARTOuts = cpuOuts.cpuDomainUARTOuts
+    , socDRAMOuts = simtOuts.simtDomainDRAMOuts
+    }
 
 -- Initialisation files
 -- ====================

@@ -10,7 +10,7 @@ BUILD_DIR = $(SIMTIGHT_ROOT)/src/build
 all:
 	$(BLC) -fno-cpr-anal $(BLC_FLAGS) -i$(PEBBLES_ROOT)/src $(BLC_INC) \
     -hidir $(BUILD_DIR) -odir $(BUILD_DIR) Main.hs -o Main
-	./Main
+	./Main --enable-dont-care-de-inline
 	@cp *.mif $(SIMTIGHT_ROOT)/de10-pro 2> /dev/null || true
 	@cp *.hex $(SIMTIGHT_ROOT)/sim 2> /dev/null || true
 
