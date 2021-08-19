@@ -123,18 +123,13 @@ $ cd cheribuild
 $ ./cheribuild.py sdk-riscv64-purecap
 ```
 
-By default, this will install the compiler into `~/cheri/`.  We then
-need to add the compiler to our `PATH`:
+Note that a clean build on or after 19 Aug 2021 is required.  By
+default, this will install the compiler into `~/cheri/`.  We then need
+to add the compiler to our `PATH`:
 
 ```sh
 export PATH=~/cheri/output/sdk/bin:$PATH
 ```
-
-Note that `~/cheri/llvm-project` must contain [this
-commit](https://github.com/CTSRD-CHERI/llvm-project/commit/892800be5c766e82b0335c10f311ed86b5e2d893).
-If it doesn't, then we need to do a `git checkout dev` in the
-`~/cheri/llvm-project` directory and rerun `cheribuild.py
-sdk-riscv64-purecap`.
 
 We musn't forget to `make clean` in the root of the SIMTight repo any
 time [inc/Config.h](inc/Config.h) is changed.  At this point, all of

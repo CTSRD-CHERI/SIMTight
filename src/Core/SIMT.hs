@@ -67,16 +67,16 @@ makeSIMTExecuteStage ::
   -> Maybe Int
      -- ^ Use intel divider? (If so, what is its latency?)
   -> SIMTExecuteIns -> State -> Module ExecuteStage
-makeSIMTExecuteStage enCHERI useIntelDiv =
+makeSIMTExecuteStage enCHERI useFullDiv =
   makeBoundary "SIMTExecuteStage" \ins s -> do
     -- Multiplier per vector lane
     mulUnit <- makeFullMulUnit
 
     -- Divider per vector lane
     divUnit <-
-      case useIntelDiv of
+      case useFullDiv of
         Nothing -> makeSeqDivUnit
-        Just latency -> makeIntelDivUnit latency
+        Just latency -> makeFullDivUnit latency
 
     -- SIMT warp control CSRs
     csr_WarpCmd <- makeCSR_WarpCmd (ins.execLaneId) (ins.execWarpCmd)
@@ -144,8 +144,9 @@ data SIMTCoreConfig =
     -- ^ Enable CHERI extensions?
   , simtCoreCapRegInitFile :: Maybe String
     -- ^ File containing initial capability register file (meta-data only)
-  , simtCoreUseIntelDivider :: Maybe Int
-    -- ^ Use fast Intel divider? (If so, what latency? If not, slow seq divider used)
+  , simtCoreUseFullDivider :: Maybe Int
+    -- ^ Use full throughput divider?
+    -- (If so, what latency? If not, slow seq divider used)
   }
 
 -- | RV32IM SIMT core
@@ -193,7 +194,7 @@ makeSIMTCore config mgmtReqs memUnitsVec = mdo
         , executeStage =
             [ makeSIMTExecuteStage
                 (config.simtCoreEnableCHERI)
-                (config.simtCoreUseIntelDivider)
+                (config.simtCoreUseFullDivider)
                 SIMTExecuteIns {
                   execLaneId = fromInteger i
                 , execWarpId = pipelineOuts.simtCurrentWarpId.truncate

@@ -19,13 +19,7 @@ ip: checkenv
 	make -C $(SIMTIGHT_ROOT)/src
 	make -C $(SIMTIGHT_ROOT)/boot
 	quartus_ipgenerate DE10_Pro.qpf
-	# Due to a bug in Intel's code gen for the clock crossing IP,
-	# we use sed to ensure the DATA_WIDTH parameter is actually used
-	# to define the Avalon stream width
-	sed -i 's/\[7:0\] in_data/[DATA_WIDTH-1:0] in_data/g' \
-    ip/AvalonStreamClockCrosser/synth/AvalonStreamClockCrosser.v
-	sed -i 's/\[7:0\] out_data/[DATA_WIDTH-1:0] out_data/g' \
-    ip/AvalonStreamClockCrosser/synth/AvalonStreamClockCrosser.v
+	../pebbles/blarney/blarney-vendor-ip/IntelFPGA/AvalonStreamClockCrosser/post-ipgenerate.sh
 
 .PHONY: report
 report: checkenv
@@ -45,7 +39,7 @@ download-sof: checkenv
 clean:
 	rm -rf tmp-clearbox synth_dumps qdb output_files
 	rm -rf DE10_Pro_QSYS reset_release
-	rm -rf ip/IntelDivider ip/AvalonStreamClockCrosser
+	rm -rf ../pebbles/blarney/blarney-vendor-ip/IntelFPGA/AvalonStreamClockCrosser/AvalonStreamClockCrosser
 	rm -f DE10_Pro.qws *.rpt *.csv *.mif
 	ls ip/DE10_Pro_QSYS/ | grep -v -E '\.ip$$' \
     | xargs -i rm -rf ip/DE10_Pro_QSYS/{}

@@ -14799,6 +14799,11 @@
  <connection
    kind="reset"
    version="19.2"
+   start="emif_s10_ddr4_b.emif_usr_reset_n"
+   end="SIMTight_0.simt_reset" />
+ <connection
+   kind="reset"
+   version="19.2"
    start="reset_in.out_reset"
    end="SIMTight_0.cpu_reset" />
  <connection

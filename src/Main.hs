@@ -13,6 +13,7 @@ import Blarney.SourceSink
 import Blarney.Connectable
 import Blarney.Interconnect
 import qualified Blarney.Vector as V
+import Blarney.VendorIP.StreamClockCrosser
 
 -- Pebbles imports
 import Pebbles.IO.JTAGUART
@@ -32,7 +33,6 @@ import Pebbles.Pipeline.SIMT.Management
 -- SIMTight imports
 import Core.SIMT
 import Core.Scalar
-import Util.ClockCross
 
 -- SoC top-level interface
 -- =======================
@@ -71,7 +71,7 @@ data SoCOuts =
 -- The SoC is split into two clock domains: one for the CPU and data
 -- cache, and the other for the SIMT core and everything else.  The
 -- domains are connected using Avalon streams, allowing clock-crossing
--- to be handled by Intel IP.
+-- to be handled by vendor IP.
 
 -- | Inputs to the CPU domain
 data CPUDomainIns =
@@ -216,9 +216,9 @@ makeSIMTAccelerator = makeBoundary "SIMTAccelerator" (makeSIMTCore config)
           if EnableCHERI == 1
             then Just (simtCapRegInitFile ++ ".mif")
             else Nothing
-      , simtCoreUseIntelDivider =
-          if SIMTUseIntelDivider == 1
-            then Just SIMTIntelDividerLatency
+      , simtCoreUseFullDivider =
+          if SIMTUseFullDivider == 1
+            then Just SIMTFullDividerLatency
             else Nothing
       }
 
@@ -342,25 +342,25 @@ makeTop socIns = mdo
     }
 
   -- SIMT management reqs (CPU -> SIMT)
-  simtMgmtReqs <- makeAvalonStreamClockCrosser
+  simtMgmtReqs <- makeStreamClockCrosser
     cpuClkRst
     simtClkRst
     (cpuOuts.cpuDomainToSIMT)
 
   -- SIMT management resps (SIMT -> CPU)
-  simtMgmtResps <- makeAvalonStreamClockCrosser
+  simtMgmtResps <- makeStreamClockCrosser
     simtClkRst
     cpuClkRst
     (simtOuts.simtDomainMgmtRespsToCPU)
 
   -- DRAM reqs (CPU -> SIMT)
-  dramReqs <- makeAvalonStreamClockCrosser
+  dramReqs <- makeStreamClockCrosser
     cpuClkRst
     simtClkRst
     (cpuOuts.cpuDomainToDRAM)
 
   -- DRAM resps (SIMT -> CPU)
-  dramResps <- makeAvalonStreamClockCrosser
+  dramResps <- makeStreamClockCrosser
     simtClkRst
     cpuClkRst
     (simtOuts.simtDomainDRAMRespsToCPU)

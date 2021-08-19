@@ -47,11 +47,11 @@ NOTE("Enable SIMT stat counters")
 NOTE("Size of SRAM multicast id in coalescing unit")
 #define SIMTMcastIdSize 4
 
-NOTE("Use full-throughput Intel divider (rather than sequential divider)")
-#define SIMTUseIntelDivider 0
+NOTE("Use full-throughput divider (rather than sequential divider)")
+#define SIMTUseFullDivider 0
 
-NOTE("Latency of full-throughput Intel divider")
-#define SIMTIntelDividerLatency 12
+NOTE("Latency of full-throughput divider")
+#define SIMTFullDividerLatency 12
 
 NOTE("CPU configuration")
 NOTE("=================")
