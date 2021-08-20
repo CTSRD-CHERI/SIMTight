@@ -127,6 +127,8 @@ makeScalarCore config inputs = mdo
     ScalarPipelineConfig {
       instrMemInitFile = config.scalarCoreInstrMemInitFile
     , instrMemLogNumInstrs = config.scalarCoreInstrMemLogNumInstrs
+    , enableRegForwarding =
+        if config.scalarCoreEnableCHERI then False else True
     , initialPC = config.scalarCoreInitialPC
     , capRegInitFile = config.scalarCoreCapRegInitFile
     , decodeStage = concat
