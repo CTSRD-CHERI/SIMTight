@@ -62,6 +62,9 @@ NOTE("Size of tightly coupled instruction memory")
 NOTE("Number of cache lines (line size == DRAM beat size)")
 #define SBDCacheLogLines 9
 
+NOTE("Use register forwarding for increased IPC but possibly lower Fmax?")
+#define CPUEnableRegForwarding 0
+
 NOTE("Tagged memory")
 NOTE("=============")
 

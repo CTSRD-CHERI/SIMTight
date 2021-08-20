@@ -43,6 +43,8 @@ data ScalarCoreConfig =
     -- ^ Size of tightly coupled instruction memory
   , scalarCoreInitialPC :: Integer
     -- ^ Initial PC
+  , scalarCoreEnableRegForwarding :: Bool
+    -- ^ Enable register forwading to avoid data hazards
   , scalarCoreEnableCHERI :: Bool
     -- ^ Enable CHERI extensions
   , scalarCoreCapRegInitFile :: Maybe String
@@ -127,8 +129,7 @@ makeScalarCore config inputs = mdo
     ScalarPipelineConfig {
       instrMemInitFile = config.scalarCoreInstrMemInitFile
     , instrMemLogNumInstrs = config.scalarCoreInstrMemLogNumInstrs
-    , enableRegForwarding =
-        if config.scalarCoreEnableCHERI then False else True
+    , enableRegForwarding = config.scalarCoreEnableRegForwarding
     , initialPC = config.scalarCoreInitialPC
     , capRegInitFile = config.scalarCoreCapRegInitFile
     , decodeStage = concat

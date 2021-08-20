@@ -149,6 +149,7 @@ makeCPUCore = makeBoundary "CPUCore" (makeScalarCore config)
         scalarCoreInstrMemInitFile = Just "boot.mif"
       , scalarCoreInstrMemLogNumInstrs = CPUInstrMemLogWords
       , scalarCoreInitialPC = MemBase
+      , scalarCoreEnableRegForwarding = CPUEnableRegForwarding == 1
       , scalarCoreEnableCHERI = EnableCHERI == 1
       , scalarCoreCapRegInitFile =
           if EnableCHERI == 1
