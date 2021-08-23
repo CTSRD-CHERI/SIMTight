@@ -253,12 +253,12 @@ makeSIMTMemSubsystem dramResps = mdo
                 }
               )
           }
-    let memReqs1 = map (mapSource prepareReq) memReqs
+    let memReqs1 = mapSource (V.map (fmap prepareReq)) memReqs
 
     -- Coalescing unit
     (memResps, sramReqs, dramReqs) <-
       makeSIMTCoalescingUnit isBankedSRAMAccess
-        (V.fromList memReqs1) dramResps sramResps
+        memReqs1 dramResps sramResps
 
     -- Banked SRAMs
     let sramRoute info = info.bankLaneId
