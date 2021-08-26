@@ -14,7 +14,6 @@
 #define PROBLEM_SIZE_X 48
 #define PROBLEM_SIZE_Y 48
 #define BUF_SIZE ((PROBLEM_SIZE_X + 2 * STENCIL_REACH) * (PROBLEM_SIZE_Y + 2 * STENCIL_REACH))
-#define BUF_SIZE_IN_BYTES (BUF_SIZE * sizeof(int))
 
 void populate_in_buf(int *in_buf, int x_size, int y_size) {
   x_size = x_size + STENCIL_REACH * 2;
@@ -82,9 +81,9 @@ struct SimpleStencil : Kernel {
 };
 
 int main() {
-  simt_aligned int in_buf[BUF_SIZE_IN_BYTES];
-  simt_aligned int out_buf[BUF_SIZE_IN_BYTES];
-  int golden_out_buf[BUF_SIZE_IN_BYTES];
+  simt_aligned int in_buf[BUF_SIZE];
+  simt_aligned int out_buf[BUF_SIZE];
+  int golden_out_buf[BUF_SIZE];
 
   // Prepare buffers
   // Zero out the ouput buffers
