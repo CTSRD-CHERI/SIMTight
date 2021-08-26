@@ -123,7 +123,6 @@ int main() {
   puts("Self test: ");
   puts(ok ? "PASSED" : "FAILED");
   putchar('\n');
-  puts("Here\n");
 
   return 0;
 }
