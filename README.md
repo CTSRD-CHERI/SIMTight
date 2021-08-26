@@ -102,7 +102,7 @@ $ ./test.sh --fpga     # Assumes FPGA image built and FPGA connected via USB
 
 When running on FPGA, performance stats are also emitted.
 
-## Building with CHERI support :cherries:
+## Enabling CHERI :cherries:
 
 To enable CHERI, some additional preparation is required.  First, edit
 [inc/Config.h](inc/Config.h) and apply the following settings:

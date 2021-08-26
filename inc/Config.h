@@ -32,6 +32,9 @@ NOTE("Number of warps per SIMT core")
 #define SIMTWarps 64
 #define SIMTLogWarps 6
 
+NOTE("Use extra pipeline stage (pre-execute)?")
+#define SIMTUseExtraPreExecStage 1
+
 NOTE("Number of bits used to track divergence nesting level")
 #define SIMTLogMaxNestLevel 5
 

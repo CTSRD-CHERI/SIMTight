@@ -142,6 +142,8 @@ data SIMTCoreConfig =
     -- ^ Synthesis boundary on execute stage?
   , simtCoreEnableCHERI :: Bool
     -- ^ Enable CHERI extensions?
+  , simtCoreUseExtraPreExecStage :: Bool
+    -- ^ Extra pipeline stage?
   , simtCoreCapRegInitFile :: Maybe String
     -- ^ File containing initial capability register file (meta-data only)
   , simtCoreUseFullDivider :: Maybe Int
@@ -180,6 +182,7 @@ makeSIMTCore config mgmtReqs memUnitsVec = mdo
         , capRegInitFile = config.simtCoreCapRegInitFile
         , checkPCCFunc =
             if config.simtCoreEnableCHERI then Just checkPCC else Nothing
+        , useExtraPreExecStage = config.simtCoreUseExtraPreExecStage
         , decodeStage = concat
             [ decodeI
             , if config.simtCoreEnableCHERI
