@@ -1,6 +1,7 @@
 /**
  * A simple test stencil computation that computes the sum of each point 
  * and its four direct neighbours in a 2D grid.
+ * The implementation is very naive and optimised.
  *
  * Author: Paul Metzger 
  */
@@ -75,8 +76,8 @@ int main() {
   bool isSim = getchar();
 
   // Vector size for benchmarking
-  int problem_size_x = 1024;
-  int problem_size_y = 1024;
+  int problem_size_x = 512;
+  int problem_size_y = 512;
   if (isSim) {
     problem_size_x = 32;
     problem_size_y = 32;
