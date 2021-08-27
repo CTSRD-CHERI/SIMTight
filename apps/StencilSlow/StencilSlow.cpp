@@ -6,7 +6,6 @@
  */
 
 #include <NoCL.h>
-#include <Pebbles/UART/IO.h>
 
 #define DEBUG false
 
@@ -73,8 +72,7 @@ struct SimpleStencil : Kernel {
 
 int main() {
   // Are we in simulation?
-  //bool isSim = getchar();
-  bool isSim = true;
+  bool isSim = getchar();
 
   // Vector size for benchmarking
   int problem_size_x = 512;
