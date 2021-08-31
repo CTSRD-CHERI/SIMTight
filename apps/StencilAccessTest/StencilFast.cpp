@@ -73,7 +73,7 @@ int main() {
   int buf_size_y = 1024;
   if (isSim) {
     buf_size_x = 64;
-    buf_size_y = 128;
+    buf_size_y = 64;
   }
 
   const int buf_size = buf_size_x * buf_size_y;
