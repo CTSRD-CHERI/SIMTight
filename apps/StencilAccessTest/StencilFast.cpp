@@ -1,7 +1,6 @@
 /**
- * A simple test stencil computation that computes the sum of each point 
- * and its four direct neighbours in a 2D grid.
- * The implementation accesses memory in an aligned way and uses shared memory.
+ * Bad implementation of a stencil computation but it returns unexpected wrong
+ * results if run on the FPGA image.
  *
  * Author: Paul Metzger 
  */
