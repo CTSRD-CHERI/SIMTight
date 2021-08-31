@@ -11,7 +11,7 @@
 
 void populate_in_buf(int *in_buf, int x_size, int y_size) {
   for (int y = 0; y < y_size; ++y) {
-    for (int x = 0; x < x_size; ++x) in_buf[y * y_size + x] = 1; //x * y;
+    for (int x = 0; x < x_size; ++x) in_buf[y * x_size + x] = 1; //x * y;
   }
 }
 
@@ -20,13 +20,13 @@ void populate_in_buf(int *in_buf, int x_size, int y_size) {
 void generate_golden_output(int *in_buf, int *golden_out, int x_size, int y_size) {
   for (int y = 0; y < y_size; ++y) {
     for (int x = 0; x < x_size; ++x) {
-      const int ind = y * y_size + x;
+      const int ind = y * x_size + x;
 
       int result = in_buf[ind];
-      if (x < x_size - 1) result += in_buf[y * y_size + x + 1];
-      if (x > 0)          result += in_buf[y * y_size + x - 1];
-      if (y < y_size - 1) result += in_buf[(y + 1) * y_size + x];
-      if (y > 0)          result += in_buf[(y - 1) * y_size + x];
+      if (x < x_size - 1) result += in_buf[y * x_size + x + 1];
+      if (x > 0)          result += in_buf[y * x_size + x - 1];
+      if (y < y_size - 1) result += in_buf[(y + 1) * x_size + x];
+      if (y > 0)          result += in_buf[(y - 1) * x_size + x];
       golden_out[ind] = result;
     }
   }
@@ -54,13 +54,13 @@ struct SimpleStencil : Kernel {
   void kernel() {
     const int x = blockIdx.x * blockDim.x + threadIdx.x;
     const int y = blockIdx.y * blockDim.y + threadIdx.y;
-    const int ind = y * y_size + x;
+    const int ind = y * x_size + x;
     
     out_buf[ind] = in_buf[ind];
-    if (x < x_size - 1) out_buf[ind] += in_buf[y * y_size + x + 1];
-    if (x > 0)          out_buf[ind] += in_buf[y * y_size + x - 1];
-    if (y < y_size - 1) out_buf[ind] += in_buf[(y + 1) * y_size + x];
-    if (y > 0)          out_buf[ind] += in_buf[(y - 1) * y_size + x];
+    if (x < x_size - 1) out_buf[ind] += in_buf[y * x_size + x + 1];
+    if (x > 0)          out_buf[ind] += in_buf[y * x_size + x - 1];
+    if (y < y_size - 1) out_buf[ind] += in_buf[(y + 1) * x_size + x];
+    if (y > 0)          out_buf[ind] += in_buf[(y - 1) * x_size + x];
   }
 };
 
@@ -73,7 +73,7 @@ int main() {
   int buf_size_y = 1024;
   if (isSim) {
     buf_size_x = 64;
-    buf_size_y = 64;
+    buf_size_y = 128;
   }
 
   const int buf_size = buf_size_x * buf_size_y;
