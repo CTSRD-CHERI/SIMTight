@@ -10,3 +10,4 @@ clean:
 	make -C Scan clean
 	make -C MatVecMul clean
 	make -C MatMul clean
+	make -C BlockedStencil clean
