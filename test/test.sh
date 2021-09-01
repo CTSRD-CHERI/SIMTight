@@ -9,6 +9,7 @@ APPS=(
   Transpose
   MatVecMul
   MatMul
+  BlockedStencil
 )
 
 RED='\033[0;31m'
