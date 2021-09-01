@@ -49,8 +49,7 @@ bool check_output(int *out_buf, int *golden_buf, int buf_size) {
 }
 
 struct SimpleStencil : Kernel {
-  int x_size = 0;
-  int y_size = 0;
+  int x_size, y_size;
   int *out_buf, *in_buf;
 
   void kernel() {
