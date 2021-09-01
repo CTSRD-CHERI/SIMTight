@@ -18,9 +18,9 @@ void populate_in_buf(int *in_buf, int x_size, int y_size) {
       // Elements on the border of the iteration space
       // have a value of 0.
       if (x == 0 || y == 0 || x == x_size - 1 || y == y_size - 1) {
-        in_buf[y * y_size + x] = 0;
+        in_buf[y * x_size + x] = 0;
       } else {
-        in_buf[y * y_size + x] = 1;
+        in_buf[y * x_size + x] = 1;
       }
     }
   }
@@ -34,11 +34,11 @@ void generate_golden_output(int *in_buf, int *golden_out, int x_size, int y_size
       if (x == 0 || y == 0 || x == x_size - 1 || y == y_size - 1) {
         continue; // Skip over border values
       } else {
-        golden_out[y * y_size + x] = in_buf[y * y_size + x] + 
-                                     in_buf[y * y_size + x + 1] +
-                                     in_buf[y * y_size + x - 1] + 
-                                     in_buf[(y + 1) * y_size + x] +
-                                     in_buf[(y - 1) * y_size + x];
+        golden_out[y * x_size + x] = in_buf[y * x_size + x] + 
+                                     in_buf[y * x_size + x + 1] +
+                                     in_buf[y * x_size + x - 1] + 
+                                     in_buf[(y + 1) * x_size + x] +
+                                     in_buf[(y - 1) * x_size + x];
       }
     }
   }
@@ -62,11 +62,11 @@ struct SimpleStencil : Kernel {
     const int x = blockIdx.x * blockDim.x + threadIdx.x;
     const int y = blockIdx.y * blockDim.y + threadIdx.y;
     if (x > 0 && y > 0 && x < x_size - 1 && y < y_size - 1) {
-      out_buf[y * y_size + x] = in_buf[y * y_size + x] +
-                                in_buf[y * y_size + x + 1] + 
-                                in_buf[y * y_size + x - 1] + 
-                                in_buf[(y + 1) * y_size + x] +
-                                in_buf[(y - 1) * y_size + x];
+      out_buf[y * x_size + x] = in_buf[y * x_size + x] +
+                                in_buf[y * x_size + x + 1] + 
+                                in_buf[y * x_size + x - 1] + 
+                                in_buf[(y + 1) * x_size + x] +
+                                in_buf[(y - 1) * x_size + x];
     }
   }
 };
