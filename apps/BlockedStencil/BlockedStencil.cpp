@@ -58,7 +58,7 @@ struct SimpleStencil : Kernel {
     const int ind = y * x_size + x;
 
     // Load values into local memory
-    auto c = shared.array<int, SIMTWarps, SIMTLanes>();
+    auto c = shared.array<int>(blockDim.y, blockDim.x);
     c[threadIdx.y][threadIdx.x] = in_buf[ind];
     __syncthreads();
 
@@ -115,11 +115,8 @@ int main() {
   int golden_out_buf[buf_size];
 
   // Prepare buffers
-  // Zero out the ouput buffers. This makes it easier to spot bugs.
-  for (int i = 0; i < buf_size; ++i) {
-    out_buf[i] = 0;
-    //golden_out_buf[i] = 0;
-  }
+  // Zero out the ouput buffer. This makes it easier to spot bugs.
+  for (int i = 0; i < buf_size; ++i) out_buf[i] = 0;
   populate_in_buf(in_buf, buf_size_x, buf_size_y);
   
   // Generate a golden output to check if
