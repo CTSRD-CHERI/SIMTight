@@ -169,9 +169,5 @@ int main() {
   puts(ok ? "PASSED" : "FAILED");
   putchar('\n');
 
-  // puts("SIMTLanes: ");
-  // puthex(SIMTLanes);
-  // putchar('\n');
-
   return 0;
 }
