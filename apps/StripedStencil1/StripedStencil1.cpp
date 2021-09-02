@@ -69,9 +69,9 @@ struct SimpleStencil : Kernel {
     
     // This is blockDim.x * 4 instead of * 3 so that we can replace modulo operations
     // with bitmasks.
-    //auto c = shared.array<int>(SIMTWarps, SIMTLanes * 4); //FIXME: The benchmark runs a lot slower in the simulator
-                                                            //and on the FPGA with this line instead of the following 
-                                                            //one or it hangs. I always aborted it after waiting for a while.
+    //auto c = shared.array<int>(SIMTWarps, SIMTLanes * 4); //FIXME: The benchmark runs a lot slower or hangs in the 
+                                                            //simulator and on the FPGA with this line instead of the 
+                                                            //following one. I always aborted it after waiting for a while.
     auto c = shared.array<int, SIMTWarps, SIMTLanes * 4>();
     c[threadIdx.y][MOD_4XSIMTLANES(x)] = in_buf[global_ind];
     for (int i = 0; i < x_size; i += SIMTLanes) {
