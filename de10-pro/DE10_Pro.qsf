@@ -1735,6 +1735,6 @@ set_global_assignment -name IP_FILE ip/DE10_Pro_QSYS/DE10_Pro_QSYS_mm_clockcross
 set_global_assignment -name SEARCH_PATH ../src
 set_global_assignment -name SEARCH_PATH ../pebbles/blarney/Verilog/Altera/
 set_global_assignment -name SEARCH_PATH ../pebbles/src/CHERI/Verilog/
-set_global_assignment -name SEED 10
+set_global_assignment -name SEED 1
 set_global_assignment -name IP_FILE ../pebbles/blarney/blarney-vendor-ip/IntelFPGA/AvalonStreamClockCrosser/AvalonStreamClockCrosser.ip
 set_global_assignment -name VERILOG_FILE ../pebbles/blarney/blarney-vendor-ip/IntelFPGA/PipelinedDivider/PipelinedDivider.v
