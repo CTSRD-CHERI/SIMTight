@@ -22,7 +22,7 @@ endif
 
 ifeq ($(USE_CLANG), 1)
 CFLAGS     = -fuse-ld=lld -g
-RV_CC      = riscv64-unknown-freebsd-clang++
+RV_CC      = riscv64-unknown-freebsd-clang
 RV_LD      = riscv64-unknown-freebsd-ld.lld
 RV_OBJCOPY = riscv64-unknown-elf-objcopy
 else
@@ -44,7 +44,7 @@ CFLAGS := $(CFLAGS) -mabi=$(RV_ABI) -march=$(RV_ARCH) -O2 \
 CFILES = ../Common/Start.cpp \
          $(APP_CPP) \
          $(PEBBLES_ROOT)/lib/UART/IO.cpp \
-         $(PEBBLES_ROOT)/lib/baremetal.cpp
+         $(PEBBLES_ROOT)/lib/memcpy.c
 
 .PHONY: all
 all: Run
