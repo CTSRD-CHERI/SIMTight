@@ -92,14 +92,12 @@ cleanup() {
 # Preparation
 # ===========
 
-# Compile and run the circuit generator
-echo -n "SIMTight build: "
-make -s -C .. verilog > /dev/null
-assert $?
-
 # Prepare simulator
 SIM_PID=
 if [ "$TestSim" != "" ]; then
+  echo -n "SIMTight build: "
+  make -s -C .. verilog > /dev/null
+  assert $?
   echo -n "Simulator build: "
   make -s -C .. sim > /dev/null
   assert $?
@@ -122,11 +120,10 @@ if [ "$TestFPGA" != "" ] ; then
   echo -n "Quartus available: "
   JTAG_CABLE=$(type -P quartus)
   assert $?
-  # Build only if there's no bitfile already
+  # Cimplain if there's no bitfile ready
   if [ ! -f "../de10-pro/output_files/DE10_Pro.sof" ]; then
-     echo -n "Building FPGA image: "
-     make -s -C ../de10-pro one > /dev/null
-     assert $?
+     echo -n "No FPGA image found (run 'make' in 'de10-pro' dir)"
+     exit -1
   fi
   # Check that FPGA is visisble
   echo -n "FPGA available: "
