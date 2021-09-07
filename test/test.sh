@@ -71,7 +71,7 @@ assert() {
     echo -ne "$2"
   fi
   if [ $1 != 0 ]; then
-    echo -ne "${RED}FAILED${NC}"
+    echo -e "${RED}FAILED${NC}$4"
     exit -1
   else
     echo -ne "${GREEN}ok${NC}"
@@ -120,11 +120,10 @@ if [ "$TestFPGA" != "" ] ; then
   echo -n "Quartus available: "
   JTAG_CABLE=$(type -P quartus)
   assert $?
-  # Cimplain if there's no bitfile ready
-  if [ ! -f "../de10-pro/output_files/DE10_Pro.sof" ]; then
-     echo -n "No FPGA image found (run 'make' in 'de10-pro' dir)"
-     exit -1
-  fi
+  # Look for FPGA image
+  echo -n "FPGA image available: "
+  test -f "../de10-pro/output_files/DE10_Pro.sof"
+  assert $? "" "" " (run 'make' in 'de10-pro' dir)"
   # Check that FPGA is visisble
   echo -n "FPGA available: "
   JTAG_CABLE=$(jtagconfig 2> /dev/null | grep DE10-Pro)
