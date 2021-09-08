@@ -194,27 +194,57 @@ template <typename K> __attribute__ ((noinline)) void _noclSIMTMain_() {
   K k = *kernelPtr;
 
   // Block dimensions are all powers of two
-  unsigned blockXMask = k.blockDim.x - 1;
-  unsigned blockYMask = k.blockDim.y - 1;
-  unsigned blockXShift = log2floor(k.blockDim.x);
-  unsigned blockYShift = log2floor(k.blockDim.y);
-  pebblesSIMTConverge();
+  unsigned threadXMask = k.blockDim.x - 1;
+  unsigned threadYMask = k.blockDim.y - 1;
+  unsigned threadXShift = log2floor(k.blockDim.x);
+  unsigned threadYShift = log2floor(k.blockDim.y);
 
   // Set thread index
-  k.threadIdx.x = pebblesHartId() & blockXMask;
-  k.threadIdx.y = (pebblesHartId() >> blockXShift) & blockYMask;
+  k.threadIdx.x = pebblesHartId() & threadXMask;
+  k.threadIdx.y = (pebblesHartId() >> threadXShift) & threadYMask;
   k.threadIdx.z = 0;
 
-  // Set initial block index
-  unsigned blockIdxWithinSM = pebblesHartId() >> (blockXShift + blockYShift);
-  k.blockIdx.x = blockIdxWithinSM;
-  k.blockIdx.y = 0;
+  // Unique id for thread block within SM
+  unsigned logThreadsUsed = threadXShift + threadYShift;
+  unsigned blockIdxWithinSM = pebblesHartId() >> logThreadsUsed;
+
+  // Number of hardware threads left for grid parallelism
+  unsigned logThreadsLeft = SIMTLogLanes + SIMTLogWarps - logThreadsUsed; 
+
+  // Allocate hardware threads in grid X dimension
+  unsigned gridXLogThreads = (1 << logThreadsLeft) <= k.gridDim.x
+    ? logThreadsLeft : log2floor(k.gridDim.x);
+  unsigned gridXThreads = 1 << gridXLogThreads;
+  unsigned gridXMask = gridXThreads - 1;
+  unsigned gridXBase = (pebblesHartId() >> logThreadsUsed) & gridXMask;
+  logThreadsUsed += gridXLogThreads;
+  logThreadsLeft -= gridXLogThreads;
+
+  // Allocate hardware threads in grid Y dimension
+  unsigned gridYLogThreads = (1 << logThreadsLeft) <= k.gridDim.y
+    ? logThreadsLeft : log2floor(k.gridDim.y);
+  unsigned gridYThreads = 1 << gridYLogThreads;
+  unsigned gridYMask = gridYThreads - 1;
+  unsigned gridYBase = (pebblesHartId() >> logThreadsUsed) & gridYMask;
+  logThreadsUsed += gridYLogThreads;
+  logThreadsLeft -= gridYLogThreads;
+
+  // Limitations for simplicity (TODO: relax)
+  assert(k.gridDim.x % gridXThreads == 0,
+    "gridDim.x is not a multiple of threads available in X dimension");
+  assert(k.gridDim.y % gridYThreads == 0,
+    "gridDim.y is not a multiple of threads available in Y dimension");
+
+  // Initialise block indices
+  k.blockIdx.x = gridXBase;
+  k.blockIdx.y = gridYBase;
 
   // Set base of shared local memory (per block)
   unsigned localBytes = 4 << (SIMTLogLanes + SIMTLogWordsPerSRAMBank);
   unsigned localBytesPerBlock = localBytes / k.blocksPerSM;
 
   // Invoke kernel
+  pebblesSIMTConverge();
   while (k.blockIdx.y < k.gridDim.y) {
     while (k.blockIdx.x < k.gridDim.x) {
       uint32_t localBase = LOCAL_MEM_BASE +
@@ -229,14 +259,14 @@ template <typename K> __attribute__ ((noinline)) void _noclSIMTMain_() {
       k.kernel();
       pebblesSIMTConverge();
       pebblesSIMTLocalBarrier();
-      k.blockIdx.x += k.blocksPerSM;
+      k.blockIdx.x += gridXThreads;
     }
     pebblesSIMTConverge();
-    k.blockIdx.x = blockIdxWithinSM;
-    k.blockIdx.y++;
+    k.blockIdx.x = gridXBase;
+    k.blockIdx.y += gridYThreads;
   }
 
-  // Issue a fence ensure all data has reached DRAM
+  // Issue a fence to ensure all data has reached DRAM
   pebblesFence();
 
   // Terminate warp
@@ -269,7 +299,7 @@ template <typename K> __attribute__ ((noinline))
   int noclRunKernel(K* k) {
     unsigned threadsPerBlock = k->blockDim.x * k->blockDim.y;
 
-    // Constraints (some of which are simply limitations)
+    // Limitations for simplicity (TODO: relax)
     assert(k->blockDim.z == 1,
       "NoCL: blockDim.z != 1 (3D thread blocks not yet supported)");
     assert(k->gridDim.z == 1,
