@@ -4,7 +4,7 @@ A simple stencil computation that computes the sum of each point and
 its four direct neighbours in a 2D grid.  A single thread block
 computes a single row of the output, minimising fetching of data in
 the X dimension.  Better use of shared memory is possible by computing
-multiple rows in each thread block, optimising repeated fetching of
+multiple rows in each thread block, reducing repeated fetching of
 data in the Y dimension.
 
 Authors: Paul Metzger, Matthew Naylor
