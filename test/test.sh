@@ -11,6 +11,7 @@ APPS=(
   MatMul
   BlockedStencil
   StripedStencil
+  StripedStencil2
 )
 
 RED='\033[0;31m'
