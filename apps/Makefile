@@ -11,3 +11,4 @@ clean:
 	make -C MatVecMul clean
 	make -C MatMul clean
 	make -C BlockedStencil clean
+	make -C StripedStencil clean
