@@ -1,6 +1,6 @@
-SIMTIGHT_ROOT = $(realpath ../../)
+SIMTIGHT_ROOT = $(realpath ../../../)
 
-APP_CPP = HelloWorld.cpp
+APP_CPP = MatMul.cpp
 APP_HDR = 
 RUN_CPP = Run.cpp
 RUN_H   =
