@@ -1,4 +1,5 @@
 SIMTIGHT_ROOT ?= $(realpath ../../)
+SIMTIGHT_APPS_ROOT ?= $(SIMTIGHT_ROOT)/apps
 PEBBLES_ROOT ?= $(realpath $(SIMTIGHT_ROOT)/pebbles)
 CONFIG_H = $(SIMTIGHT_ROOT)/inc/Config.h
 
@@ -41,7 +42,7 @@ CFLAGS := $(CFLAGS) -mabi=$(RV_ABI) -march=$(RV_ARCH) -O2 \
          -fno-builtin-printf -ffp-contract=off \
          -fno-builtin -ffreestanding -ffunction-sections
 
-CFILES = ../Common/Start.cpp \
+CFILES = $(SIMTIGHT_APPS_ROOT)/Common/Start.cpp \
          $(APP_CPP) \
          $(PEBBLES_ROOT)/lib/UART/IO.cpp \
          $(PEBBLES_ROOT)/lib/memcpy.c
@@ -59,7 +60,7 @@ data.v: app.elf
 app.elf: link.ld $(CFILES)
 	$(RV_CC) $(CFLAGS) -T link.ld -o app.elf $(CFILES)
 
-link.ld: ../Common/link.ld.h
+link.ld: $(SIMTIGHT_APPS_ROOT)/Common/link.ld.h
 	cpp -P -I $(SIMTIGHT_ROOT)/inc $< > link.ld
 
 Run: checkenv code.v data.v $(RUN_CPP) $(RUN_H)

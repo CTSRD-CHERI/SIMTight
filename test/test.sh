@@ -1,15 +1,16 @@
 #! /usr/bin/env bash
 
 APPS=(
-  VecAdd
-  VecGCD
-  Histogram
-  Reduce
-  Scan
-  Transpose
-  MatVecMul
-  MatMul
-  BlockedStencil
+  Samples/VecAdd
+  Samples/Histogram
+  Samples/Reduce
+  Samples/Scan
+  Samples/Transpose
+  Samples/MatVecMul
+  Samples/MatMul
+  InHouse/BlockedStencil
+  InHouse/StripedStencil
+  InHouse/VecGCD
 )
 
 RED='\033[0;31m'
@@ -197,12 +198,14 @@ if [ "$TestFPGA" != "" ] ; then
   echo "Apps (FPGA)"
   echo "==========="
   echo
+  tmpDir=$(mktemp -d -t simtight-test-XXXX)
   for APP in ${APPS[@]}; do
     echo -n "$APP (build): "
     make -s -C ../apps/$APP Run
     assert $?
     echo -n "$APP (run): "
-    tmpLog=$(mktemp -t pebbles-$APP-XXXX.log)
+    APP_MANGLED=$(echo $APP | tr '/' '-')
+    tmpLog=$tmpDir/$APP_MANGLED.log
     $(cd ../apps/$APP && ./Run > $tmpLog)
     OK=$(grep "Self test: PASSED" $tmpLog)
     CYCLES=$(grep Cycles: $tmpLog | cut -d' ' -f2)
