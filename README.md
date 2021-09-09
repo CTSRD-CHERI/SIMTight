@@ -12,10 +12,10 @@ sharing DRAM, both supporting the CHERI-RISC-V ISA.
 The SoC is optimised for high performance density on FPGA (MIPS per
 LUT).  A sample project is provided for the
 [DE10-Pro](http://de10-pro.terasic.com) development board.  There is
-also a [CUDA-like C++ library](soc/SIMTight/inc/NoCL.h) and a set of
-sample [compute kernels](soc/SIMTight/apps/) ported to this library.
-When CHERI is enabled, the kernels run in pure capability mode.
-The SoC is implemented in Haskell using the
+also a [CUDA-like C++ library](inc/NoCL.h) and a set of sample
+[compute kernels](apps/) ported to this library.  When CHERI is
+enabled, the kernels run in pure capability mode.  The SoC is
+implemented in Haskell using the
 [Blarney](https://github.com/blarney-lang/blarney) hardware
 description library and the
 [Pebbles](//github.com/blarney-lang/pebbles) RISC-V processor
