@@ -182,6 +182,7 @@ makeSIMTCore config mgmtReqs memUnitsVec = mdo
         , capRegInitFile = config.simtCoreCapRegInitFile
         , checkPCCFunc =
             if config.simtCoreEnableCHERI then Just checkPCC else Nothing
+        , enableCapRegFileTrace = EnableCapRegFileTrace == 1
         , useExtraPreExecStage = config.simtCoreUseExtraPreExecStage
         , decodeStage = concat
             [ decodeI

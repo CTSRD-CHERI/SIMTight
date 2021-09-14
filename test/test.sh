@@ -23,6 +23,8 @@ NC='\033[0m'
 TestSim=
 TestFPGA=
 NoPgm=
+AppsOnly=
+LogSim=
 
 # Arguments
 # =========
@@ -32,9 +34,11 @@ do
   case $1 in
     -h|--help)
       echo "Run test-suite and SIMTight examples"
-      echo "  --sim      run in simuatlion (verilator)"
-      echo "  --fpga     run on FPGA (de10-pro)"
-      echo "  --no-pgm   don't reprogram FPGA"
+      echo "  --sim        run in simuatlion (verilator)"
+      echo "  --fpga       run on FPGA (de10-pro)"
+      echo "  --no-pgm     don't reprogram FPGA"
+      echo "  --apps-only  run apps only (not test-suite)"
+      echo "  --log-sim    log simulator output to sim-log.txt"
       exit
       ;;
     --sim)
@@ -45,6 +49,12 @@ do
       ;;
     --no-pgm)
       NoPgm=yup
+      ;;
+    --apps-only)
+      AppsOnly=yup
+      ;;
+    --log-sim)
+      LogSim=yup
       ;;
     -?*)
       printf 'Ignoring unknown flag: %s\n' "$1" >&2
@@ -62,6 +72,8 @@ done
 if [ "$TestSim" == "" ] && [ "$TestFPGA" == "" ]; then
   TestSim=yup
 fi
+
+WorkingDir=`pwd`
 
 # Helper functions
 # ================
@@ -95,6 +107,7 @@ cleanup() {
 
 # Prepare simulator
 SIM_PID=
+SIM_LOG_FILE=sim-log.txt
 if [ "$TestSim" != "" ]; then
   echo -n "SIMTight build: "
   make -s -C .. verilog > /dev/null
@@ -105,12 +118,20 @@ if [ "$TestSim" != "" ]; then
   echo -n "Starting simulator: "
   pushd . > /dev/null
   cd ../sim
-  ./sim &
-  SIM_PID=$!
+  if [ "$LogSim" == "" ]; then
+    ./sim &
+    SIM_PID=$!
+  else
+    stdbuf -oL ./sim > $WorkingDir/$SIM_LOG_FILE &
+    SIM_PID=$!
+  fi
   sleep 1
   popd > /dev/null
   ps -p $SIM_PID > /dev/null
   assert $?
+  if [ "$LogSim" != "" ]; then
+    echo "Simulator log: $SIM_LOG_FILE"
+  fi
   trap cleanup EXIT
   echo
 fi
@@ -143,7 +164,7 @@ fi
 # ==========
 
 # In simulation
-if [ "$TestSim" != "" ]; then
+if [[ "$TestSim" != "" && "$AppsOnly" == "" ]]; then
   echo "Test Suite (Scalar, Simulation)"
   echo "==============================="
   echo
@@ -159,7 +180,7 @@ if [ "$TestSim" != "" ]; then
 fi
 
 # On FPGA
-if [ "$TestFPGA" != "" ] ; then
+if [[ "$TestFPGA" != "" && "$AppsOnly" == "" ]] ; then
   echo "Test Suite (Scalar, FPGA)"
   echo "========================="
   echo
