@@ -67,6 +67,8 @@ def simpleScalarise(trace):
   capRegFile = [ [ [ NullCap for reg in range(0,32) ]
                    for lane in range(0, WarpSize) ]
                  for warp in range(0, NumWarps) ]
+  # PCs where we've seen cap meta-data divergence
+  divergingPCs = []
   # Execute trace, looking for loss of scalarisation
   for rec in trace:
     if rec["op"] == "write" or rec["op"] == "resume":
@@ -83,13 +85,13 @@ def simpleScalarise(trace):
             if mask & (2**lane):
               caps.append(capRegFile[rec["warp"]][lane][rec[src]])
               addrs.append(regFile[rec["warp"]][lane][rec[src]])
-          if not allSame(caps):
+          if not allSame(caps) and rec["pc"] not in divergingPCs:
             print("Cap meta-data divergence for", src,
                   "at pc", hex(rec["pc"]))
             print(rec)
             for (cap, addr) in zip(caps, addrs):
               print(hex(cap), hex(addr))
-            sys.exit(-1)
+            divergingPCs.append(rec["pc"])
 
 # Check that reg file loads always read the same capability meta-data,
 # while maitaining only a per-warp (not per-thread) capability meta-data
@@ -100,6 +102,8 @@ def scalarise(trace):
                       for warp in range(0, NumWarps) ]
   uniformMask = [ [2**WarpSize-1 for reg in range(0, 32)]
                       for warp in range(0, NumWarps) ]
+  # PCs where we've seen cap meta-data divergence
+  divergingPCs = []
   # Execute trace, looking for loss of scalarisation
   for rec in trace:
     if rec["op"] == "write" or rec["op"] == "resume":
@@ -116,9 +120,10 @@ def scalarise(trace):
         reg = rec[src]
         if reg != 0:
           if (mask & uniformMask[rec["warp"]][rec[src]]) != mask:
-            print("Cap meta-data divergence for", src,
-                  "at pc", hex(rec["pc"]))
-            sys.exit(-1)
+            if rec["pc"] not in divergingPCs:
+              print("Cap meta-data divergence for", src,
+                    "at pc", hex(rec["pc"]))
+              divergingPCs.append(rec["pc"])
 
 count = 0
 for trace in parseTraces():
