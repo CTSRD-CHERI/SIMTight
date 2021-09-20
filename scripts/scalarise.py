@@ -73,7 +73,8 @@ def simpleScalarise(trace):
   for rec in trace:
     if rec["op"] == "write" or rec["op"] == "resume":
       regFile[rec["warp"]][rec["lane"]][rec["rd"]] = rec["addr"]
-      capRegFile[rec["warp"]][rec["lane"]][rec["rd"]] = rec["cap"]
+      capRegFile[rec["warp"]][rec["lane"]][rec["rd"]] = (
+        rec["valid"], rec["meta"], rec["base"], rec["top"])
     elif rec["op"] == "read":
       mask = rec["active"]
       for src in ["rs1", "rs2"]:
@@ -90,7 +91,7 @@ def simpleScalarise(trace):
                   "at pc", hex(rec["pc"]))
             print(rec)
             for (cap, addr) in zip(caps, addrs):
-              print(hex(cap), hex(addr))
+              print([hex(field) for field in cap], hex(addr))
             divergingPCs.append(rec["pc"])
 
 # Check that reg file loads always read the same capability meta-data,
@@ -108,11 +109,12 @@ def scalarise(trace):
   for rec in trace:
     if rec["op"] == "write" or rec["op"] == "resume":
       if rec["rd"] != 0:
+        writeVal = (rec["valid"], rec["meta"])
         currentVal = scalarRegFile[rec["warp"]][rec["rd"]]
-        if rec["cap"] == currentVal:
+        if writeVal == currentVal:
           uniformMask[rec["warp"]][rec["rd"]] |= 2 ** rec["lane"]
         else:
-          scalarRegFile[rec["warp"]][rec["rd"]] = rec["cap"]
+          scalarRegFile[rec["warp"]][rec["rd"]] = writeVal
           uniformMask[rec["warp"]][rec["rd"]] = 2 ** rec["lane"]
     elif rec["op"] == "read":
       mask = rec["active"]
