@@ -173,13 +173,13 @@ writeScalarCapRegFileMif :: String -> IO ()
 writeScalarCapRegFileMif filename =
   writeFile filename $ unlines $
     [ "DEPTH = 32;"
-    , "WIDTH = " ++ show (valueOf @InternalCapMetaDataWidth) ++ ";"
+    , "WIDTH = " ++ show (valueOf @CapPipeMetaWidth) ++ ";"
     , "ADDRESS_RADIX = DEC;"
     , "DATA_RADIX = HEX;"
     , "CONTENT"
     , "BEGIN"
     ] ++
-    [ show i ++ " : " ++ showHex nullCapMetaInteger ";"
+    [ show i ++ " : " ++ showHex nullCapPipeMetaInteger ";"
     | i <- [0..31]
     ] ++
     ["END"]
@@ -188,6 +188,6 @@ writeScalarCapRegFileMif filename =
 writeScalarCapRegFileHex :: String -> IO ()
 writeScalarCapRegFileHex filename =
   writeFile filename $ unlines $
-    [ showHex nullCapMetaInteger ""
+    [ showHex nullCapPipeMetaInteger ""
     | i <- [0..31]
     ]

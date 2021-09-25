@@ -252,13 +252,13 @@ writeSIMTCapRegFileMif :: Int -> String -> IO ()
 writeSIMTCapRegFileMif numWarps filename =
   writeFile filename $ unlines $
     [ "DEPTH = " ++ show numRegs ++ ";"
-    , "WIDTH = " ++ show (valueOf @InternalCapMetaDataWidth) ++ ";"
+    , "WIDTH = " ++ show (valueOf @CapMemMetaWidth) ++ ";"
     , "ADDRESS_RADIX = DEC;"
     , "DATA_RADIX = HEX;"
     , "CONTENT"
     , "BEGIN"
     ] ++
-    [ show i ++ " : " ++ showHex nullCapMetaInteger ";"
+    [ show i ++ " : " ++ showHex nullCapMemMetaInteger ";"
     | i <- [0..numRegs-1]
     ] ++
     ["END"]
@@ -269,7 +269,7 @@ writeSIMTCapRegFileMif numWarps filename =
 writeSIMTCapRegFileHex :: Int -> String -> IO ()
 writeSIMTCapRegFileHex numWarps filename =
   writeFile filename $ unlines $
-    [ showHex nullCapMetaInteger ""
+    [ showHex nullCapMemMetaInteger ""
     | i <- [0..numRegs-1]
     ]
   where
