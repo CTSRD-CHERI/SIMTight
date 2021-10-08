@@ -56,6 +56,9 @@ NOTE("Use full-throughput divider (rather than sequential divider)")
 NOTE("Latency of full-throughput divider")
 #define SIMTFullDividerLatency 12
 
+NOTE("Use shared immutable PCC meta-data for all threads in kernel?")
+#define SIMTUseSharedPCC 1
+
 NOTE("CPU configuration")
 NOTE("=================")
 
