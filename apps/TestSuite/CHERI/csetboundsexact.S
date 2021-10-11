@@ -28,9 +28,6 @@ RVTEST_CODE_BEGIN
   # Check that the length is correct
   TEST_CASE( 3, x2, 0x00001000, cgetlen x2, c1; );
 
-  # Check that the offset is correct
-  TEST_CASE( 4, x2, 0x00000000, cgetoffset x2, c1; );
-
   TEST_PASSFAIL
 
 RVTEST_CODE_END
