@@ -177,6 +177,7 @@ makeSIMTCore config mgmtReqs memUnitsVec = mdo
         , instrMemLogNumInstrs = config.simtCoreInstrMemLogNumInstrs
         , instrMemBase = config.simtCoreInstrMemBase
         , logNumWarps = SIMTLogWarps
+        , logWarpSize = SIMTLogLanes
         , logMaxNestLevel = SIMTLogMaxNestLevel
         , enableStatCounters = SIMTEnableStatCounters == 1
         , capRegInitFile = config.simtCoreCapRegInitFile
