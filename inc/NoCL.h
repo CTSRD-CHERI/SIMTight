@@ -240,7 +240,7 @@ template <typename K> __attribute__ ((noinline)) void _noclSIMTMain_() {
   k.blockIdx.y = gridYBase;
 
   // Set base of shared local memory (per block)
-  unsigned localBytes = 4 << (SIMTLogLanes + SIMTLogWordsPerSRAMBank);
+  unsigned localBytes = 4 << (SIMTLogSRAMBanks + SIMTLogWordsPerSRAMBank);
   unsigned localBytesPerBlock = localBytes / k.blocksPerSM;
 
   // Invoke kernel

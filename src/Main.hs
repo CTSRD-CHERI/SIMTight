@@ -262,8 +262,7 @@ makeSIMTMemSubsystem dramResps = mdo
         memReqs1 dramResps sramResps
 
     -- Banked SRAMs
-    let sramRoute info = info.bankLaneId
-    sramResps <- makeSIMTBankedSRAMs sramRoute sramReqs
+    sramResps <- makeSIMTBankedSRAMs sramReqs
 
     -- Process response from memory subsystem
     let processResp resp =
@@ -297,10 +296,9 @@ makeSIMTMemSubsystem dramResps = mdo
     -- (Local fence goes to banked SRAMs)
     isBankedSRAMAccess :: MemReq t_id -> Bit 1
     isBankedSRAMAccess req =
-      req.memReqOp .==. memLocalFenceOp .||.
-        (req.memReqOp .!=. memGlobalFenceOp .&&.
-           addr .<. fromInteger simtStacksStart .&&.
-             addr .>=. fromInteger sramBase)
+      (req.memReqOp .!=. memGlobalFenceOp .&&.
+         addr .<. fromInteger simtStacksStart .&&.
+           addr .>=. fromInteger sramBase)
       where addr = req.memReqAddr
 
 -- Coalescing unit (synthesis boundary)
@@ -309,9 +307,9 @@ makeSIMTCoalescingUnit isBankedSRAMAccess =
     (makeCoalescingUnit @SIMTMemReqId isBankedSRAMAccess)
 
 -- Banked SRAMs (synthesis boundary)
-makeSIMTBankedSRAMs route =
+makeSIMTBankedSRAMs =
   makeBoundary "SIMTBankedSRAMs"
-    (makeBankedSRAMs @(BankInfo SIMTMemReqId) route)
+    (makeBankedSRAMs @(BankInfo SIMTMemReqId))
 
 -- SoC top-level module
 -- ====================
