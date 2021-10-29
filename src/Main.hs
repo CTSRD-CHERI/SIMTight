@@ -309,7 +309,7 @@ makeSIMTCoalescingUnit isBankedSRAMAccess =
 -- Banked SRAMs (synthesis boundary)
 makeSIMTBankedSRAMs =
   makeBoundary "SIMTBankedSRAMs"
-    (makeBankedSRAMs @(BankInfo SIMTMemReqId))
+    (makeBankedSRAMs @SIMTMemReqId)
 
 -- SoC top-level module
 -- ====================
