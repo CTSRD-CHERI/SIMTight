@@ -248,7 +248,7 @@ makeSIMTMemSubsystem dramResps = mdo
           , memReqId =
               ( req.memReqId
               , MemReqInfo {
-                  memReqInfoAddr = req.memReqAddr.truncate
+                  memReqInfoAddr = truncate req.memReqAddr
                 , memReqInfoAccessWidth = req.memReqAccessWidth
                 , memReqInfoIsUnsigned = req.memReqIsUnsigned
                 }
@@ -268,12 +268,12 @@ makeSIMTMemSubsystem dramResps = mdo
     let processResp resp =
           resp {
             -- | Drop info, no longer needed
-            memRespId = resp.memRespId.fst
+            memRespId = fst resp.memRespId
             -- | Use info to mux loaded data
           , memRespData = loadMux (resp.memRespData)
-              (resp.memRespId.snd.memReqInfoAddr.truncate)
-              (resp.memRespId.snd.memReqInfoAccessWidth)
-              (resp.memRespId.snd.memReqInfoIsUnsigned)
+              (truncate (snd resp.memRespId).memReqInfoAddr)
+              ((snd resp.memRespId).memReqInfoAccessWidth)
+              ((snd resp.memRespId).memReqInfoIsUnsigned)
           }
     let memResps1 = map (mapSource processResp) (V.toList memResps)
 
