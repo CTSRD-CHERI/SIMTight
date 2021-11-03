@@ -41,8 +41,12 @@ NOTE("Number of bits used to track divergence nesting level")
 NOTE("Stack size (in bytes) for each SIMT thread")
 #define SIMTLogBytesPerStack 19
 
+NOTE("Number of SRAM banks")
+#define SIMTLogSRAMBanks 4
+#define SIMTSRAMBanks 16
+
 NOTE("Size of each SRAM bank (in words)")
-#define SIMTLogWordsPerSRAMBank 9
+#define SIMTLogWordsPerSRAMBank 10
 
 NOTE("Enable SIMT stat counters")
 #define SIMTEnableStatCounters 1

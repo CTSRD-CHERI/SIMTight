@@ -111,6 +111,8 @@ struct SimpleStencil : Kernel {
         + buffer[threadIdx.y][middle + threadIdx.x]
         + buffer[threadIdx.y][middle + threadIdx.x + 1];
 
+      __syncthreads();
+
       // Shift buffer
       buffer[threadIdx.y][left + threadIdx.x] =
         buffer[threadIdx.y][middle + threadIdx.x];
