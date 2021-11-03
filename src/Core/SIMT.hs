@@ -111,7 +111,7 @@ makeSIMTExecuteStage enCHERI useFullDiv =
 
     -- Resume queue
     resumeQueue <- makePipelineQueue 1
-    makeConnection resumeReqStream (resumeQueue.toSink)
+    makeConnection resumeReqStream (toSink resumeQueue)
 
     return
       ExecuteStage {
@@ -123,7 +123,7 @@ makeSIMTExecuteStage enCHERI useFullDiv =
             else do
               executeI_NoCap csrUnit memReqSink s
               executeA memReqSink s
-      , resumeReqs = resumeQueue.toStream
+      , resumeReqs = toStream resumeQueue
       }
 
 -- Core
@@ -203,7 +203,7 @@ makeSIMTCore config mgmtReqs memUnitsVec = mdo
                 (config.simtCoreUseFullDivider)
                 SIMTExecuteIns {
                   execLaneId = fromInteger i
-                , execWarpId = pipelineOuts.simtCurrentWarpId.truncate
+                , execWarpId = truncate pipelineOuts.simtCurrentWarpId
                 , execKernelAddr = pipelineOuts.simtKernelAddr
                 , execWarpCmd = warpCmdWire
                 , execMemUnit = memUnit
