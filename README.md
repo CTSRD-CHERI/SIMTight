@@ -23,16 +23,17 @@ framework.
 
 ## Build instructions
 
-We'll need Verilator, a RISC-V compiler, and a fairly recent version
-of GHC (8.6.1 or later).
+We'll need Verilator, a RISC-V compiler, and GHC 9.2.1 or later.
 
-On Ubuntu 20.04, we can simply do:
+On Ubuntu 20.04, we can do:
 
 ```sh
 $ sudo apt install verilator
 $ sudo apt install gcc-riscv64-unknown-elf
-$ sudo apt install ghc-8.6.5
 ```
+
+To get GHC 9.2.1 or later, [ghcup](https://www.haskell.org/ghcup/) can
+be used.
 
 Now, we recursively clone the repo:
 
