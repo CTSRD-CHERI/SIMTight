@@ -275,7 +275,7 @@ makeSIMTMemSubsystem dramResps = mdo
               ((snd resp.memRespId).memReqInfoAccessWidth)
               ((snd resp.memRespId).memReqInfoIsUnsigned)
           }
-    let memResps1 = map (mapSource processResp) (V.toList memResps)
+    let memResps1 = mapSource (V.map (fmap processResp)) memResps
 
     -- Ensure that the SRAM base address is suitably aligned
     -- (If so, remapping SRAM addresses is unecessary)
