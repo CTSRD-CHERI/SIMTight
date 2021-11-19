@@ -9,11 +9,14 @@ module Core.SIMT where
 import Blarney
 import Blarney.Queue
 import Blarney.Stream
+import Blarney.Option
 import Blarney.PulseWire
 import Blarney.SourceSink
 import Blarney.Connectable
+import Blarney.ClientServer
 import Blarney.Interconnect
-import Blarney.Vector (Vec, toList)
+import Blarney.Vector (Vec, toList, fromList)
+import Blarney.Vector qualified as V
 
 -- Pebbles imports
 import Pebbles.CSRs.Hart
@@ -21,10 +24,12 @@ import Pebbles.CSRs.CSRUnit
 import Pebbles.CSRs.Custom.Simulate
 import Pebbles.CSRs.Custom.SIMTDevice
 import Pebbles.Util.Counter
+import Pebbles.Util.SinkVectoriser
 import Pebbles.Pipeline.SIMT
 import Pebbles.Pipeline.SIMT.Management
 import Pebbles.Pipeline.Interface
 import Pebbles.Memory.Interface
+import Pebbles.Memory.CapSerDes
 import Pebbles.Memory.DRAM.Interface
 import Pebbles.Instructions.RV32_I
 import Pebbles.Instructions.RV32_M
@@ -56,27 +61,23 @@ data SIMTExecuteIns =
     -- ^ Kernel address
   , execWarpCmd :: Wire WarpCmd
     -- ^ Wire containing warp command
-  , execMemUnit :: MemUnit InstrInfo
-    -- ^ Memory unit interface for lane
+  , execMemReqs :: Sink MemReq
+    -- ^ Sink for memory requests
+  , execCapMemReqs :: Sink CapMemReq
+    -- ^ Sink for capability memory requests
+  , execMulReqs :: Sink MulReq
+    -- ^ Sink for multiplier requests
+  , execDivReqs :: Sink DivReq
+    -- ^ Sink for divider requests
   } deriving (Generic, Interface)
 
 -- | Execute stage for a SIMT lane (synthesis boundary)
 makeSIMTExecuteStage ::
      Bool
      -- ^ Enable CHERI?
-  -> Maybe Int
-     -- ^ Use intel divider? (If so, what is its latency?)
   -> SIMTExecuteIns -> State -> Module ExecuteStage
-makeSIMTExecuteStage enCHERI useFullDiv =
+makeSIMTExecuteStage enCHERI =
   makeBoundary "SIMTExecuteStage" \ins s -> do
-    -- Multiplier per vector lane
-    mulUnit <- makeFullMulUnit
-
-    -- Divider per vector lane
-    divUnit <-
-      case useFullDiv of
-        Nothing -> makeSeqDivUnit
-        Just latency -> makeFullDivUnit latency
 
     -- SIMT warp control CSRs
     csr_WarpCmd <- makeCSR_WarpCmd (ins.execLaneId) (ins.execWarpCmd)
@@ -90,40 +91,16 @@ makeSIMTExecuteStage enCHERI useFullDiv =
       ++ [csr_WarpCmd]
       ++ [csr_WarpGetKernel]
  
-    -- Memory requests from execute stage
-    (memReqSink, capMemReqSink) <-
-      if enCHERI
-        then do
-          capMemReqSink <- makeCapMemReqSink (ins.execMemUnit.memReqs)
-          let memReqSink = mapSink toCapMemReq capMemReqSink
-          return (memReqSink, capMemReqSink)
-        else return (ins.execMemUnit.memReqs, nullSink)
-
-    -- Pipeline resume requests from memory
-    memResumeReqs <- makeMemRespToResumeReq
-      enCHERI
-      (ins.execMemUnit.memResps)
-
-    -- Merge resume requests
-    let resumeReqStream =
-          memResumeReqs `mergeTwo`
-            mergeTwo (mulUnit.mulResps) (divUnit.divResps)
-
-    -- Resume queue
-    resumeQueue <- makePipelineQueue 1
-    makeConnection resumeReqStream (toSink resumeQueue)
-
     return
       ExecuteStage {
         execute = do
-          executeI (Just mulUnit) csrUnit memReqSink s
-          executeM mulUnit divUnit s
+          executeI (Just ins.execMulReqs) csrUnit ins.execMemReqs s
+          executeM ins.execMulReqs ins.execDivReqs s
           if enCHERI
-            then executeCHERI csrUnit capMemReqSink s
+            then executeCHERI csrUnit ins.execCapMemReqs s
             else do
-              executeI_NoCap csrUnit memReqSink s
-              executeA memReqSink s
-      , resumeReqs = toStream resumeQueue
+              executeI_NoCap csrUnit ins.execMemReqs s
+              executeA ins.execMemReqs s
       }
 
 -- Core
@@ -151,21 +128,84 @@ data SIMTCoreConfig =
     -- (If so, what latency? If not, slow seq divider used)
   }
 
--- | RV32IM SIMT core
+-- | 32-bit SIMT core
 makeSIMTCore ::
-     -- | Configuration parameters
      SIMTCoreConfig
-     -- | SIMT management requests
+     -- ^ Configuration parameters
   -> Stream SIMTReq
-     -- | Memory unit per vector lane
-  -> Vec SIMTLanes (MemUnit InstrInfo)
-     -- | SIMT management responses
+     -- ^ SIMT management requests
+  -> Sink (SIMTPipelineInstrInfo, Vec SIMTLanes (Option MemReq))
+     -- ^ Memory requests
+  -> Stream (SIMTPipelineInstrInfo, Vec SIMTLanes (Option MemResp))
+     -- ^ Memory responses
   -> Module (Stream SIMTResp)
-makeSIMTCore config mgmtReqs memUnitsVec = mdo
-  let memUnits = toList memUnitsVec
+     -- ^ SIMT management responses
+makeSIMTCore config mgmtReqs memReqs memResps = mdo
+  
+  -- Multiplier requests
+  -- ===================
+
+  -- Vector multiplier unit
+  vecMulUnit <- makeFullVecMulUnit
+
+  -- Per lane multiplier request sinks
+  mulSinks <- makeSinkVectoriser pipelineOuts.simtInstrInfo vecMulUnit.reqs
+
+  -- Divider requests
+  -- ================
+
+  -- Vector division unit
+  vecDivUnit <-
+    case config.simtCoreUseFullDivider of
+      Nothing -> makeSeqVecDivUnit
+      Just latency -> makeFullVecDivUnit latency
+
+  -- Per lane divider request sinks
+  divSinks <- makeSinkVectoriser pipelineOuts.simtInstrInfo vecDivUnit.reqs
+
+  -- Memory requests
+  -- ===============
 
   -- Apply stack address interleaving
-  let memUnits' = interleaveStacks memUnits
+  let ilv (info, vec) = (info, V.map (fmap interleaveStacks) vec)
+  let memReqsIlv = mapSink ilv memReqs
+
+  -- Per lane memory request sinks
+  (memReqSinks, capMemReqSinks) <-
+    if config.simtCoreEnableCHERI
+      then do
+        -- Serialise CapMemReq to MemReq
+        capMemReqs <- makeCapMemReqSerialiser memReqsIlv
+        -- Sink of vectors to vector of sinks
+        capMemSinks <-
+          makeSinkVectoriser pipelineOuts.simtInstrInfo capMemReqs
+        -- Convert vector to list
+        let capMemSinksList = toList capMemSinks
+        let memSinks = map (mapSink toCapMemReq) capMemSinksList
+        return (memSinks, capMemSinksList)
+      else do
+        -- Sink of vectors to vector of sinks
+        memSinks <- makeSinkVectoriser pipelineOuts.simtInstrInfo memReqsIlv
+        return (toList memSinks, replicate SIMTLanes nullSink)
+
+  -- Responses
+  -- =========
+
+  -- Pipeline resume requests from memory
+  memResumeReqs <- makeMemRespDeserialiser
+                     config.simtCoreEnableCHERI memResps
+
+  -- Merge resume requests
+  let resumeReqStream =
+        memResumeReqs `mergeTwo`
+          (vecMulUnit.resps `mergeTwo` vecDivUnit.resps)
+
+  -- Resume queue
+  resumeQueue <- makePipelineQueue 1
+  makeConnection resumeReqStream (toSink resumeQueue)
+
+  -- Pipeline
+  -- ========
 
   -- Wire for warp command
   warpCmdWire :: Wire WarpCmd <- makeWire dontCare
@@ -176,9 +216,6 @@ makeSIMTCore config mgmtReqs memUnitsVec = mdo
           instrMemInitFile = config.simtCoreInstrMemInitFile
         , instrMemLogNumInstrs = config.simtCoreInstrMemLogNumInstrs
         , instrMemBase = config.simtCoreInstrMemBase
-        , logNumWarps = SIMTLogWarps
-        , logWarpSize = SIMTLogLanes
-        , logMaxNestLevel = SIMTLogMaxNestLevel
         , enableStatCounters = SIMTEnableStatCounters == 1
         , capRegInitFile = config.simtCoreCapRegInitFile
         , checkPCCFunc =
@@ -200,15 +237,19 @@ makeSIMTCore config mgmtReqs memUnitsVec = mdo
         , executeStage =
             [ makeSIMTExecuteStage
                 (config.simtCoreEnableCHERI)
-                (config.simtCoreUseFullDivider)
                 SIMTExecuteIns {
                   execLaneId = fromInteger i
                 , execWarpId = truncate pipelineOuts.simtCurrentWarpId
                 , execKernelAddr = pipelineOuts.simtKernelAddr
                 , execWarpCmd = warpCmdWire
-                , execMemUnit = memUnit
+                , execMemReqs = memSink
+                , execCapMemReqs = capMemSink
+                , execMulReqs = mulSink
+                , execDivReqs = divSink
                 }
-            | (memUnit, i) <- zip memUnits' [0..] ]
+            | (memSink, capMemSink, mulSink, divSink, i) <-
+                zip5 memReqSinks capMemReqSinks
+                     (toList mulSinks) (toList divSinks) [0..] ]
         , simtPushTag = SIMT_PUSH
         , simtPopTag = SIMT_POP
         }
@@ -218,22 +259,17 @@ makeSIMTCore config mgmtReqs memUnitsVec = mdo
     SIMTPipelineIns {
       simtMgmtReqs = mgmtReqs
     , simtWarpCmdWire = warpCmdWire
+    , simtResumeReqs = toStream resumeQueue
     }
 
-  return (pipelineOuts.simtMgmtResps)
+  return pipelineOuts.simtMgmtResps
 
 -- | Stack address interleaver so that accesses to same stack
 -- offset by different threads in a warp are coalesced
-interleaveStacks :: [MemUnit id] -> [MemUnit id]
-interleaveStacks memUnits =
-    [ memUnit {
-        memReqs = mapSink interleaveReq (memUnit.memReqs)
-      }
-    | memUnit <- memUnits]
+interleaveStacks :: MemReq -> MemReq
+interleaveStacks req =
+    req { memReqAddr = interleaveAddr req.memReqAddr }
   where
-    interleaveReq :: MemReq id -> MemReq id
-    interleaveReq req = req { memReqAddr = interleaveAddr (req.memReqAddr) }
-
     interleaveAddr :: Bit 32 -> Bit 32
     interleaveAddr a =
       if top .==. ones

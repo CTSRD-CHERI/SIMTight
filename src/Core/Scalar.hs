@@ -6,6 +6,7 @@ module Core.Scalar where
 import Blarney
 import Blarney.Stream
 import Blarney.SourceSink
+import Blarney.ClientServer
 import Blarney.Interconnect
 
 -- Pebbles imports
@@ -26,6 +27,7 @@ import Pebbles.Instructions.Units.MulUnit
 import Pebbles.Instructions.Units.DivUnit
 import Pebbles.Instructions.Custom.CacheManagement
 import Pebbles.Memory.Interface
+import Pebbles.Memory.CapSerDes
 import Pebbles.Memory.DRAM.Interface
 
 -- CHERI imports
@@ -56,8 +58,10 @@ data ScalarCoreIns =
   ScalarCoreIns {
     scalarUartIn :: Stream (Bit 8)
     -- ^ UART input
-  , scalarMemUnit :: MemUnit InstrInfo
-    -- ^ Memory unit
+  , scalarMemReqs :: Sink (ScalarPipelineInstrInfo, MemReq)
+    -- ^ Sink for memory requests
+  , scalarMemResps :: Stream (ScalarPipelineInstrInfo, MemResp)
+    -- ^ Memory responses
   , scalarSIMTResps :: Stream SIMTResp
     -- ^ Management responses from SIMT core
   } deriving (Generic, Interface)
@@ -84,7 +88,7 @@ makeScalarCore config inputs = mdo
   (uartCSRs, uartOut) <- makeCSRs_UART (inputs.scalarUartIn)
 
   -- Instruction memory CSRs
-  imemCSRs <- makeCSRs_InstrMem (pipeline.writeInstr)
+  imemCSRs <- makeCSRs_InstrMem (pipelineOuts.writeInstr)
 
   -- SIMT management CSRs
   (simtReqs, simtCSRs) <- makeCSRs_SIMTHost (inputs.scalarSIMTResps)
@@ -109,55 +113,66 @@ makeScalarCore config inputs = mdo
 
   -- Divider
   divUnit <- makeSeqDivUnit
+ 
+  -- Insert request ids
+  let insertReqId :: t_req -> (ScalarPipelineInstrInfo, t_req)
+      insertReqId req = (pipelineOuts.instrInfo, req)
+  let mulReqs = mapSink insertReqId mulUnit.reqs
+  let divReqs = mapSink insertReqId divUnit.reqs
 
   -- Memory requests from core
   (memReqSink, capMemReqSink) <-
     if config.scalarCoreEnableCHERI
       then do
-        capMemReqSink <- makeCapMemReqSink (inputs.scalarMemUnit.memReqs)
+        capMemReqSink <- mapSink insertReqId <$>
+                           makeCapMemReqSerialiserOne (inputs.scalarMemReqs)
         let memReqSink = mapSink toCapMemReq capMemReqSink
         return (memReqSink, capMemReqSink)
-      else return (inputs.scalarMemUnit.memReqs, nullSink)
+      else return (mapSink insertReqId inputs.scalarMemReqs, nullSink)
 
   -- Pipeline resume requests from memory
-  memResumeReqs <- makeMemRespToResumeReq
-    (config.scalarCoreEnableCHERI)
-    (inputs.scalarMemUnit.memResps)
+  memResumeReqs <- makeMemRespDeserialiserOne
+    config.scalarCoreEnableCHERI
+    inputs.scalarMemResps
 
   -- Processor pipeline
-  pipeline <- makeScalarPipeline
-    ScalarPipelineConfig {
-      instrMemInitFile = config.scalarCoreInstrMemInitFile
-    , instrMemLogNumInstrs = config.scalarCoreInstrMemLogNumInstrs
-    , enableRegForwarding = config.scalarCoreEnableRegForwarding
-    , initialPC = config.scalarCoreInitialPC
-    , capRegInitFile = config.scalarCoreCapRegInitFile
-    , decodeStage = concat
-        [ decodeI
-        , if config.scalarCoreEnableCHERI then [] else decodeI_NoCap
-        , decodeM
-        , decodeCacheMgmt
-        , if config.scalarCoreEnableCHERI then decodeCHERI else []
-        ]
-    , executeStage = \s -> return
-        ExecuteStage {
-          execute = do
-            executeI Nothing csrUnit memReqSink s
-            executeM mulUnit divUnit s
-            executeCacheMgmt memReqSink s
-            if config.scalarCoreEnableCHERI
-              then executeCHERI csrUnit capMemReqSink s
-              else executeI_NoCap csrUnit memReqSink s
-        , resumeReqs = mergeTree
+  let pipelineConfig =
+        ScalarPipelineConfig {
+          instrMemInitFile = config.scalarCoreInstrMemInitFile
+        , instrMemLogNumInstrs = config.scalarCoreInstrMemLogNumInstrs
+        , enableRegForwarding = config.scalarCoreEnableRegForwarding
+        , initialPC = config.scalarCoreInitialPC
+        , capRegInitFile = config.scalarCoreCapRegInitFile
+        , decodeStage = concat
+            [ decodeI
+            , if config.scalarCoreEnableCHERI then [] else decodeI_NoCap
+            , decodeM
+            , decodeCacheMgmt
+            , if config.scalarCoreEnableCHERI then decodeCHERI else []
+            ]
+        , executeStage = \s -> return
+            ExecuteStage {
+              execute = do
+                executeI Nothing csrUnit memReqSink s
+                executeM mulReqs divReqs s
+                executeCacheMgmt memReqSink s
+                if config.scalarCoreEnableCHERI
+                  then executeCHERI csrUnit capMemReqSink s
+                  else executeI_NoCap csrUnit memReqSink s
+            }
+        , trapCSRs = trapRegs
+        , checkPCCFunc =
+            if config.scalarCoreEnableCHERI then Just checkPCC else Nothing
+        }
+  let pipelineIns =
+        ScalarPipelineIns {
+          resumeReqs = mergeTree
             [ memResumeReqs
-            , mulUnit.mulResps
-            , divUnit.divResps
+            , mulUnit.resps
+            , divUnit.resps
             ]
         }
-    , trapCSRs = trapRegs
-    , checkPCCFunc =
-        if config.scalarCoreEnableCHERI then Just checkPCC else Nothing
-    }
+  pipelineOuts <- makeScalarPipeline pipelineConfig pipelineIns
 
   return
     ScalarCoreOuts {
