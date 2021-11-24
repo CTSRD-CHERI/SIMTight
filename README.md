@@ -77,8 +77,8 @@ $ cd test
 $ ./test.sh            # Run in simulation
 ```
 
-To build an FPGA image (for the
-[DE10-Pro](http://de10-pro.terasic.com) board):
+To build an FPGA image for the [DE10-Pro](http://de10-pro.terasic.com)
+board (Quartus 21.3pro or later recommended):
 
 ```sh
 $ cd de10-pro

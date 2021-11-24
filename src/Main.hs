@@ -9,10 +9,13 @@ module Main where
 import Blarney
 import Blarney.Queue
 import Blarney.Stream
+import Blarney.Option
 import Blarney.SourceSink
 import Blarney.Connectable
 import Blarney.Interconnect
-import qualified Blarney.Vector as V
+import Blarney.ClientServer
+import Blarney.Vector qualified as V
+import Blarney.Vector (Vec, fromList, toList)
 import Blarney.VendorIP.StreamClockCrosser
 
 -- Pebbles imports
@@ -21,13 +24,15 @@ import Pebbles.Memory.SBDCache
 import Pebbles.Memory.Alignment
 import Pebbles.Memory.Interface
 import Pebbles.Memory.BankedSRAMs
-import Pebbles.Memory.WarpPreserver
 import Pebbles.Memory.TagController
 import Pebbles.Memory.CoalescingUnit
 import Pebbles.Memory.DRAM.Bus
 import Pebbles.Memory.DRAM.Wrapper
 import Pebbles.Memory.DRAM.Interface
+import Pebbles.Util.SinkVectoriser
 import Pebbles.Pipeline.Interface
+import Pebbles.Pipeline.Scalar
+import Pebbles.Pipeline.SIMT
 import Pebbles.Pipeline.SIMT.Management
 
 -- SIMTight imports
@@ -121,18 +126,19 @@ makeCPUDomain (clk, rst) =
     cpuOuts <- makeCPUCore
       ScalarCoreIns {
         scalarUartIn = fromUART
-      , scalarMemUnit = cpuMemUnit
+      , scalarMemReqs = cpuMemReqs
+      , scalarMemResps = cpuMemResps
       , scalarSIMTResps = ins.cpuDomainFromSIMT
       }
  
     -- Data cache
-    (cpuMemUnit, dramReqs) <- makeCPUDataCache
-      (ins.cpuDomainFromDRAM)
+    (cpuMemReqs, cpuMemResps, dramReqs) <- makeCPUDataCache
+      ins.cpuDomainFromDRAM
 
     -- Avalon JTAG UART wrapper module
     (fromUART, avlUARTOuts) <- makeJTAGUART
-      (cpuOuts.scalarUartOut)
-      (ins.cpuDomainUARTIns)
+      cpuOuts.scalarUartOut
+      ins.cpuDomainUARTIns
 
     return
       CPUDomainOuts {
@@ -158,7 +164,8 @@ makeCPUCore = makeBoundary "CPUCore" (makeScalarCore config)
       }
 
 -- CPU data cache (synthesis boundary)
-makeCPUDataCache = makeBoundary "CPUDataCache" (makeSBDCache @InstrInfo)
+makeCPUDataCache =
+  makeBoundary "CPUDataCache" (makeSBDCache @ScalarPipelineInstrInfo)
 
 -- SIMT domain
 -- ===========
@@ -171,12 +178,10 @@ makeSIMTDomain (clk, rst) =
     let simtMgmtReqs = ins.simtDomainMgmtReqsFromCPU
 
     -- SIMT core
-    simtMgmtResps <- makeSIMTAccelerator
-      simtMgmtReqs
-      simtMemUnits
+    simtMgmtResps <- makeSIMTAccelerator simtMgmtReqs memReqs memResps
 
     -- SIMT memory subsystem
-    (simtMemUnits, dramReqs1) <- makeSIMTMemSubsystem dramResps1
+    (memReqs, memResps, dramReqs1) <- makeSIMTMemSubsystem dramResps1
 
     -- DRAM bus
     ((dramResps0, dramResps1), dramReqs) <-
@@ -227,34 +232,38 @@ makeSIMTAccelerator = makeBoundary "SIMTAccelerator" (makeSIMTCore config)
 -- SIMT memory subsystem
 -- =====================
 
-type SIMTMemReqId = (InstrInfo, MemReqInfo)
+type SIMTMemReqInfo = (SIMTPipelineInstrInfo, Vec SIMTLanes MemReqInfo)
 
 makeSIMTMemSubsystem ::
      -- | DRAM responses
      Stream (DRAMResp ())
      -- | DRAM requests and per-lane mem units
-  -> Module (V.Vec SIMTLanes (MemUnit InstrInfo), Stream (DRAMReq ()))
+  -> Module ( Sink (SIMTPipelineInstrInfo, Vec SIMTLanes (Option MemReq))
+            , Source (SIMTPipelineInstrInfo, Vec SIMTLanes (Option MemResp))
+            , Stream (DRAMReq ()) )
 makeSIMTMemSubsystem dramResps = mdo
-    -- Warp preserver
-    (memReqs, simtMemUnits) <- makeWarpPreserver memResps1
+    -- Memory request queue
+    memReqsQueue :: Queue (SIMTPipelineInstrInfo,
+                            Vec SIMTLanes (Option MemReq)) <- makeShiftQueue 1
+    let memReqs = toStream memReqsQueue
 
     -- Prepare request for memory subsystem
-    let prepareReq req =
+    let prepareMemReqInfo req =
+          -- Remember info needed to process response
+          MemReqInfo {
+            memReqInfoAddr = truncate req.memReqAddr
+          , memReqInfoAccessWidth = req.memReqAccessWidth
+          , memReqInfoIsUnsigned = req.memReqIsUnsigned
+          }
+    let prepareMemReq req =
           req {
             -- Align store-data (account for access width)
-            memReqData =
-              writeAlign (req.memReqAccessWidth) (req.memReqData)
-            -- Remember info needed to process response
-          , memReqId =
-              ( req.memReqId
-              , MemReqInfo {
-                  memReqInfoAddr = truncate req.memReqAddr
-                , memReqInfoAccessWidth = req.memReqAccessWidth
-                , memReqInfoIsUnsigned = req.memReqIsUnsigned
-                }
-              )
+            memReqData = writeAlign (req.memReqAccessWidth) (req.memReqData)
           }
-    let memReqs1 = mapSource (V.map (fmap prepareReq)) memReqs
+    let prepareMemReqs (instrInfo, vec) =
+          let memReqInfo = V.map (prepareMemReqInfo . (.val)) vec in
+            ((instrInfo, memReqInfo), V.map (fmap prepareMemReq) vec)
+    let memReqs1 = mapSource prepareMemReqs memReqs
 
     -- Coalescing unit
     (memResps, sramReqs, dramReqs) <-
@@ -265,17 +274,19 @@ makeSIMTMemSubsystem dramResps = mdo
     sramResps <- makeSIMTBankedSRAMs sramReqs
 
     -- Process response from memory subsystem
-    let processResp resp =
-          resp {
-            -- | Drop info, no longer needed
-            memRespId = fst resp.memRespId
-            -- | Use info to mux loaded data
-          , memRespData = loadMux (resp.memRespData)
-              (truncate (snd resp.memRespId).memReqInfoAddr)
-              ((snd resp.memRespId).memReqInfoAccessWidth)
-              ((snd resp.memRespId).memReqInfoIsUnsigned)
-          }
-    let memResps1 = map (mapSource processResp) (V.toList memResps)
+    let processMemResp (memReqInfo, memResp) =
+          Option memResp.valid
+            memResp.val {
+              -- Use info to mux loaded data
+              memRespData = loadMux memResp.val.memRespData
+                (truncate memReqInfo.memReqInfoAddr)
+                memReqInfo.memReqInfoAccessWidth
+                memReqInfo.memReqInfoIsUnsigned
+            }
+    let processMemResps ((instrInfo, memReqInfo), vec) =
+          -- Use and drop mem request info (no longer needed)
+          (instrInfo, V.map processMemResp (V.zip memReqInfo vec))
+    let memResps1 = mapSource processMemResps memResps
 
     -- Ensure that the SRAM base address is suitably aligned
     -- (If so, remapping SRAM addresses is unecessary)
@@ -283,7 +294,7 @@ makeSIMTMemSubsystem dramResps = mdo
       then error "SRAM base address not suitably aligned"
       else return ()
 
-    return (V.fromList simtMemUnits, dramReqs)
+    return (toSink memReqsQueue, memResps1, dramReqs)
 
   where
     -- SRAM-related addresses
@@ -294,7 +305,7 @@ makeSIMTMemSubsystem dramResps = mdo
 
     -- Determine if request maps to banked SRAMs
     -- (Local fence goes to banked SRAMs)
-    isBankedSRAMAccess :: MemReq t_id -> Bit 1
+    isBankedSRAMAccess :: MemReq -> Bit 1
     isBankedSRAMAccess req =
       (req.memReqOp .!=. memGlobalFenceOp .&&.
          addr .<. fromInteger simtStacksStart .&&.
@@ -304,12 +315,12 @@ makeSIMTMemSubsystem dramResps = mdo
 -- Coalescing unit (synthesis boundary)
 makeSIMTCoalescingUnit isBankedSRAMAccess =
   makeBoundary "SIMTCoalescingUnit"
-    (makeCoalescingUnit @SIMTMemReqId isBankedSRAMAccess)
+    (makeCoalescingUnit @SIMTMemReqInfo isBankedSRAMAccess)
 
 -- Banked SRAMs (synthesis boundary)
 makeSIMTBankedSRAMs =
   makeBoundary "SIMTBankedSRAMs"
-    (makeBankedSRAMs @SIMTMemReqId)
+    (makeBankedSRAMs @SIMTMemReqInfo)
 
 -- SoC top-level module
 -- ====================
@@ -322,8 +333,8 @@ makeTop socIns = mdo
     "makeTop: Instruction memory alignment requirement not met"
 
   -- Clock and reset for each domain
-  let cpuClkRst = (Clock $ socIns.socCPUClk, Reset $ socIns.socCPURst)
-  let simtClkRst = (Clock $ socIns.socSIMTClk, Reset $ socIns.socSIMTRst)
+  let cpuClkRst = (Clock socIns.socCPUClk, Reset socIns.socCPURst)
+  let simtClkRst = (Clock socIns.socSIMTClk, Reset socIns.socSIMTRst)
 
   -- CPU domain
   cpuOuts <- makeCPUDomain cpuClkRst
@@ -345,25 +356,25 @@ makeTop socIns = mdo
   simtMgmtReqs <- makeStreamClockCrosser
     cpuClkRst
     simtClkRst
-    (cpuOuts.cpuDomainToSIMT)
+    cpuOuts.cpuDomainToSIMT
 
   -- SIMT management resps (SIMT -> CPU)
   simtMgmtResps <- makeStreamClockCrosser
     simtClkRst
     cpuClkRst
-    (simtOuts.simtDomainMgmtRespsToCPU)
+    simtOuts.simtDomainMgmtRespsToCPU
 
   -- DRAM reqs (CPU -> SIMT)
   dramReqs <- makeStreamClockCrosser
     cpuClkRst
     simtClkRst
-    (cpuOuts.cpuDomainToDRAM)
+    cpuOuts.cpuDomainToDRAM
 
   -- DRAM resps (SIMT -> CPU)
   dramResps <- makeStreamClockCrosser
     simtClkRst
     cpuClkRst
-    (simtOuts.simtDomainDRAMRespsToCPU)
+    simtOuts.simtDomainDRAMRespsToCPU
 
   return
     SoCOuts {
