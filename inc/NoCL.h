@@ -349,6 +349,16 @@ template <typename K> __attribute__ ((noinline))
     return pebblesSIMTGet();
   }
 
+// Ask SIMT core for given performance stat
+inline void printStat(const char* str, uint32_t statId)
+{
+  while (!pebblesSIMTCanPut()) {}
+  pebblesSIMTAskStats(statId);
+  while (!pebblesSIMTCanGet()) {}
+  unsigned numCycles = pebblesSIMTGet();
+  puts(str); puthex(numCycles); putchar('\n');
+}
+
 // Trigger SIMT kernel execution from CPU, and dump performance stats
 template <typename K> __attribute__ ((noinline))
   int noclRunKernelAndDumpStats(K* k) {
@@ -359,18 +369,15 @@ template <typename K> __attribute__ ((noinline))
     if (ret == 2) puts("Kernel failed due to exception\n");
 
     // Get number of cycles taken
-    while (!pebblesSIMTCanPut()) {}
-    pebblesSIMTAskStats(STAT_SIMT_CYCLES);
-    while (!pebblesSIMTCanGet()) {}
-    unsigned numCycles = pebblesSIMTGet();
-    puts("Cycles: "); puthex(numCycles); putchar('\n');
+    printStat("Cycles: ", STAT_SIMT_CYCLES);
 
     // Get number of instructions executed
-    while (!pebblesSIMTCanPut()) {}
-    pebblesSIMTAskStats(STAT_SIMT_INSTRS);
-    while (!pebblesSIMTCanGet()) {}
-    unsigned numInstrs = pebblesSIMTGet();
-    puts("Instrs: "); puthex(numInstrs); putchar('\n');
+    printStat("Instrs: ", STAT_SIMT_INSTRS);
+
+    #if EnableCapRegFileScalarisation
+    // Get max number of vector registers used
+    printStat("MaxVecRegs: ", STAT_SIMT_MAX_VEC_REGS);
+    #endif
 
     return ret;
   }

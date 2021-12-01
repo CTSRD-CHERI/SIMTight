@@ -102,8 +102,8 @@ NOTE("=============")
 NOTE("Is CHERI enabled? (If so, see UseClang and EnableTaggedMem settings)")
 #define EnableCHERI 0
 
-NOTE("Trace accesses to capability register file in simulation?")
-#define EnableCapRegFileTrace 0
+NOTE("Use scalarising capability register file?")
+#define EnableCapRegFileScalarisation 0
 
 NOTE("Compiler")
 NOTE("========")

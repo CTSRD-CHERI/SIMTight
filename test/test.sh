@@ -231,10 +231,14 @@ if [ "$TestFPGA" != "" ] ; then
     OK=$(grep "Self test: PASSED" $tmpLog)
     CYCLES=$(grep Cycles: $tmpLog | cut -d' ' -f2)
     INSTRS=$(grep Instrs: $tmpLog | cut -d' ' -f2)
+    VEC_REGS=$(grep MaxVecRegs: $tmpLog | cut -d' ' -f2)
     DCYCLES=$(python -c "print('%d' % (0x${CYCLES}))")
     IPC=$(python -c "print('%.2f' % (float(0x${INSTRS}) / 0x${CYCLES}))")
+    if [ "$VEC_REGS" != "" ]; then
+      VEC_REGS=",VecRegs=$VEC_REGS"
+    fi
     test "$OK" != ""
-    assert $? "" " [IPC=$IPC,Cycles=$DCYCLES]"
+    assert $? "" " [IPC=$IPC,Cycles=$DCYCLES$VEC_REGS]"
   done
 fi
 

@@ -219,10 +219,6 @@ makeSIMTAccelerator = makeBoundary "SIMTAccelerator" (makeSIMTCore config)
       , simtCoreExecBoundary = True
       , simtCoreEnableCHERI = EnableCHERI == 1
       , simtCoreUseExtraPreExecStage = SIMTUseExtraPreExecStage == 1
-      , simtCoreCapRegInitFile =
-          if EnableCHERI == 1
-            then Just (simtCapRegInitFile ++ ".mif")
-            else Nothing
       , simtCoreUseFullDivider =
           if SIMTUseFullDivider == 1
             then Just SIMTFullDividerLatency

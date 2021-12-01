@@ -121,8 +121,6 @@ data SIMTCoreConfig =
     -- ^ Enable CHERI extensions?
   , simtCoreUseExtraPreExecStage :: Bool
     -- ^ Extra pipeline stage?
-  , simtCoreCapRegInitFile :: Maybe String
-    -- ^ File containing initial capability register file (meta-data only)
   , simtCoreUseFullDivider :: Maybe Int
     -- ^ Use full throughput divider?
     -- (If so, what latency? If not, slow seq divider used)
@@ -217,10 +215,8 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
         , instrMemLogNumInstrs = config.simtCoreInstrMemLogNumInstrs
         , instrMemBase = config.simtCoreInstrMemBase
         , enableStatCounters = SIMTEnableStatCounters == 1
-        , capRegInitFile = config.simtCoreCapRegInitFile
         , checkPCCFunc =
             if config.simtCoreEnableCHERI then Just checkPCC else Nothing
-        , enableCapRegFileTrace = EnableCapRegFileTrace == 1
         , useExtraPreExecStage = config.simtCoreUseExtraPreExecStage
         , useSharedPCC = SIMTUseSharedPCC == 1
         , decodeStage = concat
@@ -252,6 +248,7 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
                      (toList mulSinks) (toList divSinks) [0..] ]
         , simtPushTag = SIMT_PUSH
         , simtPopTag = SIMT_POP
+        , useCapRegFileScalarisation = EnableCapRegFileScalarisation == 1
         }
 
   -- Pipeline instantiation
