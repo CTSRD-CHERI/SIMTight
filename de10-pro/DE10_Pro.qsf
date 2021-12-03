@@ -6,7 +6,7 @@ set_global_assignment -name FAMILY "Stratix 10"
 set_global_assignment -name DEVICE 1SX280HU2F50E1VG
 set_global_assignment -name TOP_LEVEL_ENTITY "DE10_Pro"
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION "17.1.0 PRO EDITION"
-set_global_assignment -name LAST_QUARTUS_VERSION "19.2.0 Pro Edition"
+set_global_assignment -name LAST_QUARTUS_VERSION "21.3.0 Pro Edition"
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "Wed Jan 31 14:15:58 2018"
 set_global_assignment -name DEVICE_FILTER_PACKAGE FBGA
 #============================================================

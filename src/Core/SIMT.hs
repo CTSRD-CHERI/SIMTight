@@ -119,10 +119,6 @@ data SIMTCoreConfig =
     -- ^ Synthesis boundary on execute stage?
   , simtCoreEnableCHERI :: Bool
     -- ^ Enable CHERI extensions?
-  , simtCoreUseExtraPreExecStage :: Bool
-    -- ^ Extra pipeline stage?
-  , simtCoreCapRegInitFile :: Maybe String
-    -- ^ File containing initial capability register file (meta-data only)
   , simtCoreUseFullDivider :: Maybe Int
     -- ^ Use full throughput divider?
     -- (If so, what latency? If not, slow seq divider used)
@@ -176,9 +172,10 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
       then do
         -- Serialise CapMemReq to MemReq
         capMemReqs <- makeCapMemReqSerialiser memReqsIlv
+        capMemReqsBuffered <- makeSinkBuffer (makePipelineQueue 1) capMemReqs
         -- Sink of vectors to vector of sinks
         capMemSinks <-
-          makeSinkVectoriser pipelineOuts.simtInstrInfo capMemReqs
+          makeSinkVectoriser pipelineOuts.simtInstrInfo capMemReqsBuffered
         -- Convert vector to list
         let capMemSinksList = toList capMemSinks
         let memSinks = map (mapSink toCapMemReq) capMemSinksList
@@ -217,11 +214,8 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
         , instrMemLogNumInstrs = config.simtCoreInstrMemLogNumInstrs
         , instrMemBase = config.simtCoreInstrMemBase
         , enableStatCounters = SIMTEnableStatCounters == 1
-        , capRegInitFile = config.simtCoreCapRegInitFile
         , checkPCCFunc =
             if config.simtCoreEnableCHERI then Just checkPCC else Nothing
-        , enableCapRegFileTrace = EnableCapRegFileTrace == 1
-        , useExtraPreExecStage = config.simtCoreUseExtraPreExecStage
         , useSharedPCC = SIMTUseSharedPCC == 1
         , decodeStage = concat
             [ decodeI
@@ -252,6 +246,7 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
                      (toList mulSinks) (toList divSinks) [0..] ]
         , simtPushTag = SIMT_PUSH
         , simtPopTag = SIMT_POP
+        , useCapRegFileScalarisation = EnableCapRegFileScalarisation == 1
         }
 
   -- Pipeline instantiation
