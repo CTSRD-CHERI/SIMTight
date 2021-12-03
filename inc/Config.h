@@ -32,9 +32,6 @@ NOTE("Number of warps per SIMT core")
 #define SIMTWarps 64
 #define SIMTLogWarps 6
 
-NOTE("Use extra pipeline stage (pre-execute)?")
-#define SIMTUseExtraPreExecStage 1
-
 NOTE("Number of bits used to track divergence nesting level")
 #define SIMTLogMaxNestLevel 5
 
@@ -54,14 +51,11 @@ NOTE("Enable SIMT stat counters")
 NOTE("Size of SRAM multicast id in coalescing unit")
 #define SIMTMcastIdSize 4
 
-NOTE("Use full-throughput divider (rather than sequential divider)")
+NOTE("Use full-throughput divider (rather than sequential divider)?")
 #define SIMTUseFullDivider 0
 
-NOTE("Latency of full-throughput divider")
+NOTE("Latency of full-throughput divider (more latency = higher Fmax)")
 #define SIMTFullDividerLatency 12
-
-NOTE("Use shared immutable PCC meta-data for all threads in kernel?")
-#define SIMTUseSharedPCC 1
 
 NOTE("CPU configuration")
 NOTE("=================")
@@ -72,7 +66,7 @@ NOTE("Size of tightly coupled instruction memory")
 NOTE("Number of cache lines (line size == DRAM beat size)")
 #define SBDCacheLogLines 9
 
-NOTE("Use register forwarding for increased IPC but possibly lower Fmax?")
+NOTE("Use register forwarding for increased IPC (but possibly lower Fmax)?")
 #define CPUEnableRegForwarding 0
 
 NOTE("Tagged memory")
@@ -102,8 +96,11 @@ NOTE("=============")
 NOTE("Is CHERI enabled? (If so, see UseClang and EnableTaggedMem settings)")
 #define EnableCHERI 0
 
-NOTE("Use scalarising capability register file?")
+NOTE("Use scalarising register file for capability meta-data?")
 #define EnableCapRegFileScalarisation 0
+
+NOTE("Use shared immutable PCC meta-data for all threads in kernel?")
+#define SIMTUseSharedPCC 1
 
 NOTE("Compiler")
 NOTE("========")
@@ -117,5 +114,5 @@ NOTE("==========")
 NOTE("Memory base (after tag bit region)")
 #define MemBase 134217728
 
-NOTE("Space reserved for boot loader")
+NOTE("Space reserved in instruction memory for boot loader")
 #define MaxBootImageBytes 1024

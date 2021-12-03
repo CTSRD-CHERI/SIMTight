@@ -3,8 +3,8 @@
 SIMTight is a prototype GPGPU being developed on the [CAPcelerate
 project](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/V000381/1)
 to explore the use of [CHERI capabilities](http://cheri-cpu.org) in
-SIMT-style accelerators popularised by NVIDIA and AMD.
-The SIMTight SoC consists of a scalar CPU and a 32-lane 64-warp GPGPU
+SIMT-style accelerators popularised by NVIDIA and AMD.  The default
+SIMTight SoC consists of a scalar CPU and a 32-lane 64-warp GPGPU
 sharing DRAM, both supporting the CHERI-RISC-V ISA.
 
 <img src="doc/SoC.svg" width="450">
@@ -135,3 +135,27 @@ export PATH=~/cheri/output/sdk/bin:$PATH
 We musn't forget to `make clean` in the root of the SIMTight repo any
 time [inc/Config.h](inc/Config.h) is changed.  At this point, all of
 the standard build instructions should work as before.
+
+## Enabling scalarisation
+
+Scalarisation is a technique that can spot uniform vectors and process
+them more efficiently as scalars, saving on-chip storage and energy.
+We do it dynamically (in hardware, at runtime) but it could also be
+done statically by modifying the compiler.  Currently, we support
+scalarisation of the register file holding capability meta-data (the
+upper 33 bits of each capability register) which is stored separately
+from the standard integer register file (holding the bottom 32 bits of
+capabilities in a merged register file).  Scalarisation reduces the
+register file overhead of capabilities significantly, typically saving
+hundreds of kilobytes of register memory per CHERI-enabled SIMT core.
+To enable this feature, edit [inc/Config.h](inc/Config.h) and apply
+the following setting:
+
+  * `#define EnableCapRegFileScalarisation 1`
+
+When enabled, running `test.sh --fpga` will give details on the number
+of vector registers used by each benchmark.
+
+We will soon add an option for scalarising the integer register file
+too.  At the moment, we only do intra-warp scalarisation but there is
+clear potential for doing inter-warp scalarisation as well.

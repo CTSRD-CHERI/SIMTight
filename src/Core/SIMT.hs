@@ -119,8 +119,6 @@ data SIMTCoreConfig =
     -- ^ Synthesis boundary on execute stage?
   , simtCoreEnableCHERI :: Bool
     -- ^ Enable CHERI extensions?
-  , simtCoreUseExtraPreExecStage :: Bool
-    -- ^ Extra pipeline stage?
   , simtCoreUseFullDivider :: Maybe Int
     -- ^ Use full throughput divider?
     -- (If so, what latency? If not, slow seq divider used)
@@ -218,7 +216,6 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
         , enableStatCounters = SIMTEnableStatCounters == 1
         , checkPCCFunc =
             if config.simtCoreEnableCHERI then Just checkPCC else Nothing
-        , useExtraPreExecStage = config.simtCoreUseExtraPreExecStage
         , useSharedPCC = SIMTUseSharedPCC == 1
         , decodeStage = concat
             [ decodeI

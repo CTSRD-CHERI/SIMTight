@@ -376,7 +376,7 @@ template <typename K> __attribute__ ((noinline))
 
     #if EnableCapRegFileScalarisation
     // Get max number of vector registers used
-    printStat("MaxVecRegs: ", STAT_SIMT_MAX_VEC_REGS);
+    printStat("MaxCapVecRegs: ", STAT_SIMT_MAX_VEC_REGS);
     #endif
 
     return ret;
