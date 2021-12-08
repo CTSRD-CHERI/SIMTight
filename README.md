@@ -140,22 +140,19 @@ the standard build instructions should work as before.
 
 Scalarisation is a technique that can spot uniform vectors and process
 them more efficiently as scalars, saving on-chip storage and energy.
-We do it dynamically (in hardware, at runtime) but it could also be
-done statically by modifying the compiler.  Currently, we support
-scalarisation of the register file holding capability meta-data (the
-upper 33 bits of each capability register) which is stored separately
-from the standard integer register file (holding the bottom 32 bits of
-capabilities in a merged register file).  Scalarisation reduces the
-register file overhead of capabilities significantly, typically saving
-hundreds of kilobytes of register memory per CHERI-enabled SIMT core.
-To enable this feature, edit [inc/Config.h](inc/Config.h) and apply
-the following setting:
+We do it dynamically (in hardware, at runtime) but it can also be done
+statically by the compiler.  Scalarisation can be enabled
+independently for the standard integer register file and the register
+file holding capability meta-data.  For example, to enable
+scalarisation of both register files, edit
+[inc/Config.h](inc/Config.h) and apply the following settings:
 
+  * `#define EnableRegFileScalarisation 1`
   * `#define EnableCapRegFileScalarisation 1`
 
-When enabled, running `test.sh --fpga` will give details on the number
-of vector registers used by each benchmark.
-
-We will soon add an option for scalarising the integer register file
-too.  At the moment, we only do intra-warp scalarisation but there is
-clear potential for doing inter-warp scalarisation as well.
+Scalarisation is especially effective for capabilities, typically
+saving hundreds of kilobytes of register memory per CHERI-enabled SIMT
+core.  Running `test.sh --fpga` will give details on the number of
+vector registers used by each benchmark.  At the moment, we only do
+intra-warp scalarisation but there is potential to do inter-warp
+scalarisation as well.
