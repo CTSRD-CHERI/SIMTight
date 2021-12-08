@@ -235,7 +235,7 @@ if [ "$TestFPGA" != "" ] ; then
     CAP_VEC_REGS=$(grep MaxCapVecRegs: $tmpLog | cut -d' ' -f2)
     DCYCLES=$(python -c "print('%d' % (0x${CYCLES}))")
     IPC=$(python -c "print('%.2f' % (float(0x${INSTRS}) / 0x${CYCLES}))")
-    if [ "VEC_REGS" != "" ]; then
+    if [ "$VEC_REGS" != "" ]; then
       DVEC_REGS=$(python -c "print('%d' % (0x${VEC_REGS}))")
       VEC_REGS=",VecRegs=$DVEC_REGS"
     fi
