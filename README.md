@@ -147,8 +147,8 @@ file holding capability meta-data.  For example, to enable
 scalarisation of both register files, edit
 [inc/Config.h](inc/Config.h) and apply the following settings:
 
-  * `#define EnableRegFileScalarisation 1`
-  * `#define EnableCapRegFileScalarisation 1`
+  * `#define SIMTEnableRegFileScalarisation 1`
+  * `#define SIMTEnableCapRegFileScalarisation 1`
 
 Scalarisation is especially effective for capabilities, typically
 saving hundreds of kilobytes of register memory per CHERI-enabled SIMT
