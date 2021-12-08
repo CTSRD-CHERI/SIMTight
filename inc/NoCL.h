@@ -374,9 +374,14 @@ template <typename K> __attribute__ ((noinline))
     // Get number of instructions executed
     printStat("Instrs: ", STAT_SIMT_INSTRS);
 
-    #if EnableCapRegFileScalarisation
+    #if SIMTEnableRegFileScalarisation
     // Get max number of vector registers used
-    printStat("MaxCapVecRegs: ", STAT_SIMT_MAX_VEC_REGS);
+    printStat("MaxVecRegs: ", STAT_SIMT_MAX_VEC_REGS);
+    #endif
+
+    #if SIMTEnableCapRegFileScalarisation
+    // Get max number of vector registers used
+    printStat("MaxCapVecRegs: ", STAT_SIMT_MAX_CAP_VEC_REGS);
     #endif
 
     return ret;

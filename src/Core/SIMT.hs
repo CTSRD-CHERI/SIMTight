@@ -246,7 +246,8 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
                      (toList mulSinks) (toList divSinks) [0..] ]
         , simtPushTag = SIMT_PUSH
         , simtPopTag = SIMT_POP
-        , useCapRegFileScalarisation = EnableCapRegFileScalarisation == 1
+        , useRegFileScalarisation = SIMTEnableRegFileScalarisation == 1
+        , useCapRegFileScalarisation = SIMTEnableCapRegFileScalarisation == 1
         }
 
   -- Pipeline instantiation

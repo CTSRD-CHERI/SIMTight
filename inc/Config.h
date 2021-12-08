@@ -57,6 +57,9 @@ NOTE("Use full-throughput divider (rather than sequential divider)?")
 NOTE("Latency of full-throughput divider (more latency = higher Fmax)")
 #define SIMTFullDividerLatency 12
 
+NOTE("Use scalarising register file?")
+#define SIMTEnableRegFileScalarisation 0
+
 NOTE("CPU configuration")
 NOTE("=================")
 
@@ -97,7 +100,7 @@ NOTE("Is CHERI enabled? (If so, see UseClang and EnableTaggedMem settings)")
 #define EnableCHERI 0
 
 NOTE("Use scalarising register file for capability meta-data?")
-#define EnableCapRegFileScalarisation 0
+#define SIMTEnableCapRegFileScalarisation 0
 
 NOTE("Use shared immutable PCC meta-data for all threads in kernel?")
 #define SIMTUseSharedPCC 1
