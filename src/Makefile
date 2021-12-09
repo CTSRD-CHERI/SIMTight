@@ -8,8 +8,7 @@ BUILD_DIR = $(SIMTIGHT_ROOT)/src/build
 
 .PHONY: all
 all:
-	$(BLC) --enable-namer-plugin \
-    -fno-cpr-anal $(BLC_FLAGS) -i$(PEBBLES_ROOT)/src $(BLC_INC) \
+	$(BLC) -fno-cpr-anal $(BLC_FLAGS) -i$(PEBBLES_ROOT)/src $(BLC_INC) \
     -i$(PEBBLES_ROOT)/blarney/blarney-vendor-ip/Haskell \
     -hidir $(BUILD_DIR) -odir $(BUILD_DIR) Main.hs -o Main
 	./Main --enable-dont-care-de-inline
