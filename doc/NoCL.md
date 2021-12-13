@@ -8,7 +8,7 @@ SoC](https://github.com/CTSRD-CHERI/SIMTight) without needing any new
 compiler work.  The NoCL API tries to abstract over the target
 architecture, so alternative implementations should be possible.  Our
 current implementation is defined in a [single header
-file](inc/NoCL.h).  This document starts at a fairly high level of
+file](/inc/NoCL.h).  This document starts at a fairly high level of
 abstraction and gradually introduces details that are increasingly
 specific to our current implementation for SIMTight.
 
@@ -226,7 +226,7 @@ aware of SIMTight's two coalescing strategies:
 These two strategies will be repeatedly applied until all the requests
 from the warp have been resolved.  More details can be found in
 SIMTight's [coalescing
-unit](pebbles/src/Pebbles/Memory/CoalescingUnit.hs).  Note that the
+unit](/pebbles/src/Pebbles/Memory/CoalescingUnit.hs).  Note that the
 _SameAddress_ strategy is also applied to shared local memory
 accesses, avoiding bank conflicts in a fairly common case.
 
@@ -253,7 +253,7 @@ nestling level will be one.
 
 Suppose we have a kernel with a conditional statement
 
-```
+```cpp
   if (a < b) {
     if (c < d) {
       // Do something
@@ -264,7 +264,7 @@ Suppose we have a kernel with a conditional statement
 
 To specify convergence in NoCL, we can write
 
-```
+```cpp
   noclPush();
   if (a < b) {
     noclPush();
@@ -284,7 +284,7 @@ were active at the previous respective call to `noclPush()`.
 Sometimes this level of detail is unecessary and we can use the
 following helper function.
 
-```
+```cpp
 inline void noclConverge { noclPop(); noclPush(); }
 ```
 
@@ -293,7 +293,7 @@ active at the last call to `noclConverge()` (or at the start of kernel
 execution, whichever is closest in program order).  Often we write
 conditionals as:
 
-```
+```cpp
   if (a < b) {
     // Do something
   }
@@ -357,7 +357,7 @@ SIMTight's scalar core and SIMT core communicate via a management
 stream in each direction.  In the Scalar -> SIMT direction, the
 following commands are used:
 
-  * _SetWarpsPerBlockCmd_: The SIMT core has no real undestanding of
+  * `SetWarpsPerBlockCmd`: The SIMT core has no real undestanding of
     CUDA/NoCL thread blocks.  However, the hardware barrier
     synchronisation mechanism does need to know which warps belong to
     which block so that it can correctly synchronise only threads
@@ -367,27 +367,27 @@ following commands are used:
     block; it must be a power of two, and the SIMT core will assume that
     warp ids are allocated to blocks contiguously.
 
-  * _SetKernelAddrCmd_: This command writes a pointer (or capability)
+  * `SetKernelAddrCmd`: This command writes a pointer (or capability)
     to the kernel invocation into a special register on
     the SIMT core.
 
-  * _StartKernelCmd_: This command causes the SIMT core to start
+  * `StartKernelCmd`: This command causes the SIMT core to start
     executing code at a given PC.
 
-  * _GetStatCmd:_ This command requests the value of one of the
+  * `GetStatCmd`: This command requests the value of one of the
     SIMT core's performance counters.
 
 In the SIMT -> Scalar direction, the following command responses are
 provided:
 
-  * _KernelResp_: After a _StartKernelCmd_ command, and after the
+  * _KernelResp_: After a `StartKernelCmd` command, and after the
     kernel completes execution on the SIMT core, a _KernelResp_ will be
     sent to scalar core, which includes a success code.
 
-  * _StatResp_: After a _GetStatCmd_ command, the SIMT core will sent
+  * `StatResp`: After a `GetStatCmd` command, the SIMT core will sent
     a response containing the value of the performance counter
     requestsed.
 
 For a full set of commands, responses, and performance counters, see
 the [SIMT management
-interface](pebbles/src/Pebbles/Pipeline/SIMT/Management.hs).
+interface](/pebbles/src/Pebbles/Pipeline/SIMT/Management.hs).
