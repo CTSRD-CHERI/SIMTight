@@ -226,7 +226,7 @@ aware of SIMTight's two coalescing strategies:
 These two strategies will be repeatedly applied until all the requests
 from the warp have been resolved.  More details can be found in
 SIMTight's [coalescing
-unit](/pebbles/src/Pebbles/Memory/CoalescingUnit.hs).  Note that the
+unit](https://github.com/blarney-lang/pebbles/blob/master/src/Pebbles/Memory/CoalescingUnit.hs).  Note that the
 _SameAddress_ strategy is also applied to shared local memory
 accesses, avoiding bank conflicts in a fairly common case.
 
@@ -390,4 +390,4 @@ provided:
 
 For a full set of commands, responses, and performance counters, see
 the [SIMT management
-interface](/pebbles/src/Pebbles/Pipeline/SIMT/Management.hs).
+interface](https://github.com/blarney-lang/pebbles/blob/master/src/Pebbles/Pipeline/SIMT/Management.hs).
