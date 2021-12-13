@@ -3,16 +3,16 @@
 SIMTight is a prototype GPGPU being developed on the [CAPcelerate
 project](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/V000381/1)
 to explore the use of [CHERI capabilities](http://cheri-cpu.org) in
-SIMT-style accelerators popularised by NVIDIA and AMD.  The default
-SIMTight SoC consists of a scalar CPU and a 32-lane 64-warp GPGPU
-sharing DRAM, both supporting the CHERI-RISC-V ISA.
+SIMT-style accelerators popularised by NVIDIA.  The default SIMTight
+SoC consists of a scalar CPU and a 32-lane 64-warp GPGPU sharing DRAM,
+both supporting the CHERI-RISC-V ISA.
 
 <img src="doc/SoC.svg" width="450">
 
 The SoC is optimised for high performance density on FPGA (MIPS per
 LUT).  A sample project is provided for the
 [DE10-Pro](http://de10-pro.terasic.com) development board.  There is
-also a [CUDA-like C++ library](inc/NoCL.h) and a set of sample
+also a [CUDA-like C++ library](doc/NoCL.md) and a set of sample
 [compute kernels](apps/) ported to this library.  When CHERI is
 enabled, the kernels run in pure capability mode.  The SoC is
 implemented in Haskell using the
@@ -32,8 +32,8 @@ $ sudo apt install verilator
 $ sudo apt install gcc-riscv64-unknown-elf
 ```
 
-To get GHC 9.2.1 or later, [ghcup](https://www.haskell.org/ghcup/) can
-be used.
+For GHC 9.2.1 or later, [ghcup](https://www.haskell.org/ghcup/) can be
+used.
 
 Now, we recursively clone the repo:
 
@@ -62,14 +62,14 @@ $ make test-simt-sim    # Run on the SIMT core
 Alternatively, we can run one of the SIMT kernels:
 
 ```sh
-$ cd apps/Histogram
+$ cd apps/Samples/Histogram
 $ make RunSim
 $ ./RunSim
 ```
 
-To run all tests and benchmarks, we can use the test script.  This
-script will launch the simulator automatically, so we first make sure
-it's not already running.
+To run all tests and benchmarks, we can use the [test](test/test.sh)
+script.  This script will launch the simulator automatically, so we
+first make sure it's not already running.
 
 ```sh
 $ killall sim
@@ -89,8 +89,8 @@ $ make download-sof    # Assumes DE10-Pro is connected via USB
 We can now run a SIMT kernel on FPGA:
 
 ```sh
-$ cd apps/Histogram
-$ make Run
+$ cd apps/Samples/Histogram
+$ make
 $ ./Run
 ```
 
@@ -141,11 +141,11 @@ the standard build instructions should work as before.
 Scalarisation is a technique that can spot uniform vectors and process
 them more efficiently as scalars, saving on-chip storage and energy.
 We do it dynamically (in hardware, at runtime) but it can also be done
-statically by the compiler.  Scalarisation can be enabled
-independently for the standard integer register file and the register
-file holding capability meta-data.  For example, to enable
-scalarisation of both register files, edit
-[inc/Config.h](inc/Config.h) and apply the following settings:
+statically by a compiler.  Scalarisation can be enabled independently
+for the integer register file and the register file holding capability
+meta-data.  For example, to enable scalarisation of both register
+files, edit [inc/Config.h](inc/Config.h) and apply the following
+settings:
 
   * `#define SIMTEnableRegFileScalarisation 1`
   * `#define SIMTEnableCapRegFileScalarisation 1`
@@ -153,6 +153,8 @@ scalarisation of both register files, edit
 Scalarisation is especially effective for capabilities, typically
 saving hundreds of kilobytes of register memory per CHERI-enabled SIMT
 core.  Running `test.sh --fpga` will give details on the number of
-vector registers used by each benchmark.  At the moment, we only do
-intra-warp scalarisation but there is potential to do inter-warp
-scalarisation as well.
+vector registers used by each benchmark.  There are several
+improvements to be explored in future: _affine_ scalarisation,
+_partial_ scalarisation, and _inter-warp_ scalarisation.  The register
+file implementation is neatly separated from the pipeline, so these
+can be studied in a self-contained manner.
