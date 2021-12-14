@@ -142,11 +142,11 @@ host stack.
 
 ## Shared local memory, atomics, and barrier synchronisation
 
-A key feature of CUDA is local memory that is shared by all threads in
-a block.  In NoCL, shared local memory can be allocated using the
-impllict `shared` variable (inherited from the `Kernel` class) of type
-`SharedLocalMem`.  Here's an example kernel that declares a
-256-element shared local array per thread block:
+A key feature of CUDA is efficient local memory that is shared by all
+threads in a block.  In NoCL, shared local memory can be allocated
+using the impllict `shared` variable (inherited from the `Kernel`
+class) of type `SharedLocalMem`.  Here's an example kernel that
+declares a 256-element shared local array per thread block:
 
 ```cpp
 // Kernel for computing 256-bin histograms
@@ -178,15 +178,15 @@ struct Histogram : Kernel {
 };
 ```
 
-Since the memory is shared, we must take care to avoid race conditions
+As the memory is shared, we must take care to avoid race conditions
 by using atomics (e.g. `atomicAdd`) and/or a synchronisation barriers
-(`__syncthreads` synchronises all threads in a block).
+(`__syncthreads()` synchronises all threads in a block).
 
 Shared local memory is optimised for parallel random access using an
 array of SRAM banks and a fast switching network. However, programmers
 should be aware of _bank conflicts_ and try to minimise them.  A bank
 conflict occurs when multiple threads in a warp access the same SRAM
-bank at the same time.  The SRAM banks are interleaved, so precise
+bank at the same time.  The SRAM banks are interleaved, so the precise
 condition for a bank conflict between two accesses is:
 
 ```hs
@@ -217,13 +217,14 @@ efficient NoCL kernels targetting SIMTight, the programmer should be
 aware of SIMTight's two coalescing strategies:
 
   * _SameAddress_: If all active threads in a warp access the same
-    address, these accesses will be coalesced to a single DRAM access.
+    address, these accesses will be coalesced to a single DRAM
+    transaction.
 
   * _SameBlock_: If all active threads in a warp access the same
     block of memory in a lane-aligned manner, this will be coalesced
-    into a single DRAM access.
+    into a single DRAM transaction.
 
-These two strategies will be repeatedly applied until all the requests
+These two strategies are repeatedly applied until all the requests
 from the warp have been resolved.  More details can be found in
 SIMTight's [coalescing
 unit](https://github.com/blarney-lang/pebbles/blob/master/src/Pebbles/Memory/CoalescingUnit.hs).  Note that the
@@ -251,7 +252,7 @@ thread is controlled by two primitive functions: `noclPush()` and
 decrements it.  Initially, when a kernel starts executing, the
 nestling level will be one.
 
-Suppose we have a kernel with a conditional statement
+Suppose we have a kernel with a nested conditional statement
 
 ```cpp
   if (a < b) {
@@ -291,7 +292,7 @@ inline void noclConverge { noclPop(); noclPush(); }
 Think of `noclConverge()` as follows: wait for all threads that were
 active at the last call to `noclConverge()` (or at the start of kernel
 execution, whichever is closest in program order).  Often we write
-conditionals as:
+seqeuences of conditionals as:
 
 ```cpp
   if (a < b) {
@@ -327,7 +328,7 @@ a grid size of 8x8.  The NoCL mapper will proceed as follows
     the block X dimension.
 
   * The mapper will then consider the requested block Y dimension of 2.
-    There are sufficient hardware threads to allocate a 2 warps in
+    There are sufficient hardware threads to allocate 2 warps to
     the block Y dimension.  The total number of warps used is now 4;
     that's 128 hardware threads in total.
 
@@ -341,10 +342,10 @@ a grid size of 8x8.  The NoCL mapper will proceed as follows
     1024 threads to hardware threads.  NoCL will therefore use a
     loop of 4 iterations to handle all 8 rows of the grid.
 
-In summary, the NoCL mapper is greedy.  It first allocates
-hardware threads to the block X dimension, then the block Y dimension,
-then gird X dimension, then the grid Y dimension.  As soon as it runs
-out of hardware threads, it will resort to looping.
+In summary, the NoCL mapper is greedy.  It first allocates hardware
+threads to the block X dimension, then the block Y dimension, then
+grid X dimension, then the grid Y dimension.  When it runs out of
+hardware threads, it will resort to looping.
 
 The current mapper has various restrictions for simplicity, but it
 will complain if these restrictions are violated.  For example, it
@@ -355,38 +356,38 @@ hardware threads available, and does not yet support the Z dimension.
 
 SIMTight's scalar core and SIMT core communicate via a management
 stream in each direction.  In the Scalar -> SIMT direction, the
-following commands are used:
+following commands are available:
 
-  * `SetWarpsPerBlockCmd`: The SIMT core has no real undestanding of
-    CUDA/NoCL thread blocks.  However, the hardware barrier
-    synchronisation mechanism does need to know which warps belong to
+  * `SetWarpsPerBlockCmd`: The SIMT core has very little understanding of
+    CUDA/NoCL thread blocks, but the hardware barrier
+    synchronisation mechanism needs to know which warps belong to
     which block so that it can correctly synchronise only threads
     belonging to the same block.  Synchronising between blocks would
-    be inefficient and would not meet the CUDA semantics of `__syncthreads()`.
+    not meet the semantics of CUDA's `__syncthreads()`.
     So this command tells the SIMT core the number of warps per
     block; it must be a power of two, and the SIMT core will assume that
     warp ids are allocated to blocks contiguously.
 
-  * `SetKernelAddrCmd`: This command writes a pointer (or capability)
+  * `SetKernelAddrCmd` writes a pointer (or capability)
     to the kernel invocation into a special register on
     the SIMT core.
 
-  * `StartKernelCmd`: This command causes the SIMT core to start
+  * `StartKernelCmd` causes the SIMT core to start
     executing code at a given PC.
 
-  * `GetStatCmd`: This command requests the value of one of the
+  * `GetStatCmd` requests the value of one of the
     SIMT core's performance counters.
 
 In the SIMT -> Scalar direction, the following command responses are
-provided:
+possible:
 
-  * _KernelResp_: After a `StartKernelCmd` command, and after the
-    kernel completes execution on the SIMT core, a _KernelResp_ will be
-    sent to scalar core, which includes a success code.
+  * After a `StartKernelCmd`, and after the
+    kernel completes execution on the SIMT core, an exit code will be
+    returned to the scalar core.
 
-  * `StatResp`: After a `GetStatCmd` command, the SIMT core will sent
+  * After a `GetStatCmd` command, the SIMT core will sent
     a response containing the value of the performance counter
-    requestsed.
+    requested.
 
 For a full set of commands, responses, and performance counters, see
 the [SIMT management
