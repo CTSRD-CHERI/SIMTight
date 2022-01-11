@@ -138,23 +138,42 @@ the standard build instructions should work as before.
 
 ## Enabling scalarisation
 
-Scalarisation is a technique that can spot uniform vectors and process
-them more efficiently as scalars, saving on-chip storage and energy.
-We do it dynamically (in hardware, at runtime) but it can also be done
-statically by a compiler.  Scalarisation can be enabled independently
-for the integer register file and the register file holding capability
-meta-data.  For example, to enable scalarisation of both register
-files, edit [inc/Config.h](inc/Config.h) and apply the following
-settings:
+Scalarisation is a technique that can spot _uniform_/_affine_ vectors
+and process them more efficiently as scalars, reducing on-chip
+storage, power consumption, and workload.  An _affine_ vector is one
+in which there is a constant stride between each element; a _uniform_
+vector is an affine vector where the stride is zero, i.e. all elements
+are equal.
+
+SIMTight implements _dynamic scalarisation_ (i.e. in hardware, at
+runtime), and it can be enabled independently for the integer register
+file and the register file holding capability meta-data.  To enable
+scalarisation of both register files, edit
+[inc/Config.h](inc/Config.h) and apply the following settings:
 
   * `#define SIMTEnableRegFileScalarisation 1`
   * `#define SIMTEnableCapRegFileScalarisation 1`
 
-Scalarisation is especially effective for capabilities, typically
-saving hundreds of kilobytes of register memory per CHERI-enabled SIMT
-core.  Running `test.sh --fpga` will give details on the number of
-vector registers used by each benchmark.  There are several
-improvements to be explored in future: _affine_ scalarisation,
-_partial_ scalarisation, and _inter-warp_ scalarisation.  The register
-file implementation is neatly separated from the pipeline, so these
-can be studied in a self-contained manner.
+These options alone only enable scalarisation of uniform vectors.  To
+enable scalariastion of affine vectors, apply the following settings
+
+  * `#define SIMTEnableAffineScalarisation 1`
+  * `#define SIMTAffineScalarisationBits 4`
+
+The second of these parameters defines the number of bits used to
+represent the constant stride between vector elements.  Note that
+affine scalarisation is never used in the the register file holding
+capability meta-data, where it wouldn't make much sense.
+
+Currently SIMTight only exploits scalarisation to reduce regiser file
+storage requirements.  It is very effective on our benchmark suite,
+especially for capabilities, typically saving hundreds of kilobytes of
+register memory per CHERI-enabled SIMT core.  Running `test.sh --fpga`
+will give details on the number of vector registers used by each
+benchmark.
+
+There are several improvements to be explored in future: (1)
+exploiting scalarisation to improve IPC; (2) _partial_ scalarisation;
+and (3) _inter-warp_ scalarisation.  The register file implementation
+is cleanly separated from the pipeline so the latter two of these
+improvements can be explored in a self-contained manner.
