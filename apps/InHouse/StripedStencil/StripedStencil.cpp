@@ -10,14 +10,15 @@ Authors: Paul Metzger, Matthew Naylor
 */
 
 #include <NoCL.h>
+#include <Rand.h>
 
 #define DEBUG false
 
 void populate_in_buf(int *in_buf, int x_size, int y_size) {
-  for (int y = 0; y < y_size; ++y) {
+  uint32_t seed = 1;
+  for (int y = 0; y < y_size; ++y)
     for (int x = 0; x < x_size; ++x)
-      in_buf[y * x_size + x] = x * y;
-  }
+      in_buf[y * x_size + x] = rand15(&seed);
 }
 
 // Generate a 'golden output' to check if the output computed

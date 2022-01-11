@@ -138,8 +138,8 @@ the standard build instructions should work as before.
 
 ## Enabling scalarisation
 
-Scalarisation is a technique that can spot _uniform_/_affine_ vectors
-and process them more efficiently as scalars, reducing on-chip
+Scalarisation is a technique that can spot _uniform_ / _affine_
+vectors and process them more efficiently as scalars, reducing on-chip
 storage, power consumption, and workload.  An _affine_ vector is one
 in which there is a constant stride between each element; a _uniform_
 vector is an affine vector where the stride is zero, i.e. all elements
@@ -162,7 +162,7 @@ enable scalariastion of affine vectors, apply the following settings
 
 The second of these parameters defines the number of bits used to
 represent the constant stride between vector elements.  Note that
-affine scalarisation is never used in the the register file holding
+affine scalarisation is never used in the register file holding
 capability meta-data, where it wouldn't make much sense.
 
 Currently SIMTight only exploits scalarisation to reduce regiser file
