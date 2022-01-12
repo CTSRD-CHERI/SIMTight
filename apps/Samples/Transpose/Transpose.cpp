@@ -1,4 +1,5 @@
 #include <NoCL.h>
+#include <Rand.h>
 
 // Kernel for matrix transposition
 // One sub-square at a time
@@ -42,9 +43,10 @@ int main()
   Array2D<int> matOut(matOutData, width, height);
 
   // Initialise inputs
+  uint32_t seed = 1;
   for (int i = 0; i < height; i++)
     for (int j = 0; j < width; j++)
-      matIn[i][j] = j;
+      matIn[i][j] = rand15(&seed);
 
   // Number of loop iterations per block.  The number of iterations
   // times the block Y dimension must equal the block X dimension.
@@ -70,7 +72,7 @@ int main()
   bool ok = true;
   for (int i = 0; i < width; i++)
     for (int j = 0; j < height; j++)
-      ok = ok && matOut[i][j] == i;
+      ok = ok && matOut[i][j] == matIn[j][i];
 
   // Display result
   puts("Self test: ");

@@ -1,4 +1,5 @@
 #include <NoCL.h>
+#include <Rand.h>
 
 // Kernel for vector summation
 template <int BlockSize> struct Reduce : Kernel {
@@ -40,10 +41,12 @@ int main()
   int sum;
 
   // Initialise inputs
+  uint32_t seed = 1;
   int acc = 0;
   for (int i = 0; i < N; i++) {
-    in[i] = i;
-    acc += i;
+    int r = rand15(&seed);
+    in[i] = r;
+    acc += r;
   }
 
   // Instantiate kernel

@@ -249,8 +249,8 @@ if [ "$TestFPGA" != "" ] ; then
       SCA=$(python -c "print('%.1f' % (100*float(0x${SCA_INSTRS}) / 0x${INSTRS}))")
       SCA=",ScalarInstrs=$SCA%"
     fi
-    test "$OK" != ""
     OPTIONAL_STATS="$VEC_REGS$CAP_VEC_REGS$SCA"
+    test "$OK" != ""
     assert $? "" " [IPC=$IPC,Instrs=$DINSTRS,Cycles=$DCYCLES$OPTIONAL_STATS]"
   done
 fi

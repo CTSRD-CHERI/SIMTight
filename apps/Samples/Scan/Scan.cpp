@@ -1,4 +1,5 @@
 #include <NoCL.h>
+#include <Rand.h>
 
 // Kernel for computing the parallel prefix sum (inclusive scan)
 // Simple (non-work-efficient) version based on one from "GPU Gems 3"
@@ -49,7 +50,10 @@ int main()
   simt_aligned int in[N], out[N];
 
   // Initialise inputs
-  for (int i = 0; i < N; i++) in[i] = i;
+  uint32_t seed = 1;
+  for (int i = 0; i < N; i++) {
+    in[i] = rand15(&seed);
+  }
 
   // Instantiate kernel
   Scan<SIMTWarps * SIMTLanes> k;
@@ -69,7 +73,7 @@ int main()
   bool ok = true;
   int acc = 0;
   for (int i = 0; i < N; i++) {
-    acc += i;
+    acc += in[i];
     ok = ok && out[i] == acc;
   }
 

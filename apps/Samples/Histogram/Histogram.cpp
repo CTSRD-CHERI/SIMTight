@@ -1,4 +1,5 @@
 #include <NoCL.h>
+#include <Rand.h>
 
 // Kernel for computing 256-bin histograms
 struct Histogram : Kernel {
@@ -42,8 +43,9 @@ int main()
   nocl_aligned int bins[256];
 
   // Initialise inputs
+  uint32_t seed = 1;
   for (int i = 0; i < N; i++)
-    input[i] = i & 0xff;
+    input[i] = rand15(&seed) & 0xff;
 
   // Instantiate kernel
   Histogram k;
@@ -61,8 +63,11 @@ int main()
 
   // Check result
   bool ok = true;
+  int goldenBins[256];
+  for (int i = 0; i < 256; i++) goldenBins[i] = 0;
+  for (int i = 0; i < N; i++) goldenBins[input[i]]++;
   for (int i = 0; i < 256; i++)
-    ok = ok && bins[i] == (N>>8) + (i < (N&0xff) ? 1 : 0);
+    ok = ok && bins[i] == goldenBins[i];
 
   // Display result
   puts("Self test: ");

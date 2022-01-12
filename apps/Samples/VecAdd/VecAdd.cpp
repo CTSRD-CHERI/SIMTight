@@ -1,4 +1,5 @@
 #include <NoCL.h>
+#include <Rand.h>
 
 // Kernel for adding vectors
 struct VecAdd : Kernel {
@@ -23,9 +24,10 @@ int main()
   simt_aligned int a[N], b[N], result[N];
 
   // Initialise inputs
+  uint32_t seed = 1;
   for (int i = 0; i < N; i++) {
-    a[i] = i;
-    b[i] = 2*i;
+    a[i] = rand15(&seed);
+    b[i] = rand15(&seed);
   }
 
   // Instantiate kernel
@@ -45,7 +47,8 @@ int main()
 
   // Check result
   bool ok = true;
-  for (int i = 0; i < N; i++) ok = ok && result[i] == 3*i;
+  for (int i = 0; i < N; i++)
+    ok = ok && result[i] == a[i] + b[i];
 
   // Display result
   puts("Self test: ");

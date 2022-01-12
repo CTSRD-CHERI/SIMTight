@@ -248,6 +248,7 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
         , simtPopTag = SIMT_POP
         , useRegFileScalarisation = SIMTEnableRegFileScalarisation == 1
         , useCapRegFileScalarisation = SIMTEnableCapRegFileScalarisation == 1
+        , useAffineScalarisation = SIMTEnableAffineScalarisation == 1
         }
 
   -- Pipeline instantiation
