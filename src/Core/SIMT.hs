@@ -249,6 +249,8 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
         , useRegFileScalarisation = SIMTEnableRegFileScalarisation == 1
         , useCapRegFileScalarisation = SIMTEnableCapRegFileScalarisation == 1
         , useAffineScalarisation = SIMTEnableAffineScalarisation == 1
+        , useScalarUnit = SIMTEnableScalarUnit == 1
+        , scalarUnitAllowList = []
         }
 
   -- Pipeline instantiation

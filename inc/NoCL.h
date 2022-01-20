@@ -377,10 +377,6 @@ template <typename K> __attribute__ ((noinline))
     #if SIMTEnableRegFileScalarisation
     // Get max number of vector registers used
     printStat("MaxVecRegs: ", STAT_SIMT_MAX_VEC_REGS);
-    #if EnableCHERI == 0
-      // Get number of scalarisable instrs
-      printStat("ScalarisableInstrs: ", STAT_SIMT_SCALARISABLE_INSTRS);
-    #endif
     #endif
 
     #if SIMTEnableCapRegFileScalarisation

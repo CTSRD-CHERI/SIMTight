@@ -233,7 +233,6 @@ if [ "$TestFPGA" != "" ] ; then
     INSTRS=$(grep -E ^Instrs: $tmpLog | cut -d' ' -f2)
     VEC_REGS=$(grep -E ^MaxVecRegs: $tmpLog | cut -d' ' -f2)
     CAP_VEC_REGS=$(grep -E ^MaxCapVecRegs: $tmpLog | cut -d' ' -f2)
-    SCA_INSTRS=$(grep -E ^ScalarisableInstrs: $tmpLog | cut -d' ' -f2)
     DCYCLES=$(python -c "print('%d' % (0x${CYCLES}))")
     DINSTRS=$(python -c "print('%d' % (0x${INSTRS}))")
     IPC=$(python -c "print('%.2f' % (float(0x${INSTRS}) / 0x${CYCLES}))")
@@ -245,11 +244,7 @@ if [ "$TestFPGA" != "" ] ; then
       DCAP_VEC_REGS=$(python -c "print('%d' % (0x${CAP_VEC_REGS}))")
       CAP_VEC_REGS=",CapVecRegs=$DCAP_VEC_REGS"
     fi
-    if [ "$SCA_INSTRS" != "" ]; then
-      SCA=$(python -c "print('%.1f' % (100*float(0x${SCA_INSTRS}) / 0x${INSTRS}))")
-      SCA=",ScalarInstrs=$SCA%"
-    fi
-    OPTIONAL_STATS="$VEC_REGS$CAP_VEC_REGS$SCA"
+    OPTIONAL_STATS="$VEC_REGS$CAP_VEC_REGS"
     test "$OK" != ""
     assert $? "" " [IPC=$IPC,Instrs=$DINSTRS,Cycles=$DCYCLES$OPTIONAL_STATS]"
   done
