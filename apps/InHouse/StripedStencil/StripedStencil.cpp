@@ -104,21 +104,22 @@ struct SimpleStencil : Kernel {
                     buffer[threadIdx.y+1][middle + threadIdx.x] :
                       blockIdx.y == gridDim.y-1 ? 0 : in_buf[idx + x_size];
 
+      // Middle plus x, used often below
+      int mx = middle + threadIdx.x;
+
       // Write output
       out_buf[idx] =
           above
         + below
-        + buffer[threadIdx.y][middle + threadIdx.x - 1]
-        + buffer[threadIdx.y][middle + threadIdx.x]
-        + buffer[threadIdx.y][middle + threadIdx.x + 1];
+        + buffer[threadIdx.y][mx - 1]
+        + buffer[threadIdx.y][mx]
+        + buffer[threadIdx.y][mx + 1];
 
       __syncthreads();
 
       // Shift buffer
-      buffer[threadIdx.y][left + threadIdx.x] =
-        buffer[threadIdx.y][middle + threadIdx.x];
-      buffer[threadIdx.y][middle + threadIdx.x] =
-        buffer[threadIdx.y][right + threadIdx.x];
+      buffer[threadIdx.y][left + threadIdx.x] = buffer[threadIdx.y][mx];
+      buffer[threadIdx.y][mx] = buffer[threadIdx.y][right + threadIdx.x];
     }
   }
 };
