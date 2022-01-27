@@ -66,9 +66,6 @@ NOTE("For affine scalarisation, how many bits to use for the stride?")
 NOTE("Use dedicated scalar unit, allowing parallel scalar/vector execution?")
 #define SIMTEnableScalarUnit 0
 
-NOTE("Size of scalar unit's run queue")
-#define SIMTScalarUnitLogQueueSize SIMTLogWarps
-
 NOTE("CPU configuration")
 NOTE("=================")
 

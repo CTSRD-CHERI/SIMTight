@@ -259,6 +259,7 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
       simtMgmtReqs = mgmtReqs
     , simtWarpCmdWire = warpCmdWire
     , simtResumeReqs = toStream resumeQueue
+    , simtScalarResumeReqs = nullStream -- TODO
     }
 
   return pipelineOuts.simtMgmtResps
