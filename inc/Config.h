@@ -55,7 +55,7 @@ NOTE("Latency of full-throughput divider (more latency = higher Fmax)")
 #define SIMTFullDividerLatency 12
 
 NOTE("Use scalarising register file?")
-#define SIMTEnableRegFileScalarisation 0
+#define SIMTEnableRegFileScalarisation 1
 
 NOTE("Use affine scalarisation, or just plain uniform scalarisation?")
 #define SIMTEnableAffineScalarisation 0
@@ -64,7 +64,7 @@ NOTE("For affine scalarisation, how many bits to use for the stride?")
 #define SIMTAffineScalarisationBits 4
 
 NOTE("Use dedicated scalar unit, allowing parallel scalar/vector execution?")
-#define SIMTEnableScalarUnit 0
+#define SIMTEnableScalarUnit 1
 
 NOTE("CPU configuration")
 NOTE("=================")
