@@ -153,6 +153,10 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
   -- Multiplier for scalar unit
   scalarMulUnit <- if enScalarUnit then makeFullMulUnit else return nullServer
 
+  -- Scalar unit multiplier sink (with pipeline info inserted)
+  let scalarMulSink = mapSink ((,) pipelineOuts.simtScalarInstrInfo)
+                              scalarMulUnit.reqs
+
   -- Divider requests
   -- ================
 
@@ -172,6 +176,10 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
              Nothing -> makeSeqDivUnit
              Just latency -> makeFullDivUnit latency
       else return nullServer
+
+  -- Scalar unit divider sink (with pipeline info inserted)
+  let scalarDivSink = mapSink ((,) pipelineOuts.simtScalarInstrInfo)
+                              scalarDivUnit.reqs
 
   -- Memory requests
   -- ===============
@@ -288,9 +296,9 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
             return
               ExecuteStage {
                 execute = do
-                  executeI (Just scalarMulUnit.reqs)
+                  executeI (Just scalarMulSink)
                              scalarCSRUnit scalarMemReqs s
-                  executeM scalarMulUnit.reqs scalarDivUnit.reqs s
+                  executeM scalarMulSink scalarDivSink s
                   executeI_NoCap scalarCSRUnit scalarMemReqs s
               }
         }
