@@ -101,7 +101,7 @@ $ cd test
 $ ./test.sh --fpga     # Assumes FPGA image built and FPGA connected via USB
 ```
 
-When running on FPGA, performance stats are also emitted.
+Use the `--stats` option to generate performance stats.
 
 ## Enabling CHERI :cherries:
 
