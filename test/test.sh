@@ -26,6 +26,8 @@ NoPgm=
 AppsOnly=
 LogSim=
 EmitStats=
+SkipTests=
+SkipCPU=
 
 # Arguments
 # =========
@@ -35,12 +37,14 @@ do
   case $1 in
     -h|--help)
       echo "Run test-suite and example apps"
-      echo "  --sim        run in simulation (verilator)"
-      echo "  --fpga       run on FPGA (de10-pro)"
-      echo "  --no-pgm     don't reprogram FPGA"
-      echo "  --apps-only  run apps only (not test-suite)"
-      echo "  --log-sim    log simulator output to sim-log.txt"
-      echo "  --stats      emit performance stats"
+      echo "  --sim         run in simulation (verilator)"
+      echo "  --fpga        run on FPGA (de10-pro)"
+      echo "  --no-pgm      don't reprogram FPGA"
+      echo "  --apps-only   run apps only (not test-suite)"
+      echo "  --log-sim     log simulator output to sim-log.txt"
+      echo "  --stats       emit performance stats"
+      echo "  --skip-tests  skip riscv-tests"
+      echo "  --skip-cpu    skip CPU testing"
       exit
       ;;
     --sim)
@@ -60,6 +64,12 @@ do
       ;;
     --stats)
       EmitStats=yup
+      ;;
+    --skip-tests)
+      SkipTests=yup
+      ;;
+    --skip-cpu)
+      SkipCPU=yup
       ;;
     -?*)
       printf 'Ignoring unknown flag: %s\n' "$1" >&2
@@ -168,36 +178,41 @@ fi
 # Test Suite
 # ==========
 
-# In simulation
-if [[ "$TestSim" != "" && "$AppsOnly" == "" ]]; then
-  echo "Test Suite (CPU, Simulation)"
-  echo "============================"
-  echo
-  make -s -C ../apps/TestSuite test-cpu-sim
-  assert $? "\nSummary: "
-  echo
-  echo "Test Suite (SIMT Core, Simulation)"
-  echo "=================================="
-  echo
-  make -s -C ../apps/TestSuite test-simt-sim
-  assert $? "\nSummary: "
-  echo
-fi
+if [ "$SkipTests" == "" ]; then
 
-# On FPGA
-if [[ "$TestFPGA" != "" && "$AppsOnly" == "" ]] ; then
-  echo "Test Suite (CPU, FPGA)"
-  echo "======================"
-  echo
-  make -s -C ../apps/TestSuite test-cpu
-  assert $? "\nSummary: "
-  echo
-  echo "Test Suite (SIMT Core, FPGA)"
-  echo "============================"
-  echo
-  make -s -C ../apps/TestSuite test-simt
-  assert $? "\nSummary: "
-  echo
+  # In simulation
+  if [[ "$TestSim" != "" && "$AppsOnly" == "" ]]; then
+    if [ "$SkipCPU" == "" ]; then
+      echo "Test Suite (CPU, Simulation)"
+      echo "============================"
+      echo
+      make -s -C ../apps/TestSuite test-cpu-sim
+      assert $? "\nSummary: "
+      echo
+    fi
+    echo "Test Suite (SIMT Core, Simulation)"
+    echo "=================================="
+    echo
+    make -s -C ../apps/TestSuite test-simt-sim
+    assert $? "\nSummary: "
+    echo
+  fi
+
+  # On FPGA
+  if [[ "$TestFPGA" != "" && "$AppsOnly" == "" ]] ; then
+    echo "Test Suite (CPU, FPGA)"
+    echo "======================"
+    echo
+    make -s -C ../apps/TestSuite test-cpu
+    assert $? "\nSummary: "
+    echo
+    echo "Test Suite (SIMT Core, FPGA)"
+    echo "============================"
+    echo
+    make -s -C ../apps/TestSuite test-simt
+    assert $? "\nSummary: "
+    echo
+  fi
 fi
 
 # Sample Apps
@@ -242,6 +257,10 @@ if [ "$TestSim" != "" ]; then
   echo "Apps (Simulation)"
   echo "================="
   echo
+  if [ "$EmitStats" != "" ]; then
+    echo "(NOTE: simulation stats can be misleading due to tiny workloads)"
+    echo
+  fi
   tmpDir=$(mktemp -d -t simtight-test-XXXX)
   for APP in ${APPS[@]}; do
     echo -n "$APP (build): "
