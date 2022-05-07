@@ -280,7 +280,14 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
         , useCapRegFileScalarisation = SIMTEnableCapRegFileScalarisation == 1
         , useAffineScalarisation = SIMTEnableAffineScalarisation == 1
         , useScalarUnit = enScalarUnit
-        , scalarUnitAllowList = [ADD]
+        , scalarUnitAllowList =
+            [ ADD, SUB, SLT, SLTU, AND, OR, XOR
+            , LUI, AUIPC
+            , SLL, SRL, SRA
+            , JAL, JALR
+            , BEQ, BNE, BLT, BLTU, BGE, BGEU
+            , MUL, DIV
+            ]
         , scalarUnitDecodeStage = concat
             [ decodeI
             , decodeI_NoCap
