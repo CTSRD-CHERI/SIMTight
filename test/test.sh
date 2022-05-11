@@ -218,6 +218,12 @@ fi
 # Sample Apps
 # ===========
 
+# Function to convert hex to decimal
+function fromHex() {
+  local DEC=$(python -c "print('%d' % (0x$1))")
+  echo "$DEC"
+}
+
 # Function to run app and check success (and emit stats)
 checkApp() {
   local Run=$1
@@ -231,18 +237,28 @@ checkApp() {
   local INSTRS=$(grep -E ^Instrs: $tmpLog | cut -d' ' -f2)
   local VEC_REGS=$(grep -E ^MaxVecRegs: $tmpLog | cut -d' ' -f2)
   local CAP_VEC_REGS=$(grep -E ^MaxCapVecRegs: $tmpLog | cut -d' ' -f2)
+  local SCALARISABLE=$(grep -E ^ScalarisableInstrs: $tmpLog | cut -d' ' -f2)
+  local SCALARISED=$(grep -E ^ScalarisedInstrs: $tmpLog | cut -d' ' -f2)
   local DCYCLES=$(python -c "print('%d' % (0x${CYCLES}))")
   local DINSTRS=$(python -c "print('%d' % (0x${INSTRS}))")
   local IPC=$(python -c "print('%.2f' % (float(0x${INSTRS}) / 0x${CYCLES}))")
+  local OPTIONAL_STATS=""
   if [ "$VEC_REGS" != "" ]; then
-    local DVEC_REGS=$(python -c "print('%d' % (0x${VEC_REGS}))")
-    VEC_REGS=",VecRegs=$DVEC_REGS"
+    DEC=$(fromHex $VEC_REGS)
+    OPTIONAL_STATS="$OPTIONAL_STATS,VecRegs=$DEC"
   fi
   if [ "$CAP_VEC_REGS" != "" ]; then
-    local DCAP_VEC_REGS=$(python -c "print('%d' % (0x${CAP_VEC_REGS}))")
-    CAP_VEC_REGS=",CapVecRegs=$DCAP_VEC_REGS"
+    DEC=$(fromHex $CAP_VEC_REGS)
+    OPTIONAL_STATS="$OPTIONAL_STATS,CapVecRegs=$DEC"
   fi
-  local OPTIONAL_STATS="$VEC_REGS$CAP_VEC_REGS"
+  if [ "$SCALARISABLE" != "" ]; then
+    DEC=$(fromHex $SCALARISABLE)
+    OPTIONAL_STATS="$OPTIONAL_STATS,ScalarisableInstrs=$DEC"
+  fi
+  if [ "$SCALARISED" != "" ]; then
+    DEC=$(fromHex $SCALARISED)
+    OPTIONAL_STATS="$OPTIONAL_STATS,ScalarisedInstrs=$DEC"
+  fi
   if [ "$EmitStats" != "" ]; then
     test "$OK" != ""
     assert $? "" " [IPC=$IPC,Instrs=$DINSTRS,Cycles=$DCYCLES$OPTIONAL_STATS]"
