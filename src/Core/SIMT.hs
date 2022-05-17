@@ -287,11 +287,13 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
             , JAL, JALR
             , BEQ, BNE, BLT, BLTU, BGE, BGEU
             , MUL, DIV
+            , SIMT_PUSH, SIMT_POP
             ]
         , scalarUnitDecodeStage = concat
             [ decodeI
             , decodeI_NoCap
             , decodeM
+            , decodeSIMT
             ]
         , scalarUnitExecuteStage = \s -> do
             -- CSRs not supported in scalar unit
