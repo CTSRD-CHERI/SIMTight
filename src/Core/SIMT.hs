@@ -295,6 +295,9 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
             , decodeM
             , decodeSIMT
             ]
+        , scalarUnitAffineAdder =
+            if enScalarUnit && SIMTEnableAffineScalarisation == 1
+              then Just ADD else Nothing
         , scalarUnitExecuteStage = \s -> do
             -- CSRs not supported in scalar unit
             let scalarCSRUnit = nullCSRUnit
