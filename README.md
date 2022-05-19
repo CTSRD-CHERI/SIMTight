@@ -16,19 +16,19 @@ has the following features.
   * Twin scalar/vector pipelines for increased performance density
   * Sample project for the [DE10-Pro](http://de10-pro.terasic.com)
     FPGA development board
-  * [CUDA-like C++ library](doc/NoCL.md) and [benchmark suite](apps/),
-    compilable in pure capability mode
+  * [CUDA-like C++ library](doc/NoCL.md) and [benchmark suite](apps/)
+    (compiles in pure capability mode)
   * Implemented in Haskell using the
     [Blarney](https://github.com/blarney-lang/blarney)
     hardware description library
   * Modular separation of instructions and pipelines using the
-    [Pebbles](//github.com/blarney-lang/pebbles) RISC-V processor
+    [Pebbles](//github.com/blarney-lang/pebbles)
     framework
 
 SIMTight is being developed on the [CAPcelerate
 project](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/V000381/1).
 
-## SoC Diagram
+## Default SoC
 
 The default SIMTight SoC consists of a scalar CPU and a 32-lane
 64-warp GPGPU sharing DRAM, both supporting the CHERI-RISC-V ISA.
