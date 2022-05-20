@@ -10,9 +10,9 @@ has the following features/properties.
   * Strong [CHERI](http://cheri-cpu.org) memory safety
   * Dynamic scalarisation (automatic detection of scalar
     behaviour in hardware)
+  * Twin scalar/vector pipelines for increased performance density
   * Register file compression for reduced onchip storage
   * Eliminates the register file overhead of CHERI almost entirely
-  * Twin scalar/vector pipelines for increased performance density
   * Runs [CUDA-like C++ library](doc/NoCL.md) and [benchmark suite](apps/)
     (in pure capability mode)
   * Implemented in Haskell using the
@@ -181,7 +181,7 @@ capability meta-data, where it wouldn't make much sense.
 SIMTight exploits scalarisation to reduce regiser file storage requirements.
 It is very effective on our benchmark suite, especially for capabilities,
 typically saving hundreds of kilobytes of register memory per CHERI-enabled
-SIMT core.  Running `test.sh --fpga --stats` will give details on the number of
+SIMT core.  Running `test.sh --fpga --stats` gives details on the number of
 vector registers used by each benchmark.
 
 SIMTight also exploits scalarisation to process scalarisable instructions using
