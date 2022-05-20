@@ -1,12 +1,12 @@
 # SIMTight
 
-SIMTight is an FPGA-optimised processor core implementing the _Single
-Instruction Multiple Threads (SIMT)_ paradigm popularised by NVIDIA GPUs.  It
-has the following features/properties.
+SIMTight is an FPGA-optimised processor implementing the _Single
+Instruction Multiple Threads (SIMT)_ model popularised by NVIDIA GPUs.
+
+Features:
 
   * RISC-V instruction set (RV32IMAxCHERI) 
-  * Simple design optimised for "classic" GPGPU workloads
-  * High performance density (MIPS per LUT)
+  * Low-area design optimised for "classic" GPGPU workloads
   * Strong [CHERI](http://cheri-cpu.org) memory safety
   * Dynamic scalarisation (automatic detection of scalar
     behaviour in hardware)
