@@ -5,7 +5,7 @@ Instruction, Multiple Threads (SIMT)_ paradigm popularised by NVIDIA GPUs.  It
 has the following features.
 
   * RISC-V RV32IMAxCHERI instruction set
-  * Simple design optimised for FPGAs and "classic" GPGPU workloads
+  * Simple design optimised for "classic" GPGPU workloads
   * High performance density (MIPS per LUT)
   * Strong memory safety using [CHERI capabilities](http://cheri-cpu.org) 
   * Dynamic scalarisation (automatic detection of scalar
@@ -14,8 +14,6 @@ has the following features.
   * Eliminates the register size overhead of CHERI almost
     entirely
   * Twin scalar/vector pipelines for increased performance density
-  * Sample project for the [DE10-Pro](http://de10-pro.terasic.com)
-    FPGA development board
   * [CUDA-like C++ library](doc/NoCL.md) and [benchmark suite](apps/)
     (compiles in pure capability mode)
   * Implemented in Haskell using the
@@ -34,6 +32,9 @@ The default SIMTight SoC consists of a scalar CPU and a 32-lane
 64-warp GPGPU sharing DRAM, both supporting the CHERI-RISC-V ISA.
 
 <img src="doc/SoC.svg" width="450">
+
+A [sample project](de10-pro/) is included for the
+[DE10-Pro](http://de10-pro.terasic.com) FPGA development board.
 
 ## Build instructions
 
