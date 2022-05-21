@@ -6,19 +6,21 @@ Instruction Multiple Threads (SIMT)_ model popularised by NVIDIA GPUs.
 Features:
 
   * RISC-V instruction set (RV32IMAxCHERI) 
-  * Low-area design optimised for "classic" GPGPU workloads
+  * Low-area design with high IPC on "classic" GPGPU workloads
   * Strong [CHERI](http://cheri-cpu.org) memory safety
   * Dynamic scalarisation (automatic detection of scalar
     behaviour in hardware)
-  * Twin scalar/vector pipelines for increased performance density
-  * Register file compression for reduced onchip storage
-  * Eliminates the register file overhead of CHERI almost entirely
+  * Twin scalar/vector pipelines exploiting scalarisation for
+    increased throughput
+  * Register file compression exploiting scalarisation for
+    reduced onchip storage and energy
+  * Eliminates register file overhead of CHERI almost entirely
   * Runs [CUDA-like C++ library](doc/NoCL.md) and [benchmark suite](apps/)
     (in pure capability mode)
   * Implemented in Haskell using the
     [Blarney](https://github.com/blarney-lang/blarney)
     hardware description library
-  * Modular separation of instructions and pipelines using the
+  * Modular separation of instruction set and pipelines using the
     [Pebbles](//github.com/blarney-lang/pebbles)
     framework
 
@@ -152,14 +154,14 @@ the standard build instructions should work as before.
 
 ## Enabling scalarisation
 
-Scalarisation is a technique that can spot _uniform_ / _affine_ vectors and
-process them more efficiently as scalars, reducing on-chip storage and
+Scalarisation is an optimastion that spots _uniform_ and _affine_ vectors and
+processes them more efficiently as scalars, reducing on-chip storage and
 increasing performance density.  An _affine_ vector is one in which there is a
 constant stride between each element; a _uniform_ vector is an affine vector
 where the stride is zero, i.e. all elements are equal.
 
 SIMTight implements _dynamic scalarisation_ (i.e. in hardware, at
-runtime), and it can be enabled independently for the integer register
+runtime), and it can be enabled separately for the integer register
 file and the register file holding capability meta-data.  To enable
 scalarisation of both register files, edit
 [inc/Config.h](inc/Config.h) and apply the following settings:
@@ -191,7 +193,7 @@ a dedicated scalar pipeline, which can be enabled with:
 
 The scalar pipeline allows an entire warp to be executed on a single execution
 unit in a single cycle (when an instruction is detected as scalarisable), _and
-runs in parallel with the main vector pipeline_.  For many workloads, this
+operates in parallel with the main vector pipeline_.  For many workloads, this
 increases perforance density significantly.
 
 Possible future work: _partial_ scalarisation and _inter-warp_ scalarisation.
