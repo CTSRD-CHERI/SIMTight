@@ -374,12 +374,22 @@ template <typename K> __attribute__ ((noinline))
     // Get number of instructions executed
     printStat("Instrs: ", STAT_SIMT_INSTRS);
 
+    // Get number of pipeline bubbles due to suspended warp being scheduled
+    printStat("Susps: ", STAT_SIMT_SUSP_BUBBLES);
+
+    // Get number of pipeline retries
+    printStat("Retries: ", STAT_SIMT_RETRIES);
+
     #if SIMTEnableRegFileScalarisation
       // Get max number of vector registers used
       printStat("MaxVecRegs: ", STAT_SIMT_MAX_VEC_REGS);
       #if SIMTEnableScalarUnit
         // Get number of instrs executed on scalar unit
         printStat("ScalarisedInstrs: ", STAT_SIMT_SCALARISABLE_INSTRS);
+	// Get number of scalar pipeline suspension bubbles
+        printStat("ScalarSusps: ", STAT_SIMT_SCALAR_SUSP_BUBBLES);
+	// Get number of scalar pipeline abortions (mispredictions)
+        printStat("ScalarAborts: ", STAT_SIMT_SCALAR_ABORTS);
       #else
         // Get potential scalarisable instructions
         printStat("ScalarisableInstrs: ", STAT_SIMT_SCALARISABLE_INSTRS);

@@ -239,6 +239,10 @@ checkApp() {
   local CAP_VEC_REGS=$(grep -E ^MaxCapVecRegs: $tmpLog | cut -d' ' -f2)
   local SCALARISABLE=$(grep -E ^ScalarisableInstrs: $tmpLog | cut -d' ' -f2)
   local SCALARISED=$(grep -E ^ScalarisedInstrs: $tmpLog | cut -d' ' -f2)
+  local RETRIES=$(grep -E ^Retries: $tmpLog | cut -d' ' -f2)
+  local SUSPS=$(grep -E ^Susps: $tmpLog | cut -d' ' -f2)
+  local SCALAR_SUSPS=$(grep -E ^ScalarSusps: $tmpLog | cut -d' ' -f2)
+  local SCALAR_ABORTS=$(grep -E ^ScalarAborts: $tmpLog | cut -d' ' -f2)
   local DCYCLES=$(python -c "print('%d' % (0x${CYCLES}))")
   local DINSTRS=$(python -c "print('%d' % (0x${INSTRS}))")
   local IPC=$(python -c "print('%.2f' % (float(0x${INSTRS}) / 0x${CYCLES}))")
@@ -258,6 +262,22 @@ checkApp() {
   if [ "$SCALARISED" != "" ]; then
     DEC=$(fromHex $SCALARISED)
     OPTIONAL_STATS="$OPTIONAL_STATS,ScalarisedInstrs=$DEC"
+  fi
+  if [ "$RETRIES" != "" ]; then
+    DEC=$(fromHex $RETRIES)
+    OPTIONAL_STATS="$OPTIONAL_STATS,Retries=$DEC"
+  fi
+  if [ "$SUSPS" != "" ]; then
+    DEC=$(fromHex $SUSPS)
+    OPTIONAL_STATS="$OPTIONAL_STATS,Susps=$DEC"
+  fi
+  if [ "$SCALAR_SUSPS" != "" ]; then
+    DEC=$(fromHex $SCALAR_SUSPS)
+    OPTIONAL_STATS="$OPTIONAL_STATS,ScalarSusps=$DEC"
+  fi
+  if [ "$SCALAR_ABORTS" != "" ]; then
+    DEC=$(fromHex $SCALAR_ABORTS)
+    OPTIONAL_STATS="$OPTIONAL_STATS,ScalarAborts=$DEC"
   fi
   if [ "$EmitStats" != "" ]; then
     test "$OK" != ""
