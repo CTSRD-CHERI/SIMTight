@@ -29,7 +29,7 @@ project](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/V000381/1).
 
 ## Default SoC
 
-The default SIMTight SoC consists of a scalar CPU and a 32-lane
+The default SIMTight SoC consists of a host CPU and a 32-lane
 64-warp GPGPU sharing DRAM, both supporting the CHERI-RISC-V ISA.
 
 <img src="doc/SoC.svg" width="450">
