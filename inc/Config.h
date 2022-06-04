@@ -48,9 +48,6 @@ NOTE("Size of each SRAM bank (in words)")
 NOTE("Enable SIMT stat counters")
 #define SIMTEnableStatCounters 1
 
-NOTE("Size of SRAM multicast id in coalescing unit")
-#define SIMTMcastIdSize 4
-
 NOTE("Use full-throughput divider (rather than sequential divider)?")
 #define SIMTUseFullDivider 0
 
@@ -65,6 +62,9 @@ NOTE("Use affine scalarisation, or just plain uniform scalarisation?")
 
 NOTE("For affine scalarisation, how many bits to use for the stride?")
 #define SIMTAffineScalarisationBits 4
+
+NOTE("Use dedicated scalar unit, allowing parallel scalar/vector execution?")
+#define SIMTEnableScalarUnit 0
 
 NOTE("CPU configuration")
 NOTE("=================")

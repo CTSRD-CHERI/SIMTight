@@ -137,7 +137,10 @@ makeSIMTCore ::
   -> Module (Stream SIMTResp)
      -- ^ SIMT management responses
 makeSIMTCore config mgmtReqs memReqs memResps = mdo
-  
+
+  -- Scalar unit enabled?
+  let enScalarUnit = SIMTEnableScalarUnit == 1
+
   -- Multiplier requests
   -- ===================
 
@@ -146,6 +149,13 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
 
   -- Per lane multiplier request sinks
   mulSinks <- makeSinkVectoriser pipelineOuts.simtInstrInfo vecMulUnit.reqs
+
+  -- Multiplier for scalar unit
+  scalarMulUnit <- if enScalarUnit then makeFullMulUnit else return nullServer
+
+  -- Scalar unit multiplier sink (with pipeline info inserted)
+  let scalarMulSink = mapSink ((,) pipelineOuts.simtScalarInstrInfo)
+                              scalarMulUnit.reqs
 
   -- Divider requests
   -- ================
@@ -158,6 +168,18 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
 
   -- Per lane divider request sinks
   divSinks <- makeSinkVectoriser pipelineOuts.simtInstrInfo vecDivUnit.reqs
+
+  -- Divider for scalar unit
+  scalarDivUnit <-
+    if enScalarUnit
+      then case config.simtCoreUseFullDivider of
+             Nothing -> makeSeqDivUnit
+             Just latency -> makeFullDivUnit latency
+      else return nullServer
+
+  -- Scalar unit divider sink (with pipeline info inserted)
+  let scalarDivSink = mapSink ((,) pipelineOuts.simtScalarInstrInfo)
+                              scalarDivUnit.reqs
 
   -- Memory requests
   -- ===============
@@ -200,6 +222,14 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
   -- Resume queue
   resumeQueue <- makePipelineQueue 1
   makeConnection resumeReqStream (toSink resumeQueue)
+
+  -- Merge scalar unit resume requests
+  let scalarResumeReqStream =
+         scalarMulUnit.resps `mergeTwo` scalarDivUnit.resps
+
+  -- Scalar unit resume eueue
+  scalarResumeQueue <- makePipelineQueue 1
+  makeConnection scalarResumeReqStream (toSink scalarResumeQueue)
 
   -- Pipeline
   -- ========
@@ -249,6 +279,40 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
         , useRegFileScalarisation = SIMTEnableRegFileScalarisation == 1
         , useCapRegFileScalarisation = SIMTEnableCapRegFileScalarisation == 1
         , useAffineScalarisation = SIMTEnableAffineScalarisation == 1
+        , useScalarUnit = enScalarUnit
+        , scalarUnitAllowList =
+            [ ADD, SUB, SLT, SLTU, AND, OR, XOR
+            , LUI, AUIPC
+            , SLL, SRL, SRA
+            , JAL, JALR
+            , BEQ, BNE, BLT, BLTU, BGE, BGEU
+            , MUL, DIV
+            , SIMT_PUSH, SIMT_POP
+            ]
+        , scalarUnitDecodeStage = concat
+            [ decodeI
+            , decodeI_NoCap
+            , decodeM
+            , decodeSIMT
+            ]
+        , scalarUnitAffineAdder =
+            if enScalarUnit && SIMTEnableAffineScalarisation == 1
+              then Just ADD else Nothing
+        , scalarUnitExecuteStage = \s -> do
+            -- CSRs not supported in scalar unit
+            let scalarCSRUnit = nullCSRUnit
+ 
+            -- Memory access not supported in scalar unit
+            let scalarMemReqs = nullSink
+
+            return
+              ExecuteStage {
+                execute = do
+                  executeI (Just scalarMulSink)
+                             scalarCSRUnit scalarMemReqs s
+                  executeM scalarMulSink scalarDivSink s
+                  executeI_NoCap scalarCSRUnit scalarMemReqs s
+              }
         }
 
   -- Pipeline instantiation
@@ -257,6 +321,7 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
       simtMgmtReqs = mgmtReqs
     , simtWarpCmdWire = warpCmdWire
     , simtResumeReqs = toStream resumeQueue
+    , simtScalarResumeReqs = toStream scalarResumeQueue
     }
 
   return pipelineOuts.simtMgmtResps

@@ -1,25 +1,41 @@
 # SIMTight
 
-SIMTight is a prototype GPGPU being developed on the [CAPcelerate
-project](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/V000381/1)
-to explore the use of [CHERI capabilities](http://cheri-cpu.org) in
-SIMT-style accelerators popularised by NVIDIA.  The default SIMTight
-SoC consists of a scalar CPU and a 32-lane 64-warp GPGPU sharing DRAM,
-both supporting the CHERI-RISC-V ISA.
+SIMTight is an FPGA-optimised processor implementing the _Single
+Instruction Multiple Threads (SIMT)_ model popularised by NVIDIA GPUs.
+
+Features:
+
+  * RISC-V instruction set (RV32IMAxCHERI) 
+  * Low-area design with high IPC on "classic" GPGPU workloads
+  * Strong [CHERI](http://cheri-cpu.org) memory safety
+  * Dynamic scalarisation (automatic detection of scalar
+    behaviour in hardware)
+  * Twin scalar/vector pipelines exploiting scalarisation for
+    increased throughput
+  * Register file compression exploiting scalarisation for
+    reduced onchip storage and energy
+  * Eliminates register file overhead of CHERI almost entirely
+  * Runs [CUDA-like C++ library](doc/NoCL.md) and [benchmark suite](apps/)
+    (in pure capability mode)
+  * Implemented in Haskell using the
+    [Blarney](https://github.com/blarney-lang/blarney)
+    hardware description library
+  * Modular separation of instruction set and pipelines using the
+    [Pebbles](//github.com/blarney-lang/pebbles)
+    framework
+
+SIMTight is being developed on the [CAPcelerate
+project](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/V000381/1).
+
+## Default SoC
+
+The default SIMTight SoC consists of a scalar CPU and a 32-lane
+64-warp GPGPU sharing DRAM, both supporting the CHERI-RISC-V ISA.
 
 <img src="doc/SoC.svg" width="450">
 
-The SoC is optimised for high performance density on FPGA (MIPS per
-LUT).  A sample project is provided for the
-[DE10-Pro](http://de10-pro.terasic.com) development board.  There is
-also a [CUDA-like C++ library](doc/NoCL.md) and a set of sample
-[compute kernels](apps/) ported to this library.  When CHERI is
-enabled, the kernels run in pure capability mode.  The SoC is
-implemented in Haskell using the
-[Blarney](https://github.com/blarney-lang/blarney) hardware
-description library and the
-[Pebbles](//github.com/blarney-lang/pebbles) RISC-V processor
-framework.
+A [sample project](de10-pro/) is included for the
+[DE10-Pro](http://de10-pro.terasic.com) FPGA development board.
 
 ## Build instructions
 
@@ -101,7 +117,7 @@ $ cd test
 $ ./test.sh --fpga     # Assumes FPGA image built and FPGA connected via USB
 ```
 
-When running on FPGA, performance stats are also emitted.
+Use the `--stats` option to generate performance stats.
 
 ## Enabling CHERI :cherries:
 
@@ -138,15 +154,14 @@ the standard build instructions should work as before.
 
 ## Enabling scalarisation
 
-Scalarisation is a technique that can spot _uniform_ / _affine_
-vectors and process them more efficiently as scalars, reducing on-chip
-storage, power consumption, and workload.  An _affine_ vector is one
-in which there is a constant stride between each element; a _uniform_
-vector is an affine vector where the stride is zero, i.e. all elements
-are equal.
+Scalarisation is an optimastion that spots _uniform_ and _affine_ vectors and
+processes them more efficiently as scalars, reducing on-chip storage and
+increasing performance density.  An _affine_ vector is one in which there is a
+constant stride between each element; a _uniform_ vector is an affine vector
+where the stride is zero, i.e. all elements are equal.
 
 SIMTight implements _dynamic scalarisation_ (i.e. in hardware, at
-runtime), and it can be enabled independently for the integer register
+runtime), and it can be enabled separately for the integer register
 file and the register file holding capability meta-data.  To enable
 scalarisation of both register files, edit
 [inc/Config.h](inc/Config.h) and apply the following settings:
@@ -165,15 +180,22 @@ represent the constant stride between vector elements.  Note that
 affine scalarisation is never used in the register file holding
 capability meta-data, where it wouldn't make much sense.
 
-Currently SIMTight only exploits scalarisation to reduce regiser file
-storage requirements.  It is very effective on our benchmark suite,
-especially for capabilities, typically saving hundreds of kilobytes of
-register memory per CHERI-enabled SIMT core.  Running `test.sh --fpga`
-will give details on the number of vector registers used by each
-benchmark.
+SIMTight exploits scalarisation to reduce regiser file storage requirements.
+It is very effective on our benchmark suite, especially for capabilities,
+typically saving hundreds of kilobytes of register memory per CHERI-enabled
+SIMT core.  Running `test.sh --fpga --stats` gives details on the number of
+vector registers used by each benchmark.
 
-There are several improvements to be explored in future: (1)
-exploiting scalarisation to improve IPC; (2) _partial_ scalarisation;
-and (3) _inter-warp_ scalarisation.  The register file implementation
-is cleanly separated from the pipeline so the latter two of these
-improvements can be explored in a self-contained manner.
+SIMTight also exploits scalarisation to process scalarisable instructions using
+a dedicated scalar pipeline, which can be enabled with:
+
+  * `#define SIMTEnableScalarUnit 1`
+
+The scalar pipeline allows an entire warp to be executed on a single execution
+unit in a single cycle (when an instruction is detected as scalarisable), _and
+operates in parallel with the main vector pipeline_.  For many workloads, this
+increases perforance density significantly.
+
+Possible future work: _partial_ scalarisation and _inter-warp_ scalarisation.
+The register file implementation is cleanly separated from the pipeline so
+these improvements can be explored in a self-contained manner.
