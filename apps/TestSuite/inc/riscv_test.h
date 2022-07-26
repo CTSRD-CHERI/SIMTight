@@ -52,21 +52,31 @@
 #define CSR_UARTCanPut 0x802
 #define CSR_UARTPut 0x803
 
+#if EnableCHERI
+#define JUMP_BASE                                                       \
+        li t1, MemBase;                                                 \
+        cspecialr ct0, ddc;                                             \
+        csetaddr ct0, ct0, t1;                                          \
+        cjr ct0;
+#else
+#define JUMP_BASE                                                       \
+        li t0, MemBase;                                                 \
+        jr t0;
+#endif
+
 #define RVTEST_PASS                                                     \
         li TESTNUM, 1;                                                  \
         1: csrrw t0, CSR_UARTCanPut, zero;                              \
         beq t0, zero, 1b;                                               \
         csrw CSR_UARTPut, TESTNUM;                                      \
-        li t0, MemBase;                                                 \
-        jr t0;
+        JUMP_BASE
 
 #define RVTEST_FAIL                                                     \
         sll TESTNUM, TESTNUM, 1;                                        \
         1:csrrw t0, CSR_UARTCanPut, zero;                               \
         beq t0, zero, 1b;                                               \
         csrw CSR_UARTPut, TESTNUM;                                      \
-        li t0, MemBase;                                                 \
-        jr t0;
+        JUMP_BASE
 
 #else
 

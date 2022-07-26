@@ -84,7 +84,12 @@ int main()
   appStart();
 
   // Restart boot loader
-  asm volatile("jr %0" : : "r"(MemBase));
+  #if EnableCHERI
+    uint32_t* memBase = (uint32_t*) cheri_address_set(almighty, MemBase);
+    asm volatile("cjr %0" : : "C"(memBase));
+  #else
+    asm volatile("jr %0" : : "r"(MemBase));
+  #endif
 
   // Unreachable
   return 0;
