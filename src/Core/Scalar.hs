@@ -25,6 +25,7 @@ import Pebbles.Instructions.RV32_M
 import Pebbles.Instructions.RV32_xCHERI
 import Pebbles.Instructions.Units.MulUnit
 import Pebbles.Instructions.Units.DivUnit
+import Pebbles.Instructions.Custom.SIMT
 import Pebbles.Instructions.Custom.CacheManagement
 import Pebbles.Memory.Interface
 import Pebbles.Memory.CapSerDes
@@ -149,6 +150,7 @@ makeScalarCore config inputs = mdo
             , decodeM
             , decodeCacheMgmt
             , if config.scalarCoreEnableCHERI then decodeCHERI else []
+            , decodeSIMT
             ]
         , executeStage = \s -> return
             ExecuteStage {
