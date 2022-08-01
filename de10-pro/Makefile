@@ -8,9 +8,9 @@ one: checkenv ip
 .PHONY: many
 many: checkenv ip
 	quartus_dse $(QPF)            \
-    --num-seeds 15              \
+    --num-seeds 4               \
     --launcher local            \
-    --num-concurrent 2
+    --num-concurrent 1
 	quartus_dse $(QPF) --report utilization
 	quartus_dse $(QPF) --report fmax_summary
 
@@ -38,7 +38,7 @@ download-sof: checkenv
 .PHONY: clean
 clean:
 	rm -rf tmp-clearbox synth_dumps qdb output_files
-	rm -rf DE10_Pro_QSYS reset_release
+	rm -rf DE10_Pro_QSYS reset_release db dse*
 	rm -rf ../pebbles/blarney/blarney-vendor-ip/IntelFPGA/AvalonStreamClockCrosser/AvalonStreamClockCrosser
 	rm -f DE10_Pro.qws *.rpt *.csv *.mif
 	ls ip/DE10_Pro_QSYS/ | grep -v -E '\.ip$$' \
