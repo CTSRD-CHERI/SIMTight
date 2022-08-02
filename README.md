@@ -1,4 +1,4 @@
-# SIMTight
+
 
 SIMTight is an FPGA-optimised processor implementing the _Single
 Instruction Multiple Threads (SIMT)_ model popularised by NVIDIA GPUs.
@@ -6,7 +6,7 @@ Instruction Multiple Threads (SIMT)_ model popularised by NVIDIA GPUs.
 Features:
 
   * RISC-V instruction set (RV32IMAxCHERI) 
-  * Low-area design with high IPC on "classic" GPGPU workloads
+  * Low-area design with high IPC on classic GPGPU workloads
   * Strong [CHERI](http://cheri-cpu.org) memory safety
   * Dynamic scalarisation (automatic detection of scalar
     behaviour in hardware)
@@ -35,7 +35,7 @@ The default SIMTight SoC consists of a host CPU and a 32-lane
 <img src="doc/SoC.svg" width="450">
 
 A [sample project](de10-pro/) is included for the
-[DE10-Pro](http://de10-pro.terasic.com) FPGA development board.
+[DE10-Pro revD](http://de10-pro.terasic.com) FPGA development board.
 
 ## Build instructions
 
@@ -93,8 +93,9 @@ $ cd test
 $ ./test.sh            # Run in simulation
 ```
 
-To build an FPGA image for the [DE10-Pro](http://de10-pro.terasic.com)
-board (Quartus 21.3pro or later recommended):
+To build an FPGA image for the [DE10-Pro
+revD](http://de10-pro.terasic.com) board (Quartus 21.3pro or later
+recommended):
 
 ```sh
 $ cd de10-pro

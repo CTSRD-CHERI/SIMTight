@@ -99,6 +99,9 @@ NOTE("Tag cache: max number of inflight memory requests")
 NOTE("Tag cache: max number of pending requests per way")
 #define TagCachePendingReqsPerWay 16
 
+NOTE("Tag cache: optimise caching of large regions of zero tags")
+#define TagCacheHierarchical 1
+
 NOTE("CHERI support")
 NOTE("=============")
 

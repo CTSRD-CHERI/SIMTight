@@ -240,7 +240,7 @@ makeSIMTMemSubsystem dramResps = mdo
     -- Memory request queue
     memReqsQueue :: Queue (SIMTPipelineInstrInfo,
                             Vec SIMTLanes (Option MemReq)) <-
-      makePipelineQueue 1
+      makeSizedQueueCore 5
     let memReqs = toStream memReqsQueue
 
     -- Prepare request for memory subsystem
