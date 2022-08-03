@@ -401,7 +401,7 @@ template <typename K> __attribute__ ((noinline))
       printStat("MaxCapVecRegs: ", STAT_SIMT_MAX_CAP_VEC_REGS);
     #endif
 
-    // Get max number of vector registers used
+    // Get number of DRAM accesses
     printStat("DRAMAccs: ", STAT_SIMT_DRAM_ACCESSES);
 
     return ret;
