@@ -243,6 +243,8 @@ checkApp() {
   local SUSPS=$(grep -E ^Susps: $tmpLog | cut -d' ' -f2)
   local SCALAR_SUSPS=$(grep -E ^ScalarSusps: $tmpLog | cut -d' ' -f2)
   local SCALAR_ABORTS=$(grep -E ^ScalarAborts: $tmpLog | cut -d' ' -f2)
+  local DRAM_ACCS=$(grep -E ^DRAMAccs: $tmpLog | cut -d' ' -f2)
+  local DDRAM_ACCS=$(python -c "print('%d' % (0x${DRAM_ACCS}))")
   local DCYCLES=$(python -c "print('%d' % (0x${CYCLES}))")
   local DINSTRS=$(python -c "print('%d' % (0x${INSTRS}))")
   local IPC=$(python -c "print('%.2f' % (float(0x${INSTRS}) / 0x${CYCLES}))")
@@ -281,7 +283,7 @@ checkApp() {
   fi
   if [ "$EmitStats" != "" ]; then
     test "$OK" != ""
-    assert $? "" " [IPC=$IPC,Instrs=$DINSTRS,Cycles=$DCYCLES$OPTIONAL_STATS]"
+    assert $? "" " [IPC=$IPC,Instrs=$DINSTRS,Cycles=$DCYCLES,DRAMAccs=$DDRAM_ACCS$OPTIONAL_STATS]"
   else
     test "$OK" != ""
     assert $? "" ""

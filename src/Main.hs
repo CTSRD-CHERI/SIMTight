@@ -178,7 +178,8 @@ makeSIMTDomain (clk, rst) =
     let simtMgmtReqs = ins.simtDomainMgmtReqsFromCPU
 
     -- SIMT core
-    simtMgmtResps <- makeSIMTAccelerator simtMgmtReqs memReqs memResps
+    simtMgmtResps <-
+      makeSIMTAccelerator simtMgmtReqs memReqs memResps dramStatSigs
 
     -- SIMT memory subsystem
     (memReqs, memResps, dramReqs1) <- makeSIMTMemSubsystem dramResps1
@@ -196,7 +197,7 @@ makeSIMTDomain (clk, rst) =
     -- DRAM instance
     -- (No DRAM buffering needed when tag controller is in use;
     -- it performs its own buffering)
-    (dramFinalResps, avlDRAMOuts) <-
+    (dramFinalResps, avlDRAMOuts, dramStatSigs) <-
       if EnableTaggedMem == 1
         then makeDRAMUnstoppable dramFinalReqs (ins.simtDomainDRAMIns)
         else makeDRAM dramFinalReqs (ins.simtDomainDRAMIns)

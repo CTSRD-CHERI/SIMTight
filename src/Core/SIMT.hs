@@ -134,9 +134,11 @@ makeSIMTCore ::
      -- ^ Memory requests
   -> Stream (SIMTPipelineInstrInfo, Vec SIMTLanes (Option MemResp))
      -- ^ Memory responses
+  -> DRAMStatSigs
+     -- ^ For DRAM stat counters
   -> Module (Stream SIMTResp)
      -- ^ SIMT management responses
-makeSIMTCore config mgmtReqs memReqs memResps = mdo
+makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
 
   -- Scalar unit enabled?
   let enScalarUnit = SIMTEnableScalarUnit == 1
@@ -322,6 +324,7 @@ makeSIMTCore config mgmtReqs memReqs memResps = mdo
     , simtWarpCmdWire = warpCmdWire
     , simtResumeReqs = toStream resumeQueue
     , simtScalarResumeReqs = toStream scalarResumeQueue
+    , simtDRAMStatSigs = dramStatSigs
     }
 
   return pipelineOuts.simtMgmtResps

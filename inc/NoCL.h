@@ -386,9 +386,9 @@ template <typename K> __attribute__ ((noinline))
       #if SIMTEnableScalarUnit
         // Get number of instrs executed on scalar unit
         printStat("ScalarisedInstrs: ", STAT_SIMT_SCALARISABLE_INSTRS);
-	// Get number of scalar pipeline suspension bubbles
+        // Get number of scalar pipeline suspension bubbles
         printStat("ScalarSusps: ", STAT_SIMT_SCALAR_SUSP_BUBBLES);
-	// Get number of scalar pipeline abortions (mispredictions)
+        // Get number of scalar pipeline abortions (mispredictions)
         printStat("ScalarAborts: ", STAT_SIMT_SCALAR_ABORTS);
       #else
         // Get potential scalarisable instructions
@@ -400,6 +400,9 @@ template <typename K> __attribute__ ((noinline))
       // Get max number of vector registers used
       printStat("MaxCapVecRegs: ", STAT_SIMT_MAX_CAP_VEC_REGS);
     #endif
+
+    // Get max number of vector registers used
+    printStat("DRAMAccs: ", STAT_SIMT_DRAM_ACCESSES);
 
     return ret;
   }
