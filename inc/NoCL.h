@@ -276,18 +276,29 @@ template <typename K> __attribute__ ((noinline)) void _noclSIMTMain_() {
 // SIMT entry point
 template <typename K> __attribute__ ((noinline))
   void _noclSIMTEntry_() {
+    // Shuffle thread id so that stack pointer bounds within a warp
+    // compress well (stacks are aligned at 4x the granularity of the bounds)
+    uint32_t id = pebblesHartId();
+    uint32_t laneId = id & (SIMTLanes-1);
+    uint32_t warpId = id >> SIMTLogLanes;
+    id = ((warpId >> 2) << (SIMTLogLanes+2)) | (laneId << 2) | (warpId & 3);
+
     // Determine stack pointer based on SIMT thread id
     uint32_t top = 0;
-    top -= (SIMTLanes * SIMTWarps - 1 - pebblesHartId()) <<
-             SIMTLogBytesPerStack;
-    top -= 8;
+    top -= (SIMTLanes * SIMTWarps - 1 - id) << SIMTLogBytesPerStack;
+
     // Set stack pointer
     #if EnableCHERI
-      // TODO: constrain bounds
+      uint32_t base = top - (1 << SIMTLogBytesPerStack);
+      top -= 8;
+      // Constrain bounds
       asm volatile("cspecialr csp, ddc\n"
                    "csetaddr csp, csp, %0\n"
-                   : : "r"(top));
+                   "csetbounds csp, csp, %1\n"
+                   "csetaddr csp, csp, %2\n"
+                   : : "r"(base), "r"(1 << SIMTLogBytesPerStack), "r"(top));
     #else
+      top -= 8;
       asm volatile("mv sp, %0\n" : : "r"(top));
     #endif
     // Invoke main function

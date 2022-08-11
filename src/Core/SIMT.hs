@@ -338,7 +338,7 @@ interleaveStacks req =
     interleaveAddr :: Bit 32 -> Bit 32
     interleaveAddr a =
       if top .==. ones
-        then top # stackOffset # stackId # wordOffset
+        then top # stackOffset # unshuffledStackId # wordOffset
         else a
       where
         top = slice @31 @(SIMTLogWarps+SIMTLogLanes+SIMTLogBytesPerStack) a
@@ -346,6 +346,12 @@ interleaveStacks req =
                         @SIMTLogBytesPerStack a
         stackOffset = slice @(SIMTLogBytesPerStack-1) @2 a
         wordOffset = slice @1 @0 a
+        -- Undo the software stack reordering that improves
+        -- compressability of stack-pointer capabilities (see NoCL)
+        unshuffledStackId =
+          upper stackId #
+            slice @1 @0 stackId #
+              slice @(SIMTLogLanes+1) @2 stackId
 
 -- Register file initialisation
 -- ============================
