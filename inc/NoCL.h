@@ -277,7 +277,7 @@ template <typename K> __attribute__ ((noinline)) void _noclSIMTMain_() {
 template <typename K> __attribute__ ((noinline))
   void _noclSIMTEntry_() {
     // Shuffle thread id so that stack pointer bounds within a warp
-    // compress well (stacks are aligned at 4x the granularity of the bounds)
+    // scalarise well (stacks are aligned at 4x the granularity of the bounds)
     uint32_t id = pebblesHartId();
     uint32_t laneId = id & (SIMTLanes-1);
     uint32_t warpId = id >> SIMTLogLanes;

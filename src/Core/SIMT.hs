@@ -346,8 +346,8 @@ interleaveStacks req =
                         @SIMTLogBytesPerStack a
         stackOffset = slice @(SIMTLogBytesPerStack-1) @2 a
         wordOffset = slice @1 @0 a
-        -- Undo the software stack reordering that improves
-        -- compressability of stack-pointer capabilities (see NoCL)
+        -- Undo the software stack reordering that improves the
+        -- scalarisability of stack-pointer capabilities (see NoCL)
         unshuffledStackId =
           upper stackId #
             slice @1 @0 stackId #
