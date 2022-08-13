@@ -33,6 +33,7 @@ import Pebbles.Util.SinkVectoriser
 import Pebbles.Pipeline.Interface
 import Pebbles.Pipeline.Scalar
 import Pebbles.Pipeline.SIMT
+import Pebbles.Pipeline.SIMT.RegFile
 import Pebbles.Pipeline.SIMT.Management
 
 -- SIMTight imports
@@ -234,13 +235,16 @@ makeSIMTMemSubsystem ::
      -- | DRAM responses
      Stream (DRAMResp ())
      -- | DRAM requests and per-lane mem units
-  -> Module ( Sink (SIMTPipelineInstrInfo, Vec SIMTLanes (Option MemReq))
+  -> Module ( Sink ( SIMTPipelineInstrInfo
+                   , Vec SIMTLanes (Option MemReq)
+                   , Option (ScalarVal 33) )
             , Source (SIMTPipelineInstrInfo, Vec SIMTLanes (Option MemResp))
             , Stream (DRAMReq ()) )
 makeSIMTMemSubsystem dramResps = mdo
     -- Memory request queue
     memReqsQueue :: Queue (SIMTPipelineInstrInfo,
-                            Vec SIMTLanes (Option MemReq)) <-
+                            Vec SIMTLanes (Option MemReq),
+                              Option (ScalarVal 33)) <-
       makeSizedQueueCore 5
     let memReqs = toStream memReqsQueue
 
@@ -257,9 +261,9 @@ makeSIMTMemSubsystem dramResps = mdo
             -- Align store-data (account for access width)
             memReqData = writeAlign (req.memReqAccessWidth) (req.memReqData)
           }
-    let prepareMemReqs (instrInfo, vec) =
+    let prepareMemReqs (instrInfo, vec, sc) =
           let memReqInfo = V.map (prepareMemReqInfo . (.val)) vec in
-            ((instrInfo, memReqInfo), V.map (fmap prepareMemReq) vec)
+            ((instrInfo, memReqInfo), V.map (fmap prepareMemReq) vec, sc)
     let memReqs1 = mapSource prepareMemReqs memReqs
 
     -- Coalescing unit
