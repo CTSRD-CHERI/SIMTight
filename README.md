@@ -181,14 +181,18 @@ represent the constant stride between vector elements.  Note that
 affine scalarisation is never used in the register file holding
 capability meta-data, where it wouldn't make much sense.
 
-SIMTight exploits scalarisation to reduce regiser file storage requirements.
-It is very effective on our benchmark suite, especially for capabilities,
-typically saving hundreds of kilobytes of register memory per CHERI-enabled
-SIMT core.  Running `test.sh --fpga --stats` gives details on the number of
-vector registers used by each benchmark.
+SIMTight exploits scalarisation to reduce regiser file storage
+requirements, typically saving hundreds of kilobytes of register
+memory per CHERI-enabled SIMT core.  It also supports an experimental
+_scalarised vector store buffer_ to reduce the cost of register spills
+(runtime and DRAM overheads), at low hardware cost, which can be
+enabled as follows.
 
-SIMTight also exploits scalarisation to process scalarisable instructions using
-a dedicated scalar pipeline, which can be enabled with:
+  * `#define SIMTEnableSVStoreBuffer 1`
+
+SIMTight also exploits scalarisation to process scalarisable
+instructions using a dedicated scalar pipeline, which can be enabled
+with:
 
   * `#define SIMTEnableScalarUnit 1`
 

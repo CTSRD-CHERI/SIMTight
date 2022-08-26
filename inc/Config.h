@@ -66,6 +66,12 @@ NOTE("For affine scalarisation, how many bits to use for the stride?")
 NOTE("Use dedicated scalar unit, allowing parallel scalar/vector execution?")
 #define SIMTEnableScalarUnit 0
 
+NOTE("[EXPERIMENTAL] Enable scalarised vector store buffer?")
+#define SIMTEnableSVStoreBuffer 0
+
+NOTE("Size of scalarised vector store buffer")
+#define SIMTSVStoreBufferLogSize 11
+
 NOTE("CPU configuration")
 NOTE("=================")
 

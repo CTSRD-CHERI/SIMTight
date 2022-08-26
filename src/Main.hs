@@ -267,8 +267,14 @@ makeSIMTMemSubsystem dramResps = mdo
     let memReqs1 = mapSource prepareMemReqs memReqs
 
     -- Coalescing unit
+    let coalUnitOpts =
+          CoalUnitOptions {
+            enableStoreBuffer = SIMTEnableSVStoreBuffer == 1
+          , isSRAMAccess      = isBankedSRAMAccess
+          , canBuffer         = isStackAccess
+          }
     (memResps, sramReqs, dramReqs) <-
-      makeSIMTCoalescingUnit isBankedSRAMAccess
+      makeSIMTCoalescingUnit coalUnitOpts
         memReqs1 dramResps sramResps
 
     -- Banked SRAMs
@@ -312,6 +318,13 @@ makeSIMTMemSubsystem dramResps = mdo
          addr .<. fromInteger simtStacksStart .&&.
            addr .>=. fromInteger sramBase)
       where addr = req.memReqAddr
+
+    -- Determine if request maps to banked SIMT per-thread stacks region
+    isStackAccess :: MemReq -> Bit 1
+    isStackAccess req = top .==. ones
+       where
+         a = req.memReqAddr
+         top = slice @31 @(SIMTLogWarps+SIMTLogLanes+SIMTLogBytesPerStack) a
 
 -- Coalescing unit (synthesis boundary)
 makeSIMTCoalescingUnit isBankedSRAMAccess =
