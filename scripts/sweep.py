@@ -42,12 +42,14 @@ repoDir = os.path.dirname(scriptDir)
 
 # Test each combination
 for combo in configCombos:
-  print("Combo:", "+".join(combo))
   os.chdir(repoDir + "/scripts")
-  os.system("make -C .. clean")
+  os.system("make -C .. clean > /dev/null")
   os.system("./modconf.py restore")
   for conf in combo:
     for setting in config[conf]:
       os.system("./modconf.py set " + setting[0] + " " + setting[1])
   os.chdir("../test")
+  os.system("echo >> test.log")
+  os.system("echo ====== " + "+".join(combo) + " ====== >> test.log")
+  os.system("echo >> test.log")
   os.system("./test.sh >> test.log")
