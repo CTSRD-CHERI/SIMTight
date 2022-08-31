@@ -1,5 +1,22 @@
+<div class="title-block" style="text-align: center;" align="center">
+
+# SIMTight: a CHERI-enabled GPGPU
+
+<br>
+
+<p>Supported by
+
+<p><img src="doc/UKRI_Logo.svg" width="250"><br>
+
+<p>Digit Security by Design (DSbD) Programme
+
+</div>
+
+## Overview 
+
 SIMTight is an efficient FPGA implementation of the _Single
 Instruction Multiple Threads (SIMT)_ model popularised by NVIDIA GPUs.
+
 Features:
 
   * RISC-V instruction set (RV32IMAxCHERI) 
@@ -22,7 +39,8 @@ Features:
     framework
 
 SIMTight is being developed on the [CAPcelerate
-project](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/V000381/1).
+project](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/V000381/1),
+part of the UKRI's Digital Security by Design programme.
 
 ## Default SoC
 
