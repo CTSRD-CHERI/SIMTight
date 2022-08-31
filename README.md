@@ -1,20 +1,17 @@
-
-
-SIMTight is an FPGA-optimised processor implementing the _Single
+SIMTight is an efficient FPGA implementation of the _Single
 Instruction Multiple Threads (SIMT)_ model popularised by NVIDIA GPUs.
-
 Features:
 
   * RISC-V instruction set (RV32IMAxCHERI) 
   * Low-area design with high IPC on classic GPGPU workloads
-  * Strong [CHERI](http://cheri-cpu.org) memory safety
+  * Strong [CHERI](http://cheri-cpu.org) memory safety and isolation
   * Dynamic scalarisation (automatic detection of scalar
     behaviour in hardware)
-  * Twin scalar/vector pipelines exploiting scalarisation for
+  * Parallel scalar/vector pipelines, exploiting scalarisation for
     increased throughput
-  * Register file compression exploiting scalarisation for
+  * Register file and store buffer compression, exploiting scalarisation for
     reduced onchip storage and energy
-  * Eliminates register file overhead of CHERI almost entirely
+  * Eliminates register size and spill overhead of CHERI almost entirely
   * Runs [CUDA-like C++ library](doc/NoCL.md) and [benchmark suite](apps/)
     (in pure capability mode)
   * Implemented in Haskell using the
