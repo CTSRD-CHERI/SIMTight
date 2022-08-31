@@ -1,6 +1,6 @@
 <div class="title-block" style="text-align: center;" align="center">
 
-# SIMTight: a CHERI-enabled GPGPU
+<h1>SIMTight: a CHERI-enabled GPGPU
 
 <br>
 
