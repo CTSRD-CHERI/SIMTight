@@ -1,22 +1,10 @@
 <div class="title-block" style="text-align: center;" align="center">
-
-<h2>SIMTight: a CHERI-enabled GPGPU</h2>
-
-<br>
-
-<p>Supported by
-
-<p><img src="doc/UKRI_Logo.svg" width="250"><br>
-
-<p>Digit Security by Design (DSbD) Programme
-
+<img src="doc/SIMTight.svg" width="200">
+<p>a CHERI-enabled GPGPU<br><br>
 </div>
 
-## Overview 
-
-SIMTight is an efficient FPGA implementation of the _Single
+SIMTight is an FPGA-optimised implementation of the _Single
 Instruction Multiple Threads (SIMT)_ model popularised by NVIDIA GPUs.
-
 Features:
 
   * RISC-V instruction set (RV32IMAxCHERI) 
@@ -216,6 +204,14 @@ unit in a single cycle (when an instruction is detected as scalarisable), _and
 operates in parallel with the main vector pipeline_.  For many workloads, this
 increases perforance density significantly.
 
-Possible future work: _partial_ scalarisation and _inter-warp_ scalarisation.
-The register file implementation is cleanly separated from the pipeline so
-these improvements can be explored in a self-contained manner.
+In future, we are interested in looking at _partial_ scalarisation
+(compressing vectors that are partly scalar, due to thread divergence)
+and _inter-warp_ scalarisation (compressing values that are scalar
+across warps).
+
+<div style="text-align: center;" align="center">
+<br>
+<p>Supported by
+<p><img src="doc/UKRI_Logo.svg" width="250"><br>
+<p>Digital Security by Design (DSbD) Programme
+</div>
