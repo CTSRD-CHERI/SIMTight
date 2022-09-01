@@ -1,20 +1,21 @@
+<div class="title-block" style="text-align: center;" align="center">
+<br><img src="doc/SIMTight.svg" width="200"><br><br><br>
+</div>
 
-
-SIMTight is an FPGA-optimised processor implementing the _Single
-Instruction Multiple Threads (SIMT)_ model popularised by NVIDIA GPUs.
-
-Features:
+SIMTight is an FPGA-optimised implementation of the _Single
+Instruction Multiple Threads (SIMT)_ model popularised by NVIDIA GPUs,
+featuring:
 
   * RISC-V instruction set (RV32IMAxCHERI) 
   * Low-area design with high IPC on classic GPGPU workloads
-  * Strong [CHERI](http://cheri-cpu.org) memory safety
+  * Strong [CHERI](http://cheri-cpu.org) memory safety and isolation
   * Dynamic scalarisation (automatic detection of scalar
     behaviour in hardware)
-  * Twin scalar/vector pipelines exploiting scalarisation for
+  * Parallel scalar/vector pipelines, exploiting scalarisation for
     increased throughput
-  * Register file compression exploiting scalarisation for
+  * Register file and store buffer compression, exploiting scalarisation for
     reduced onchip storage and energy
-  * Eliminates register file overhead of CHERI almost entirely
+  * Eliminates register size and spill overhead of CHERI almost entirely
   * Runs [CUDA-like C++ library](doc/NoCL.md) and [benchmark suite](apps/)
     (in pure capability mode)
   * Implemented in Haskell using the
@@ -25,14 +26,17 @@ Features:
     framework
 
 SIMTight is being developed on the [CAPcelerate
-project](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/V000381/1).
+project](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/V000381/1),
+part of the UKRI's Digital Security by Design programme.
 
 ## Default SoC
 
 The default SIMTight SoC consists of a host CPU and a 32-lane
 64-warp GPGPU sharing DRAM, both supporting the CHERI-RISC-V ISA.
 
+<div style="text-align: center;" align="center">
 <img src="doc/SoC.svg" width="450">
+</div>
 
 A [sample project](de10-pro/) is included for the
 [DE10-Pro revD](http://de10-pro.terasic.com) FPGA development board.
@@ -181,14 +185,18 @@ represent the constant stride between vector elements.  Note that
 affine scalarisation is never used in the register file holding
 capability meta-data, where it wouldn't make much sense.
 
-SIMTight exploits scalarisation to reduce regiser file storage requirements.
-It is very effective on our benchmark suite, especially for capabilities,
-typically saving hundreds of kilobytes of register memory per CHERI-enabled
-SIMT core.  Running `test.sh --fpga --stats` gives details on the number of
-vector registers used by each benchmark.
+SIMTight exploits scalarisation to reduce regiser file storage
+requirements, typically saving hundreds of kilobytes of register
+memory per CHERI-enabled SIMT core.  It also supports an experimental
+_scalarised vector store buffer_ to reduce the cost of register spills
+(runtime and DRAM overheads), at low hardware cost, which can be
+enabled as follows.
 
-SIMTight also exploits scalarisation to process scalarisable instructions using
-a dedicated scalar pipeline, which can be enabled with:
+  * `#define SIMTEnableSVStoreBuffer 1`
+
+SIMTight also exploits scalarisation to process scalarisable
+instructions using a dedicated scalar pipeline, which can be enabled
+with:
 
   * `#define SIMTEnableScalarUnit 1`
 
@@ -197,6 +205,14 @@ unit in a single cycle (when an instruction is detected as scalarisable), _and
 operates in parallel with the main vector pipeline_.  For many workloads, this
 increases perforance density significantly.
 
-Possible future work: _partial_ scalarisation and _inter-warp_ scalarisation.
-The register file implementation is cleanly separated from the pipeline so
-these improvements can be explored in a self-contained manner.
+In future, we are interested in looking at _partial_ scalarisation
+(compressing vectors that are partly scalar, due to thread divergence)
+and _inter-warp_ scalarisation (compressing values that are scalar
+across warps).
+
+<div style="text-align: center;" align="center">
+<br>
+<p>Supported by
+<p><img src="doc/UKRI_Logo.svg" width="250"><br>
+<p>Digital Security by Design (DSbD) Programme
+</div>

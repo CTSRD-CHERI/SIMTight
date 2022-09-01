@@ -26,6 +26,7 @@ import Pebbles.CSRs.Custom.SIMTDevice
 import Pebbles.Util.Counter
 import Pebbles.Util.SinkVectoriser
 import Pebbles.Pipeline.SIMT
+import Pebbles.Pipeline.SIMT.RegFile
 import Pebbles.Pipeline.SIMT.Management
 import Pebbles.Pipeline.Interface
 import Pebbles.Memory.Interface
@@ -130,7 +131,9 @@ makeSIMTCore ::
      -- ^ Configuration parameters
   -> Stream SIMTReq
      -- ^ SIMT management requests
-  -> Sink (SIMTPipelineInstrInfo, Vec SIMTLanes (Option MemReq))
+  -> Sink ( SIMTPipelineInstrInfo
+          , Vec SIMTLanes (Option MemReq)
+          , Option (ScalarVal 33) )
      -- ^ Memory requests
   -> Stream (SIMTPipelineInstrInfo, Vec SIMTLanes (Option MemResp))
      -- ^ Memory responses
@@ -150,7 +153,8 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
   vecMulUnit <- makeFullVecMulUnit
 
   -- Per lane multiplier request sinks
-  mulSinks <- makeSinkVectoriser pipelineOuts.simtInstrInfo vecMulUnit.reqs
+  mulSinks <- makeSinkVectoriser
+    (\vec -> (pipelineOuts.simtInstrInfo, vec)) vecMulUnit.reqs
 
   -- Multiplier for scalar unit
   scalarMulUnit <- if enScalarUnit then makeFullMulUnit else return nullServer
@@ -169,7 +173,8 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
       Just latency -> makeFullVecDivUnit latency
 
   -- Per lane divider request sinks
-  divSinks <- makeSinkVectoriser pipelineOuts.simtInstrInfo vecDivUnit.reqs
+  divSinks <- makeSinkVectoriser
+    (\vec -> (pipelineOuts.simtInstrInfo, vec)) vecDivUnit.reqs
 
   -- Divider for scalar unit
   scalarDivUnit <-
@@ -187,7 +192,7 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
   -- ===============
 
   -- Apply stack address interleaving
-  let ilv (info, vec) = (info, V.map (fmap interleaveStacks) vec)
+  let ilv (info, vec, scal) = (info, interleaveStacks info.warpId vec, scal)
   let memReqsIlv = mapSink ilv memReqs
 
   -- Per lane memory request sinks
@@ -199,14 +204,25 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
         capMemReqsBuffered <- makeSinkBuffer (makePipelineQueue 1) capMemReqs
         -- Sink of vectors to vector of sinks
         capMemSinks <-
-          makeSinkVectoriser pipelineOuts.simtInstrInfo capMemReqsBuffered
+          makeSinkVectoriser
+            (\vec -> (pipelineOuts.simtInstrInfo, vec,
+                        pipelineOuts.simtScalarisedOpB))
+            capMemReqsBuffered
         -- Convert vector to list
         let capMemSinksList = toList capMemSinks
         let memSinks = map (mapSink toCapMemReq) capMemSinksList
         return (memSinks, capMemSinksList)
       else do
+        let scVal =
+              fmap (\s -> ScalarVal {
+                            val = zeroExtend s.val
+                          , stride = s.stride
+                          })
+                   pipelineOuts.simtScalarisedOpB.scalarisedVal
         -- Sink of vectors to vector of sinks
-        memSinks <- makeSinkVectoriser pipelineOuts.simtInstrInfo memReqsIlv
+        memSinks <- makeSinkVectoriser
+            (\vec -> (pipelineOuts.simtInstrInfo, vec, scVal))
+          memReqsIlv
         return (toList memSinks, replicate SIMTLanes nullSink)
 
   -- Responses
@@ -329,29 +345,27 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
 
   return pipelineOuts.simtMgmtResps
 
--- | Stack address interleaver so that accesses to same stack
--- offset by different threads in a warp are coalesced
-interleaveStacks :: MemReq -> MemReq
-interleaveStacks req =
-    req { memReqAddr = interleaveAddr req.memReqAddr }
+-- | Stack address resolver; interleave stacks so that accesses to
+-- same stack offset by different threads in a warp are coalesced
+interleaveStacks :: Bit SIMTLogWarps
+                 -> Vec SIMTLanes (Option MemReq)
+                 -> Vec SIMTLanes (Option MemReq)
+interleaveStacks warpId vec = V.fromList
+  [ fmap (interleaveStack (fromInteger laneId)) req
+  | (req, laneId) <- zip (V.toList vec) [0..] ]
   where
-    interleaveAddr :: Bit 32 -> Bit 32
-    interleaveAddr a =
-      if top .==. ones
-        then top # stackOffset # unshuffledStackId # wordOffset
-        else a
+    interleaveStack :: Bit SIMTLogLanes -> MemReq -> MemReq
+    interleaveStack laneId req =
+        req { memReqAddr = interleaveAddr req.memReqAddr }
       where
-        top = slice @31 @(SIMTLogWarps+SIMTLogLanes+SIMTLogBytesPerStack) a
-        stackId = slice @(SIMTLogWarps+SIMTLogLanes+SIMTLogBytesPerStack-1)
-                        @SIMTLogBytesPerStack a
-        stackOffset = slice @(SIMTLogBytesPerStack-1) @2 a
-        wordOffset = slice @1 @0 a
-        -- Undo the software stack reordering that improves the
-        -- scalarisability of stack-pointer capabilities (see NoCL)
-        unshuffledStackId =
-          upper stackId #
-            slice @1 @0 stackId #
-              slice @(SIMTLogLanes+1) @2 stackId
+        interleaveAddr :: Bit 32 -> Bit 32
+        interleaveAddr a =
+          if slice @31 @SIMTLogBytesPerStack a .==. ones
+            then ones # stackOffset # warpId # laneId # wordOffset
+            else a
+          where
+            stackOffset = slice @(SIMTLogBytesPerStack-1) @2 a
+            wordOffset = slice @1 @0 a
 
 -- Register file initialisation
 -- ============================
