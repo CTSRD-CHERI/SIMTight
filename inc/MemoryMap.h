@@ -26,6 +26,6 @@
   (DRAM_SIZE_LINK - SIMT_STACKS_SIZE - BANKED_SRAMS_SIZE)
 
 // Base of CPU stack (growing down) is before SIMT local memory
-#define STACK_BASE (LOCAL_MEM_BASE_LINK - 8)
+#define STACK_BASE LOCAL_MEM_BASE_LINK
 
 #endif

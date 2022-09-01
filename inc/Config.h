@@ -84,6 +84,9 @@ NOTE("Number of cache lines (line size == DRAM beat size)")
 NOTE("Use register forwarding for increased IPC (but possibly lower Fmax)?")
 #define CPUEnableRegForwarding 0
 
+NOTE("Size of CPU's stack")
+#define CPUStackSize 1073741824
+
 NOTE("Tagged memory")
 NOTE("=============")
 

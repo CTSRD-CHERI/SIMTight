@@ -192,7 +192,7 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
   -- ===============
 
   -- Apply stack address interleaving
-  let ilv (info, vec, scal) = (info, V.map (fmap interleaveStacks) vec, scal)
+  let ilv (info, vec, scal) = (info, interleaveStacks info.warpId vec, scal)
   let memReqsIlv = mapSink ilv memReqs
 
   -- Per lane memory request sinks
@@ -345,29 +345,27 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
 
   return pipelineOuts.simtMgmtResps
 
--- | Stack address interleaver so that accesses to same stack
--- offset by different threads in a warp are coalesced
-interleaveStacks :: MemReq -> MemReq
-interleaveStacks req =
-    req { memReqAddr = interleaveAddr req.memReqAddr }
+-- | Stack address resolver; interleave stacks so that accesses to
+-- same stack offset by different threads in a warp are coalesced
+interleaveStacks :: Bit SIMTLogWarps
+                 -> Vec SIMTLanes (Option MemReq)
+                 -> Vec SIMTLanes (Option MemReq)
+interleaveStacks warpId vec = V.fromList
+  [ fmap (interleaveStack (fromInteger laneId)) req
+  | (req, laneId) <- zip (V.toList vec) [0..] ]
   where
-    interleaveAddr :: Bit 32 -> Bit 32
-    interleaveAddr a =
-      if top .==. ones
-        then top # stackOffset # unshuffledStackId # wordOffset
-        else a
+    interleaveStack :: Bit SIMTLogLanes -> MemReq -> MemReq
+    interleaveStack laneId req =
+        req { memReqAddr = interleaveAddr req.memReqAddr }
       where
-        top = slice @31 @(SIMTLogWarps+SIMTLogLanes+SIMTLogBytesPerStack) a
-        stackId = slice @(SIMTLogWarps+SIMTLogLanes+SIMTLogBytesPerStack-1)
-                        @SIMTLogBytesPerStack a
-        stackOffset = slice @(SIMTLogBytesPerStack-1) @2 a
-        wordOffset = slice @1 @0 a
-        -- Undo the software stack reordering that improves the
-        -- scalarisability of stack-pointer capabilities (see NoCL)
-        unshuffledStackId =
-          upper stackId #
-            slice @1 @0 stackId #
-              slice @(SIMTLogLanes+1) @2 stackId
+        interleaveAddr :: Bit 32 -> Bit 32
+        interleaveAddr a =
+          if slice @31 @SIMTLogBytesPerStack a .==. ones
+            then ones # stackOffset # warpId # laneId # wordOffset
+            else a
+          where
+            stackOffset = slice @(SIMTLogBytesPerStack-1) @2 a
+            wordOffset = slice @1 @0 a
 
 -- Register file initialisation
 -- ============================

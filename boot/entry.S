@@ -6,12 +6,16 @@ _start:
 
 # Set stack pointer
 #if EnableCHERI
-  # TODO: Constrain the bounds/permssions of the stack pointer
+  # Constrain the bounds/permssions of the stack pointer
   cspecialr csp, ddc
-  li x1, STACK_BASE
+  li x1, STACK_BASE - CPUStackSize
+  csetaddr csp, csp, x1
+  li x1, CPUStackSize
+  csetbounds csp, csp, x1
+  li x1, STACK_BASE-8
   csetaddr csp, csp, x1
 #else
-  li sp, STACK_BASE
+  li sp, STACK_BASE-8
 #endif
 
 # Jump to main

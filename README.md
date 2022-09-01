@@ -1,11 +1,10 @@
 <div class="title-block" style="text-align: center;" align="center">
-<img src="doc/SIMTight.svg" width="200">
-<p>a CHERI-enabled GPGPU<br><br>
+<br><img src="doc/SIMTight.svg" width="200"><br><br><br>
 </div>
 
 SIMTight is an FPGA-optimised implementation of the _Single
-Instruction Multiple Threads (SIMT)_ model popularised by NVIDIA GPUs.
-Features:
+Instruction Multiple Threads (SIMT)_ model popularised by NVIDIA GPUs,
+featuring:
 
   * RISC-V instruction set (RV32IMAxCHERI) 
   * Low-area design with high IPC on classic GPGPU workloads
@@ -35,7 +34,9 @@ part of the UKRI's Digital Security by Design programme.
 The default SIMTight SoC consists of a host CPU and a 32-lane
 64-warp GPGPU sharing DRAM, both supporting the CHERI-RISC-V ISA.
 
+<div style="text-align: center;" align="center">
 <img src="doc/SoC.svg" width="450">
+</div>
 
 A [sample project](de10-pro/) is included for the
 [DE10-Pro revD](http://de10-pro.terasic.com) FPGA development board.
