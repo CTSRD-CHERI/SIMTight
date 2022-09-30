@@ -210,7 +210,16 @@ In future, we are interested in looking at _partial_ scalarisation
 and _inter-warp_ scalarisation (compressing values that are scalar
 across warps).
 
+## Memory Map
+
+Memory is mapped into the address space of the cores as follows.
+
 <div style="text-align: center;" align="center">
+<img src="doc/SIMTightMemMap.svg" width="600">
+</div>
+
+<div style="text-align: center;" align="center">
+<br>
 <br>
 <p>Supported by
 <p><img src="doc/UKRI_Logo.svg" width="250"><br>
