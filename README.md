@@ -40,11 +40,6 @@ The default SIMTight SoC consists of a host CPU and a 32-lane
 
 A [sample project](de10-pro/) is included for the
 [DE10-Pro revD](http://de10-pro.terasic.com) FPGA development board.
-Memory is mapped into the address space of the cores as follows.
-
-<div style="text-align: center;" align="center">
-<img src="doc/SIMTightMemMap.svg" width="600">
-</div>
 
 ## Build instructions
 
