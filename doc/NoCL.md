@@ -399,5 +399,5 @@ Memory is mapped into the address spaces of the CPU and SIMT cores as
 follows.
 
 <div style="text-align: center;" align="center">
-<img src="doc/SIMTightMemMap.svg" width="600">
+<img src="SIMTightMemMap.svg" width="600">
 </div>
