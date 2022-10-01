@@ -195,8 +195,8 @@ required.  In the default configuration, the size of the physical
 register files is equal to the number of architectural registers (so
 dynamic spilling is not required):
 
-  * `#define #define SIMTLogRegFileSize 11`
-  * `#define #define SIMTLogCapRegFileSize 11`
+  * `#define SIMTLogRegFileSize 11`
+  * `#define SIMTLogCapRegFileSize 11`
 
 SIMTight also supports an experimental _scalarised vector store
 buffer_ to reduce the cost of compiler-inserted register spills (as
