@@ -64,7 +64,7 @@ NOTE("For affine scalarisation, how many bits to use for the stride?")
 #define SIMTAffineScalarisationBits 4
 
 NOTE("Size of scalarising register file (number of vectors)")
-#define SIMTLogRegFileSize 11
+#define SIMTRegFileSize 2048
 
 NOTE("Use dedicated scalar unit, allowing parallel scalar/vector execution?")
 #define SIMTEnableScalarUnit 0
@@ -124,7 +124,7 @@ NOTE("Use scalarising register file for capability meta-data?")
 #define SIMTEnableCapRegFileScalarisation 0
 
 NOTE("Size of scalarising capability register file (number of vectors)")
-#define SIMTLogCapRegFileSize 11
+#define SIMTCapRegFileSize 2048
 
 NOTE("Use shared immutable PCC meta-data for all threads in kernel?")
 #define SIMTUseSharedPCC 1
