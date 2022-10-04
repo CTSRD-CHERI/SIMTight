@@ -1,16 +1,29 @@
 <?xml version="1.0" ?>
+<!--Your use of Intel Corporation's design tools, logic functions 
+and other software and tools, and any partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel FPGA IP License Agreement, or other applicable license
+agreement, including, without limitation, that your use is for
+the sole purpose of programming logic devices manufactured by
+Intel and sold by Intel or its authorized distributors.  Please
+refer to the applicable agreement for further details, at
+https://fpgasoftware.intel.com/eula.-->
 <ipxact:component xmlns:altera="http://www.altera.com/XMLSchema/IPXact2014/extensions" xmlns:ipxact="http://www.accellera.org/XMLSchema/IPXACT/1685-2014">
   <ipxact:vendor>Intel Corporation</ipxact:vendor>
   <ipxact:library>DE10_Pro_QSYS_jtag_uart_0</ipxact:library>
   <ipxact:name>jtag_uart_0</ipxact:name>
-  <ipxact:version>19.1</ipxact:version>
+  <ipxact:version>19.1.0</ipxact:version>
   <ipxact:busInterfaces>
     <ipxact:busInterface>
       <ipxact:name>clk</ipxact:name>
-      <ipxact:busType vendor="altera" library="altera" name="clock" version="19.2"></ipxact:busType>
+      <ipxact:busType vendor="intel" library="intel" name="clock" version="21.3"></ipxact:busType>
       <ipxact:abstractionTypes>
         <ipxact:abstractionType>
-          <ipxact:abstractionRef vendor="altera" library="altera" name="clock" version="19.2"></ipxact:abstractionRef>
+          <ipxact:abstractionRef vendor="intel" library="intel" name="clock" version="21.3"></ipxact:abstractionRef>
           <ipxact:portMaps>
             <ipxact:portMap>
               <ipxact:logicalPort>
@@ -44,10 +57,10 @@
     </ipxact:busInterface>
     <ipxact:busInterface>
       <ipxact:name>reset</ipxact:name>
-      <ipxact:busType vendor="altera" library="altera" name="reset" version="19.2"></ipxact:busType>
+      <ipxact:busType vendor="intel" library="intel" name="reset" version="21.3"></ipxact:busType>
       <ipxact:abstractionTypes>
         <ipxact:abstractionType>
-          <ipxact:abstractionRef vendor="altera" library="altera" name="reset" version="19.2"></ipxact:abstractionRef>
+          <ipxact:abstractionRef vendor="intel" library="intel" name="reset" version="21.3"></ipxact:abstractionRef>
           <ipxact:portMaps>
             <ipxact:portMap>
               <ipxact:logicalPort>
@@ -76,10 +89,10 @@
     </ipxact:busInterface>
     <ipxact:busInterface>
       <ipxact:name>avalon_jtag_slave</ipxact:name>
-      <ipxact:busType vendor="altera" library="altera" name="avalon" version="19.2"></ipxact:busType>
+      <ipxact:busType vendor="intel" library="intel" name="avalon" version="21.3"></ipxact:busType>
       <ipxact:abstractionTypes>
         <ipxact:abstractionType>
-          <ipxact:abstractionRef vendor="altera" library="altera" name="avalon" version="19.2"></ipxact:abstractionRef>
+          <ipxact:abstractionRef vendor="intel" library="intel" name="avalon" version="21.3"></ipxact:abstractionRef>
           <ipxact:portMaps>
             <ipxact:portMap>
               <ipxact:logicalPort>
@@ -144,7 +157,7 @@
       <ipxact:parameters>
         <ipxact:parameter parameterId="addressAlignment" type="string">
           <ipxact:name>addressAlignment</ipxact:name>
-          <ipxact:displayName>Slave addressing</ipxact:displayName>
+          <ipxact:displayName>Agent addressing</ipxact:displayName>
           <ipxact:value>NATIVE</ipxact:value>
         </ipxact:parameter>
         <ipxact:parameter parameterId="addressGroup" type="int">
@@ -189,7 +202,7 @@
         </ipxact:parameter>
         <ipxact:parameter parameterId="bridgesToMaster" type="string">
           <ipxact:name>bridgesToMaster</ipxact:name>
-          <ipxact:displayName>Bridges to master</ipxact:displayName>
+          <ipxact:displayName>Bridges to host</ipxact:displayName>
           <ipxact:value></ipxact:value>
         </ipxact:parameter>
         <ipxact:parameter parameterId="burstOnBurstBoundariesOnly" type="bit">
@@ -373,10 +386,10 @@
     </ipxact:busInterface>
     <ipxact:busInterface>
       <ipxact:name>irq</ipxact:name>
-      <ipxact:busType vendor="altera" library="altera" name="interrupt" version="19.2"></ipxact:busType>
+      <ipxact:busType vendor="intel" library="intel" name="interrupt" version="21.3"></ipxact:busType>
       <ipxact:abstractionTypes>
         <ipxact:abstractionType>
-          <ipxact:abstractionRef vendor="altera" library="altera" name="interrupt" version="19.2"></ipxact:abstractionRef>
+          <ipxact:abstractionRef vendor="intel" library="intel" name="interrupt" version="21.3"></ipxact:abstractionRef>
           <ipxact:portMaps>
             <ipxact:portMap>
               <ipxact:logicalPort>
@@ -590,7 +603,7 @@
       <ipxact:vendor>Intel Corporation</ipxact:vendor>
       <ipxact:library>DE10_Pro_QSYS_jtag_uart_0</ipxact:library>
       <ipxact:name>altera_avalon_jtag_uart</ipxact:name>
-      <ipxact:version>19.1</ipxact:version>
+      <ipxact:version>19.1.0</ipxact:version>
     </altera:entity_info>
     <altera:altera_module_parameters>
       <ipxact:parameters>
@@ -658,21 +671,6 @@
           <ipxact:name>avalonSpec</ipxact:name>
           <ipxact:displayName>avalonSpec</ipxact:displayName>
           <ipxact:value>2.0</ipxact:value>
-        </ipxact:parameter>
-        <ipxact:parameter parameterId="legacySignalAllow" type="bit">
-          <ipxact:name>legacySignalAllow</ipxact:name>
-          <ipxact:displayName>legacySignalAllow</ipxact:displayName>
-          <ipxact:value>false</ipxact:value>
-        </ipxact:parameter>
-        <ipxact:parameter parameterId="enableInteractiveInput" type="bit">
-          <ipxact:name>enableInteractiveInput</ipxact:name>
-          <ipxact:displayName>enableInteractiveInput</ipxact:displayName>
-          <ipxact:value>false</ipxact:value>
-        </ipxact:parameter>
-        <ipxact:parameter parameterId="enableInteractiveOutput" type="bit">
-          <ipxact:name>enableInteractiveOutput</ipxact:name>
-          <ipxact:displayName>enableInteractiveOutput</ipxact:displayName>
-          <ipxact:value>false</ipxact:value>
         </ipxact:parameter>
       </ipxact:parameters>
     </altera:altera_module_parameters>
@@ -775,6 +773,7 @@
                     &lt;width&gt;1&lt;/width&gt;
                     &lt;lowerBound&gt;0&lt;/lowerBound&gt;
                     &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                    &lt;terminationValue&gt;0&lt;/terminationValue&gt;
                 &lt;/port&gt;
             &lt;/ports&gt;
             &lt;assignments&gt;
@@ -808,6 +807,7 @@
                     &lt;width&gt;1&lt;/width&gt;
                     &lt;lowerBound&gt;0&lt;/lowerBound&gt;
                     &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                    &lt;terminationValue&gt;0&lt;/terminationValue&gt;
                 &lt;/port&gt;
             &lt;/ports&gt;
             &lt;assignments&gt;
@@ -838,6 +838,7 @@
                     &lt;width&gt;1&lt;/width&gt;
                     &lt;lowerBound&gt;0&lt;/lowerBound&gt;
                     &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                    &lt;terminationValue&gt;0&lt;/terminationValue&gt;
                 &lt;/port&gt;
                 &lt;port&gt;
                     &lt;name&gt;av_address&lt;/name&gt;
@@ -846,6 +847,7 @@
                     &lt;width&gt;1&lt;/width&gt;
                     &lt;lowerBound&gt;0&lt;/lowerBound&gt;
                     &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                    &lt;terminationValue&gt;0&lt;/terminationValue&gt;
                 &lt;/port&gt;
                 &lt;port&gt;
                     &lt;name&gt;av_read_n&lt;/name&gt;
@@ -854,6 +856,7 @@
                     &lt;width&gt;1&lt;/width&gt;
                     &lt;lowerBound&gt;0&lt;/lowerBound&gt;
                     &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                    &lt;terminationValue&gt;0&lt;/terminationValue&gt;
                 &lt;/port&gt;
                 &lt;port&gt;
                     &lt;name&gt;av_readdata&lt;/name&gt;
@@ -862,6 +865,7 @@
                     &lt;width&gt;32&lt;/width&gt;
                     &lt;lowerBound&gt;0&lt;/lowerBound&gt;
                     &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                    &lt;terminationValue&gt;0&lt;/terminationValue&gt;
                 &lt;/port&gt;
                 &lt;port&gt;
                     &lt;name&gt;av_write_n&lt;/name&gt;
@@ -870,6 +874,7 @@
                     &lt;width&gt;1&lt;/width&gt;
                     &lt;lowerBound&gt;0&lt;/lowerBound&gt;
                     &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                    &lt;terminationValue&gt;0&lt;/terminationValue&gt;
                 &lt;/port&gt;
                 &lt;port&gt;
                     &lt;name&gt;av_writedata&lt;/name&gt;
@@ -878,6 +883,7 @@
                     &lt;width&gt;32&lt;/width&gt;
                     &lt;lowerBound&gt;0&lt;/lowerBound&gt;
                     &lt;vhdlType&gt;STD_LOGIC_VECTOR&lt;/vhdlType&gt;
+                    &lt;terminationValue&gt;0&lt;/terminationValue&gt;
                 &lt;/port&gt;
                 &lt;port&gt;
                     &lt;name&gt;av_waitrequest&lt;/name&gt;
@@ -886,6 +892,7 @@
                     &lt;width&gt;1&lt;/width&gt;
                     &lt;lowerBound&gt;0&lt;/lowerBound&gt;
                     &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                    &lt;terminationValue&gt;0&lt;/terminationValue&gt;
                 &lt;/port&gt;
             &lt;/ports&gt;
             &lt;assignments&gt;
@@ -1185,6 +1192,7 @@
                     &lt;width&gt;1&lt;/width&gt;
                     &lt;lowerBound&gt;0&lt;/lowerBound&gt;
                     &lt;vhdlType&gt;STD_LOGIC&lt;/vhdlType&gt;
+                    &lt;terminationValue&gt;0&lt;/terminationValue&gt;
                 &lt;/port&gt;
             &lt;/ports&gt;
             &lt;assignments&gt;
