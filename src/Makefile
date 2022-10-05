@@ -13,6 +13,7 @@ all:
     -hidir $(BUILD_DIR) -odir $(BUILD_DIR) Main.hs -o Main
 	./Main --enable-dont-care-de-inline
 	@cp *.mif $(SIMTIGHT_ROOT)/de10-pro 2> /dev/null || true
+	@cp *.mif $(SIMTIGHT_ROOT)/de10-pro-e 2> /dev/null || true
 	@cp *.hex $(SIMTIGHT_ROOT)/sim 2> /dev/null || true
 
 clean:

@@ -38,7 +38,8 @@ do
     -h|--help)
       echo "Run test-suite and example apps"
       echo "  --sim         run in simulation (verilator)"
-      echo "  --fpga        run on FPGA (de10-pro)"
+      echo "  --fpga-d      run on FPGA (de10-pro revD)"
+      echo "  --fpga-e      run on FPGA (de10-pro revE)"
       echo "  --no-pgm      don't reprogram FPGA"
       echo "  --apps-only   run apps only (not test-suite)"
       echo "  --log-sim     log simulator output to sim-log.txt"
@@ -50,8 +51,11 @@ do
     --sim)
       TestSim=yup
       ;;
-    --fpga)
-      TestFPGA=yup
+    --fpga-d)
+      TestFPGA=yup-d
+      ;;
+    --fpga-e)
+      TestFPGA=yup-e
       ;;
     --no-pgm)
       NoPgm=yup
@@ -152,15 +156,19 @@ if [ "$TestSim" != "" ]; then
 fi
 
 # Prepare FPGA
-if [ "$TestFPGA" != "" ] ; then
+if [ "$TestFPGA" != "" ]; then
   # Check that quartus is in scope
   echo -n "Quartus available: "
   JTAG_CABLE=$(type -P quartus)
   assert $?
   # Look for FPGA image
+  QPROG="de10-pro"
+  if [ "$TestFPGA" == "yup-e" ]; then
+    QPROG="de10-pro-e"
+  fi
   echo -n "FPGA image available: "
-  test -f "../de10-pro/output_files/DE10_Pro.sof"
-  assert $? "" "" " (run 'make' in 'de10-pro' dir)"
+  test -f "../$QPROG/output_files/DE10_Pro.sof"
+  assert $? "" "" " (run 'make' in $QPROG dir)"
   # Check that FPGA is visisble
   echo -n "FPGA available: "
   JTAG_CABLE=$(jtagconfig 2> /dev/null | grep DE10-Pro)
@@ -169,7 +177,7 @@ if [ "$TestFPGA" != "" ] ; then
   # Program FPGA
   if [ "$NoPgm" == "" ]; then
     echo -n "Programming FPGA: "
-    make -s -C ../de10-pro download-sof > /dev/null
+    make -s -C ../$QPROG download-sof > /dev/null
     assert $?
   fi
   echo

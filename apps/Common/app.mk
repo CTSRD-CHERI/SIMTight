@@ -66,7 +66,8 @@ link.ld: $(SIMTIGHT_APPS_ROOT)/Common/link.ld.h
 Run: checkenv code.v data.v $(RUN_CPP) $(RUN_H)
 	g++ -std=c++11 -O2 -I $(PEBBLES_ROOT)/inc \
     -I $(SIMTIGHT_ROOT)/inc -o Run $(RUN_CPP) \
-    -fno-exceptions -ljtag_atlantic -ljtag_client \
+    -fno-exceptions -ljtag_atlantic -lpthread \
+    -Wl,--no-as-needed -ljtag_client \
     -L $(QUARTUS_ROOTDIR)/linux64/ -Wl,-rpath,$(QUARTUS_ROOTDIR)/linux64
 
 RunSim: code.v data.v $(RUN_CPP) $(RUN_H)
