@@ -38,8 +38,9 @@ The default SIMTight SoC consists of a host CPU and a 32-lane
 <img src="doc/SoC.svg" width="450">
 </div>
 
-A [sample project](de10-pro/) is included for the
-[DE10-Pro revD](http://de10-pro.terasic.com) FPGA development board.
+Sample projects are included for the
+[DE10-Pro](http://de10-pro.terasic.com) [revD](de10-pro/) and
+[revE](de10-pro-e/) FPGA development boards.
 
 ## Build instructions
 
@@ -119,7 +120,7 @@ To run the test suite and all benchmarks on FPGA:
 
 ```sh
 $ cd test
-$ ./test.sh --fpga     # Assumes FPGA image built and FPGA connected via USB
+$ ./test.sh --fpga-d    # Assumes FPGA image built and FPGA connected via USB
 ```
 
 Use the `--stats` option to generate performance stats.
