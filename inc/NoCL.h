@@ -159,11 +159,31 @@ struct SharedLocalMem {
     }
 };
 
+// Mapping from hardware thread (hart) id to thread & block indices
+struct HartMap {
+  // Use these to map hart id to thread X/Y coords within block
+  unsigned threadXMask, threadYMask;
+  unsigned threadXShift, threadYShift;
+
+  // Number of blocks handled by all threads in X/Y dimensions
+  unsigned numXBlocks, numYBlocks;
+
+  // Use these to map hart id to block X/Y coords within grid
+  unsigned blockXMask, blockYMask;
+  unsigned blockXShift, blockYShift;
+
+  // Amount of shared local memory per block
+  unsigned localBytesPerBlock;
+};
+
 // Parameters that are available to any kernel
 // All kernels inherit from this
 struct Kernel {
   // Blocks per streaming multiprocessor
   unsigned blocksPerSM;
+
+  // Mapping from hart id to thread&block indices
+  HartMap map;
 
   // Grid and block dimensions
   Dim3 gridDim, blockDim;
@@ -179,7 +199,6 @@ struct Kernel {
 // =================
 
 // SIMT main function
-// Support only 1D blocks for now
 template <typename K> __attribute__ ((noinline)) void _noclSIMTMain_() {
   pebblesSIMTPush();
 
@@ -193,62 +212,28 @@ template <typename K> __attribute__ ((noinline)) void _noclSIMTMain_() {
   #endif
   K k = *kernelPtr;
 
-  // Block dimensions are all powers of two
-  unsigned threadXMask = k.blockDim.x - 1;
-  unsigned threadYMask = k.blockDim.y - 1;
-  unsigned threadXShift = log2floor(k.blockDim.x);
-  unsigned threadYShift = log2floor(k.blockDim.y);
-
   // Set thread index
-  k.threadIdx.x = pebblesHartId() & threadXMask;
-  k.threadIdx.y = (pebblesHartId() >> threadXShift) & threadYMask;
+  k.threadIdx.x = pebblesHartId() & k.map.threadXMask;
+  k.threadIdx.y = (pebblesHartId() >> k.map.threadXShift) & k.map.threadYMask;
   k.threadIdx.z = 0;
 
   // Unique id for thread block within SM
-  unsigned logThreadsUsed = threadXShift + threadYShift;
-  unsigned blockIdxWithinSM = pebblesHartId() >> logThreadsUsed;
-
-  // Number of hardware threads left for grid parallelism
-  unsigned logThreadsLeft = SIMTLogLanes + SIMTLogWarps - logThreadsUsed; 
-
-  // Allocate hardware threads in grid X dimension
-  unsigned gridXLogThreads = (1 << logThreadsLeft) <= k.gridDim.x
-    ? logThreadsLeft : log2floor(k.gridDim.x);
-  unsigned gridXThreads = 1 << gridXLogThreads;
-  unsigned gridXMask = gridXThreads - 1;
-  unsigned gridXBase = (pebblesHartId() >> logThreadsUsed) & gridXMask;
-  logThreadsUsed += gridXLogThreads;
-  logThreadsLeft -= gridXLogThreads;
-
-  // Allocate hardware threads in grid Y dimension
-  unsigned gridYLogThreads = (1 << logThreadsLeft) <= k.gridDim.y
-    ? logThreadsLeft : log2floor(k.gridDim.y);
-  unsigned gridYThreads = 1 << gridYLogThreads;
-  unsigned gridYMask = gridYThreads - 1;
-  unsigned gridYBase = (pebblesHartId() >> logThreadsUsed) & gridYMask;
-  logThreadsUsed += gridYLogThreads;
-  logThreadsLeft -= gridYLogThreads;
-
-  // Limitations for simplicity (TODO: relax)
-  assert(k.gridDim.x % gridXThreads == 0,
-    "gridDim.x is not a multiple of threads available in X dimension");
-  assert(k.gridDim.y % gridYThreads == 0,
-    "gridDim.y is not a multiple of threads available in Y dimension");
+  unsigned blockIdxWithinSM = pebblesHartId() >> k.map.blockXShift;
 
   // Initialise block indices
-  k.blockIdx.x = gridXBase;
-  k.blockIdx.y = gridYBase;
-
-  // Set base of shared local memory (per block)
-  unsigned localBytes = 4 << (SIMTLogSRAMBanks + SIMTLogWordsPerSRAMBank);
-  unsigned localBytesPerBlock = localBytes / k.blocksPerSM;
+  unsigned blockXOffset = (pebblesHartId() >> k.map.blockXShift)
+                            & k.map.blockXMask;
+  unsigned blockYOffset = (pebblesHartId() >> k.map.blockYShift)
+                            & k.map.blockYMask;
+  k.blockIdx.x = blockXOffset;
+  k.blockIdx.y = blockYOffset;
 
   // Invoke kernel
   pebblesSIMTConverge();
   while (k.blockIdx.y < k.gridDim.y) {
     while (k.blockIdx.x < k.gridDim.x) {
       uint32_t localBase = LOCAL_MEM_BASE +
-                 localBytesPerBlock * blockIdxWithinSM;
+                 k.map.localBytesPerBlock * blockIdxWithinSM;
       #if EnableCHERI
         // TODO: constrain bounds
         void* almighty = cheri_ddc_get();
@@ -259,11 +244,11 @@ template <typename K> __attribute__ ((noinline)) void _noclSIMTMain_() {
       k.kernel();
       pebblesSIMTConverge();
       pebblesSIMTLocalBarrier();
-      k.blockIdx.x += gridXThreads;
+      k.blockIdx.x += k.map.numXBlocks;
     }
     pebblesSIMTConverge();
-    k.blockIdx.x = gridXBase;
-    k.blockIdx.y += gridYThreads;
+    k.blockIdx.x = blockXOffset;
+    k.blockIdx.y += k.map.numYBlocks;
   }
 
   // Issue a fence to ensure all data has reached DRAM
@@ -322,6 +307,44 @@ template <typename K> __attribute__ ((noinline))
     k->blocksPerSM = (SIMTWarps * SIMTLanes) / threadsPerBlock;
     //assert((k->gridDim.x % k->blocksPerSM) == 0,
     //  "NoCL: blocks-per-SM does not divide evenly into grid width");
+
+    // Map hardware threads to CUDA thread&block indices
+    // -------------------------------------------------
+
+    // Block dimensions are all powers of two
+    k->map.threadXMask = k->blockDim.x - 1;
+    k->map.threadYMask = k->blockDim.y - 1;
+    k->map.threadXShift = log2floor(k->blockDim.x);
+    k->map.threadYShift = log2floor(k->blockDim.y);
+    k->map.blockXShift = k->map.threadXShift + k->map.threadYShift;
+
+    // Allocate blocks in grid X dimension
+    unsigned logThreadsLeft = SIMTLogLanes + SIMTLogWarps - k->map.blockXShift;
+    unsigned gridXLogBlocks = (1 << logThreadsLeft) <= k->gridDim.x
+      ? logThreadsLeft : log2floor(k->gridDim.x);
+    k->map.numXBlocks = 1 << gridXLogBlocks;
+    k->map.blockXMask = k->map.numXBlocks - 1;
+    logThreadsLeft -= gridXLogBlocks;
+
+    // Allocate hardware threads in grid Y dimension
+    k->map.blockYShift = k->map.blockXShift + gridXLogBlocks;
+    unsigned gridYLogBlocks = (1 << logThreadsLeft) <= k->gridDim.y
+      ? logThreadsLeft : log2floor(k->gridDim.y);
+    k->map.numYBlocks = 1 << gridYLogBlocks;
+    k->map.blockYMask = k->map.numYBlocks - 1;
+
+    // Limitations for simplicity (TODO: relax)
+    assert(k->gridDim.x % k->map.numXBlocks == 0,
+      "gridDim.x is not a multiple of threads available in X dimension");
+    assert(k->gridDim.y % k->map.numYBlocks == 0,
+      "gridDim.y is not a multiple of threads available in Y dimension");
+
+    // Set base of shared local memory (per block)
+    unsigned localBytes = 4 << (SIMTLogSRAMBanks + SIMTLogWordsPerSRAMBank);
+    k->map.localBytesPerBlock = localBytes / k->blocksPerSM;
+
+    // End of mapping
+    // --------------
 
     // Set address of kernel closure
     #if EnableCHERI
