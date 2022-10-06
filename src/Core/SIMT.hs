@@ -333,6 +333,7 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
                   executeI_NoCap scalarCSRUnit scalarMemReqs s
               }
         , regSpillBaseAddr = let a << b = a * 2^b in REG_SPILL_BASE
+        , useRoundRobinSpill = SIMTUseRoundRobinSpill == 1
         }
 
   -- Pipeline instantiation
