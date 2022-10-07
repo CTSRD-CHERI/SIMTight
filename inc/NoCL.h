@@ -159,16 +159,16 @@ struct SharedLocalMem {
     }
 };
 
-// Mapping from hardware thread (hart) id to CUDA thread & block indices
-struct HartMap {
-  // Use these to map hart id to thread X/Y coords within block
+// Mapping between SIMT threads and CUDA thread/block indices
+struct KernelMapping {
+  // Use these to map SIMT thread id to thread X/Y coords within block
   unsigned threadXMask, threadYMask;
   unsigned threadXShift, threadYShift;
 
   // Number of blocks handled by all threads in X/Y dimensions
   unsigned numXBlocks, numYBlocks;
 
-  // Use these to map hart id to block X/Y coords within grid
+  // Use these to map SIMT thread id to block X/Y coords within grid
   unsigned blockXMask, blockYMask;
   unsigned blockXShift, blockYShift;
 
@@ -179,12 +179,6 @@ struct HartMap {
 // Parameters that are available to any kernel
 // All kernels inherit from this
 struct Kernel {
-  // Blocks per streaming multiprocessor
-  unsigned blocksPerSM;
-
-  // Mapping from hart id to thread&block indices
-  HartMap map;
-
   // Grid and block dimensions
   Dim3 gridDim, blockDim;
 
@@ -193,6 +187,9 @@ struct Kernel {
 
   // Shared local memory
   SharedLocalMem shared;
+
+  // Mapping between SIMT threads and CUDA thread/block indices
+  KernelMapping map;
 };
 
 // Kernel invocation
@@ -297,11 +294,6 @@ template <typename K> __attribute__ ((noinline))
     assert(threadsPerBlock <= SIMTWarps * SIMTLanes,
       "NoCL: block size is too large (exceeds SIMT thread count)");
 
-    // Set number of blocks per streaming multiprocessor
-    k->blocksPerSM = (SIMTWarps * SIMTLanes) / threadsPerBlock;
-    //assert((k->gridDim.x % k->blocksPerSM) == 0,
-    //  "NoCL: blocks-per-SM does not divide evenly into grid width");
-
     // Map hardware threads to CUDA thread&block indices
     // -------------------------------------------------
 
@@ -334,8 +326,9 @@ template <typename K> __attribute__ ((noinline))
       "gridDim.y is not a multiple of threads available in Y dimension");
 
     // Set base of shared local memory (per block)
+    unsigned blocksPerSM = (SIMTWarps * SIMTLanes) / threadsPerBlock;
     unsigned localBytes = 4 << (SIMTLogSRAMBanks + SIMTLogWordsPerSRAMBank);
-    k->map.localBytesPerBlock = localBytes / k->blocksPerSM;
+    k->map.localBytesPerBlock = localBytes / blocksPerSM;
 
     // End of mapping
     // --------------
