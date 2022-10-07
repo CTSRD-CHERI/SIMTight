@@ -297,12 +297,6 @@ template <typename K> __attribute__ ((noinline))
     assert(threadsPerBlock <= SIMTWarps * SIMTLanes,
       "NoCL: block size is too large (exceeds SIMT thread count)");
 
-    // Set number of warps per block
-    // (for fine-grained barrier synchronisation)
-    unsigned warpsPerBlock = threadsPerBlock >> SIMTLogLanes;
-    while (!pebblesSIMTCanPut()) {}
-    pebblesSIMTSetWarpsPerBlock(warpsPerBlock);
-
     // Set number of blocks per streaming multiprocessor
     k->blocksPerSM = (SIMTWarps * SIMTLanes) / threadsPerBlock;
     //assert((k->gridDim.x % k->blocksPerSM) == 0,
@@ -345,6 +339,12 @@ template <typename K> __attribute__ ((noinline))
 
     // End of mapping
     // --------------
+
+    // Set number of warps per block
+    // (for fine-grained barrier synchronisation)
+    unsigned warpsPerBlock = threadsPerBlock >> SIMTLogLanes;
+    while (!pebblesSIMTCanPut()) {}
+    pebblesSIMTSetWarpsPerBlock(warpsPerBlock);
 
     // Set address of kernel closure
     #if EnableCHERI
