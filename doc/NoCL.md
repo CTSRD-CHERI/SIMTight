@@ -355,7 +355,7 @@ hardware threads available, and does not yet support the Z dimension.
 ## SIMTight command/response protocol
 
 SIMTight's scalar core and SIMT core communicate via a management
-stream in each direction.  In the Scalar -> SIMT direction, the
+stream in each direction.  In the CPU -> SIMT direction, the
 following commands are available:
 
   * `SetWarpsPerBlockCmd`: The SIMT core has very little understanding of
@@ -378,7 +378,7 @@ following commands are available:
   * `GetStatCmd` requests the value of one of the
     SIMT core's performance counters.
 
-In the SIMT -> Scalar direction, the following command responses are
+In the SIMT -> CPU direction, the following command responses are
 possible:
 
   * After a `StartKernelCmd`, and after the
@@ -392,3 +392,12 @@ possible:
 For a full set of commands, responses, and performance counters, see
 the [SIMT management
 interface](https://github.com/blarney-lang/pebbles/blob/master/src/Pebbles/Pipeline/SIMT/Management.hs).
+
+## Memory Map
+
+Memory is mapped into the address spaces of the CPU and SIMT cores as
+follows.
+
+<div style="text-align: center;" align="center">
+<img src="SIMTightMemMap.svg" width="600">
+</div>

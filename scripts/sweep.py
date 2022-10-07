@@ -33,6 +33,10 @@ config["ScalarUnit"] = config["RegFileScalarisation"] + [
 config["StoreBuffer"] = config["RegFileScalarisation"] + [
     ("SIMTEnableSVStoreBuffer", "1")
   ]
+config["DynRegSpill"] = config["RegFileScalarisation"] + [
+    ("SIMTRegFileSize", "256")
+  , ("SIMTCapRegFileSize", "256")
+  ]
 
 # Combinations of configs that are of interest
 configCombos = [
@@ -45,6 +49,7 @@ configCombos = [
   , ["CHERI"]
   , ["CHERI", "RegFileScalarisation"]
   , ["CHERI", "StoreBuffer"]
+  , ["CHERI", "DynRegSpill"]
   ]
 
 # Get directory containing script

@@ -56,7 +56,7 @@ LOG_INSTR_BYTES = $(shell echo -n CPUInstrMemLogWords \
 INSTR_BYTES = $(shell echo "3 * (2 ^ $(LOG_INSTR_BYTES))" | bc)
 
 .PHONY: all
-all: $(SIM)/boot.hex ../de10-pro/boot.mif
+all: $(SIM)/boot.hex ../de10-pro/boot.mif ../de10-pro-e/boot.mif
 
 link.ld: link.ld.h
 	cpp -P -I $(SIMTIGHT_ROOT)/inc link.ld.h > link.ld
@@ -68,6 +68,9 @@ $(SIM)/boot.hex: InstrMem.ihex
 ../de10-pro/boot.mif: InstrMem.ihex
 	./ihex-to-img.py InstrMem.ihex mif $(INSTR_BASE) 4 $(INSTR_BYTES) 1 \
     > ../de10-pro/boot.mif
+
+../de10-pro-e/boot.mif: ../de10-pro/boot.mif
+	cp ../de10-pro/boot.mif ../de10-pro-e/boot.mif
 
 InstrMem.ihex: out.elf
 	$(RV_OBJCOPY) --only-section=.text -O ihex out.elf InstrMem.ihex

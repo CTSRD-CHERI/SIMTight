@@ -38,8 +38,9 @@ The default SIMTight SoC consists of a host CPU and a 32-lane
 <img src="doc/SoC.svg" width="450">
 </div>
 
-A [sample project](de10-pro/) is included for the
-[DE10-Pro revD](http://de10-pro.terasic.com) FPGA development board.
+Sample projects are included for the
+[DE10-Pro](http://de10-pro.terasic.com) [revD](de10-pro/) and
+[revE](de10-pro-e/) FPGA development boards.
 
 ## Build instructions
 
@@ -119,7 +120,7 @@ To run the test suite and all benchmarks on FPGA:
 
 ```sh
 $ cd test
-$ ./test.sh --fpga     # Assumes FPGA image built and FPGA connected via USB
+$ ./test.sh --fpga-d    # Assumes FPGA image built and FPGA connected via USB
 ```
 
 Use the `--stats` option to generate performance stats.
@@ -185,25 +186,34 @@ represent the constant stride between vector elements.  Note that
 affine scalarisation is never used in the register file holding
 capability meta-data, where it wouldn't make much sense.
 
-SIMTight exploits scalarisation to reduce regiser file storage
-requirements, typically saving hundreds of kilobytes of register
-memory per CHERI-enabled SIMT core.  It also supports an experimental
-_scalarised vector store buffer_ to reduce the cost of register spills
-(runtime and DRAM overheads), at low hardware cost, which can be
-enabled as follows.
+SIMTight exploits scalarisation to reduce register file storage
+requirements. Hence, it is desirable to set the number of physical
+registers to a value smaller than the number of architectural
+registers.  In cases where scalarisation cannot prevent overflow of
+the physical register file, the hardware implements _dynamic register
+spilling_, where registers are evicted to and fetched from DRAM as
+required.  In the default configuration, the size of the physical
+register files is equal to the number of architectural registers (so
+dynamic spilling is not required):
+
+  * `#define SIMTLogRegFileSize 11`
+  * `#define SIMTLogCapRegFileSize 11`
+
+SIMTight also supports an experimental _scalarised vector store
+buffer_ to reduce the cost of compiler-inserted register spills (as
+opposed to hardware-inserted dynamic spills), at low hardware cost,
+which can be enabled as follows.
 
   * `#define SIMTEnableSVStoreBuffer 1`
 
-SIMTight also exploits scalarisation to process scalarisable
-instructions using a dedicated scalar pipeline, which can be enabled
-with:
+As well as reducing onchip storage, scalarisation is also exploited to
+improve runtime performance: enabling a scalar pipeline in the SIMT
+core allows an entire warp to be executed on a single execution unit
+in a single cycle (when the instruction is detected as scalarisable),
+_and operates in parallel with the main vector pipeline_. For many
+workloads, this increases perforance density significantly.
 
   * `#define SIMTEnableScalarUnit 1`
-
-The scalar pipeline allows an entire warp to be executed on a single execution
-unit in a single cycle (when an instruction is detected as scalarisable), _and
-operates in parallel with the main vector pipeline_.  For many workloads, this
-increases perforance density significantly.
 
 In future, we are interested in looking at _partial_ scalarisation
 (compressing vectors that are partly scalar, due to thread divergence)
@@ -211,6 +221,7 @@ and _inter-warp_ scalarisation (compressing values that are scalar
 across warps).
 
 <div style="text-align: center;" align="center">
+<br>
 <br>
 <p>Supported by
 <p><img src="doc/UKRI_Logo.svg" width="250"><br>

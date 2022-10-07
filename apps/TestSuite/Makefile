@@ -99,7 +99,8 @@ StartSIMT.o: StartSIMT.cpp
 TestCPU: checkenv TestCPU.cpp
 	@g++ -std=c++11 -O2 -I $(PEBBLES_ROOT)/inc -o TestCPU TestCPU.cpp \
     -I $(SIMTIGHT_ROOT)/inc \
-    -fno-exceptions -ljtag_atlantic -ljtag_client \
+        -fno-exceptions -lpthread -ljtag_atlantic \
+    -Wl,--no-as-needed -ljtag_client \
     -L $(QUARTUS_ROOTDIR)/linux64/ -Wl,-rpath,$(QUARTUS_ROOTDIR)/linux64
 
 TestCPUSim: TestCPU.cpp
@@ -110,7 +111,8 @@ TestCPUSim: TestCPU.cpp
 TestSIMT: checkenv TestSIMT.cpp
 	@g++ -std=c++11 -O2 -I $(PEBBLES_ROOT)/inc -o TestSIMT TestSIMT.cpp \
     -I $(SIMTIGHT_ROOT)/inc \
-    -fno-exceptions -ljtag_atlantic -ljtag_client \
+    -fno-exceptions -lpthread -ljtag_atlantic \
+    -Wl,--no-as-needed -ljtag_client \
     -L $(QUARTUS_ROOTDIR)/linux64/ -Wl,-rpath,$(QUARTUS_ROOTDIR)/linux64
 
 TestSIMTSim: TestSIMT.cpp

@@ -14,5 +14,6 @@ clean:
 	make -C apps clean
 	make -C src clean
 	make -C de10-pro clean
+	make -C de10-pro-e clean
 	make -C sim clean
 	make -C pebbles clean

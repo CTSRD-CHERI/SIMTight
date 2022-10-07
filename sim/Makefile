@@ -7,7 +7,7 @@ SIM_CFLAGS = -I $(PEBBLES_ROOT)/inc/ \
 
 sim: Main.cpp ../src/SIMTight.v boot.hex
 	verilator -cc ../src/SIMTight.v -exe Main.cpp -o sim \
-    -Wno-UNSIGNED -y $(SIMTIGHT_ROOT)/src/ \
+    -Wno-UNSIGNED -Wno-CMPCONST -y $(SIMTIGHT_ROOT)/src/ \
     -y $(BLARNEY_ROOT)/Verilog \
     -y $(PEBBLES_ROOT)/src/CHERI/Verilog \
     -y $(PEBBLES_ROOT)/blarney/blarney-vendor-ip/Sim/ \

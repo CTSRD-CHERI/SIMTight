@@ -63,6 +63,9 @@ NOTE("Use affine scalarisation, or just plain uniform scalarisation?")
 NOTE("For affine scalarisation, how many bits to use for the stride?")
 #define SIMTAffineScalarisationBits 4
 
+NOTE("Size of scalarising register file (number of vectors)")
+#define SIMTRegFileSize 2048
+
 NOTE("Use dedicated scalar unit, allowing parallel scalar/vector execution?")
 #define SIMTEnableScalarUnit 0
 
@@ -71,6 +74,9 @@ NOTE("[EXPERIMENTAL] Enable scalarised vector store buffer?")
 
 NOTE("Size of scalarised vector store buffer")
 #define SIMTSVStoreBufferLogSize 11
+
+NOTE("Use round robin register spilling policy")
+#define SIMTUseRoundRobinSpill 0
 
 NOTE("CPU configuration")
 NOTE("=================")
@@ -119,6 +125,9 @@ NOTE("Is CHERI enabled? (If so, see UseClang and EnableTaggedMem settings)")
 
 NOTE("Use scalarising register file for capability meta-data?")
 #define SIMTEnableCapRegFileScalarisation 0
+
+NOTE("Size of scalarising capability register file (number of vectors)")
+#define SIMTCapRegFileSize 2048
 
 NOTE("Use shared immutable PCC meta-data for all threads in kernel?")
 #define SIMTUseSharedPCC 1

@@ -2,8 +2,9 @@
 
 module Core.SIMT where
 
--- SoC configuration
+-- SoC configuration & memory map
 #include <Config.h>
+#include <MemoryMap.h>
 
 -- Blarney imports
 import Blarney
@@ -331,6 +332,8 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
                   executeM scalarMulSink scalarDivSink s
                   executeI_NoCap scalarCSRUnit scalarMemReqs s
               }
+        , regSpillBaseAddr = let a << b = a * 2^b in REG_SPILL_BASE
+        , useRoundRobinSpill = SIMTUseRoundRobinSpill == 1
         }
 
   -- Pipeline instantiation
@@ -341,6 +344,7 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
     , simtResumeReqs = toStream resumeQueue
     , simtScalarResumeReqs = toStream scalarResumeQueue
     , simtDRAMStatSigs = dramStatSigs
+    , simtMemReqs = fromList memReqSinks
     }
 
   return pipelineOuts.simtMgmtResps
