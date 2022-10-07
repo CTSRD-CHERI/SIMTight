@@ -49,7 +49,7 @@ configCombos = [
   , ["CHERI"]
   , ["CHERI", "RegFileScalarisation"]
   , ["CHERI", "StoreBuffer"]
-    ["CHERI", "DynRegSpill"]
+  , ["CHERI", "DynRegSpill"]
   ]
 
 # Get directory containing script
