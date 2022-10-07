@@ -38,9 +38,9 @@ The default SIMTight SoC consists of a host CPU and a 32-lane
 <img src="doc/SoC.svg" width="450">
 </div>
 
-Sample projects are included for the
-[DE10-Pro](http://de10-pro.terasic.com) [revD](de10-pro/) and
-[revE](de10-pro-e/) FPGA development boards.
+A sample project is included for the
+[DE10-Pro](http://de10-pro.terasic.com) ([revD](de10-pro/) and
+[revE](de10-pro-e/)) FPGA development board.
 
 ## Build instructions
 
@@ -116,11 +116,11 @@ $ make
 $ ./Run
 ```
 
-To run the test suite and all benchmarks on FPGA:
+To run the test suite and all benchmarks on a DE10-Pro revE FPGA:
 
 ```sh
 $ cd test
-$ ./test.sh --fpga-d    # Assumes FPGA image built and FPGA connected via USB
+$ ./test.sh --fpga-e    # Assumes FPGA image built and FPGA connected via USB
 ```
 
 Use the `--stats` option to generate performance stats.
@@ -198,6 +198,11 @@ dynamic spilling is not required):
 
   * `#define SIMTLogRegFileSize 11`
   * `#define SIMTLogCapRegFileSize 11`
+
+At the moment we have two very basic spill policies: pick first and
+round robin. To enable round robin:
+
+  * `#define SIMTUseRoundRobinSpill 1`
 
 SIMTight also supports an experimental _scalarised vector store
 buffer_ to reduce the cost of compiler-inserted register spills (as
