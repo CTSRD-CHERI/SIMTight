@@ -99,13 +99,13 @@ $ ./test.sh            # Run in simulation
 ```
 
 To build an FPGA image for the [DE10-Pro
-revD](http://de10-pro.terasic.com) board (Quartus 21.3pro or later
+revE](http://de10-pro.terasic.com) board (Quartus 21.3pro or later
 recommended):
 
 ```sh
-$ cd de10-pro
+$ cd de10-pro-e
 $ make                 # Assumes quartus is in your PATH
-$ make download-sof    # Assumes DE10-Pro is connected via USB
+$ make download-sof    # Assumes DE10-Pro revE is connected via USB
 ```
 
 We can now run a SIMT kernel on FPGA:
