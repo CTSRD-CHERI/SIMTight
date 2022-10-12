@@ -40,6 +40,7 @@ import Pebbles.Instructions.Mnemonics
 import Pebbles.Instructions.RV32_xCHERI
 import Pebbles.Instructions.Units.MulUnit
 import Pebbles.Instructions.Units.DivUnit
+import Pebbles.Instructions.Units.SharedUnits
 import Pebbles.Instructions.Custom.SIMT
 
 -- CHERI imports
