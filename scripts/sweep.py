@@ -8,6 +8,7 @@ def printUsage():
   print("  sweep.py")
   print("    test          Test each config in simulation")
   print("    synth         Synthesise each config using quartus DSE")
+  print("    bench         Run benchmarks on FPGA")
 
 # Check args
 if len(sys.argv) < 2:
@@ -108,6 +109,27 @@ elif sys.argv[1] == "synth":
     os.system("echo >> synth.log")
     os.system("make report | grep -v 'Info:' >> synth.log")
   clean()
+elif sys.argv[1] == "bench":
+  # Remove old log file
+  os.chdir(repoDir + "/test")
+  os.system("rm -f bench.log")
+  # Test each combination in simulation
+  for combo in configCombos:
+    name = "Baseline" if combo == [] else "+".join(combo)
+    print("Config: " + name)
+    clean()
+    applySettings(combo)
+    # Synthesise
+    os.chdir(repoDir + "/src")
+    os.system("make > /dev/null")
+    os.chdir(repoDir + "/de10-pro-e")
+    os.system("make one > /dev/null")
+    # Run benchmarks
+    os.chdir(repoDir + "/test")
+    os.system("echo >> bench.log")
+    os.system("echo ====== " + name + " ====== >> bench.log")
+    os.system("echo >> bench.log")
+    os.system("./test.sh --fpga-e --stats >> bench.log")
 else:
   printUsage()
   sys.exit(-1)
