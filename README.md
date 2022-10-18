@@ -51,6 +51,7 @@ On Ubuntu 20.04, we can do:
 ```sh
 $ sudo apt install verilator
 $ sudo apt install gcc-riscv64-unknown-elf
+$ sudo apt install libgmp-dev
 ```
 
 For GHC 9.2.1 or later, [ghcup](https://www.haskell.org/ghcup/) can be
