@@ -228,7 +228,7 @@ fi
 
 # Function to convert hex to decimal
 function fromHex() {
-  local DEC=$(python -c "print('%d' % (0x$1))")
+  local DEC=$(python3 -c "print('%d' % (0x$1))")
   echo "$DEC"
 }
 
@@ -252,10 +252,10 @@ checkApp() {
   local SCALAR_SUSPS=$(grep -E ^ScalarSusps: $tmpLog | cut -d' ' -f2)
   local SCALAR_ABORTS=$(grep -E ^ScalarAborts: $tmpLog | cut -d' ' -f2)
   local DRAM_ACCS=$(grep -E ^DRAMAccs: $tmpLog | cut -d' ' -f2)
-  local DDRAM_ACCS=$(python -c "print('%d' % (0x${DRAM_ACCS}))")
-  local DCYCLES=$(python -c "print('%d' % (0x${CYCLES}))")
-  local DINSTRS=$(python -c "print('%d' % (0x${INSTRS}))")
-  local IPC=$(python -c "print('%.2f' % (float(0x${INSTRS}) / 0x${CYCLES}))")
+  local DDRAM_ACCS=$(python3 -c "print('%d' % (0x${DRAM_ACCS}))")
+  local DCYCLES=$(python3 -c "print('%d' % (0x${CYCLES}))")
+  local DINSTRS=$(python3 -c "print('%d' % (0x${INSTRS}))")
+  local IPC=$(python3 -c "print('%.2f' % (float(0x${INSTRS}) / 0x${CYCLES}))")
   local OPTIONAL_STATS=""
   if [ "$VEC_REGS" != "" ]; then
     DEC=$(fromHex $VEC_REGS)
