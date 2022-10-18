@@ -34,7 +34,7 @@ update-mif: checkenv
 
 .PHONY: download-sof
 download-sof: checkenv
-	quartus_pgm -m jtag -o "p;output_files/DE10_Pro.sof"
+	env -u LM_LICENSE_FILE quartus_pgm -m jtag -o "p;output_files/DE10_Pro.sof"
 
 .PHONY: clean
 clean:
