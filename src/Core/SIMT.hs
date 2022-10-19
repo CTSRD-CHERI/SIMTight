@@ -40,6 +40,7 @@ import Pebbles.Instructions.Mnemonics
 import Pebbles.Instructions.RV32_xCHERI
 import Pebbles.Instructions.Units.MulUnit
 import Pebbles.Instructions.Units.DivUnit
+import Pebbles.Instructions.Units.BoundsUnit
 import Pebbles.Instructions.Units.SharedUnits
 import Pebbles.Instructions.Custom.SIMT
 
@@ -72,6 +73,8 @@ data SIMTExecuteIns =
     -- ^ Sink for multiplier requests
   , execDivReqs :: Sink DivReq
     -- ^ Sink for divider requests
+  , execBoundsReqs :: Sink BoundsReq
+    -- ^ Sink for capability bounds-setting requests
   } deriving (Generic, Interface)
 
 -- | Execute stage for a SIMT lane (synthesis boundary)
@@ -100,7 +103,11 @@ makeSIMTExecuteStage enCHERI =
           executeI (Just ins.execMulReqs) csrUnit ins.execMemReqs s
           executeM ins.execMulReqs ins.execDivReqs s
           if enCHERI
-            then executeCHERI csrUnit ins.execCapMemReqs s
+            then do
+              executeCHERI csrUnit ins.execCapMemReqs s
+              if SIMTNumSetBoundsUnits < SIMTLanes
+                then executeBoundsUnit ins.execBoundsReqs s
+                else executeSetBounds s
             else do
               executeI_NoCap csrUnit ins.execMemReqs s
               executeA ins.execMemReqs s
@@ -190,6 +197,19 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
   let scalarDivSink = mapSink ((,) pipelineOuts.simtScalarInstrInfo)
                               scalarDivUnit.reqs
 
+  -- Bounds unit requests
+  -- ====================
+
+  vecBoundsUnit <-
+    if SIMTNumSetBoundsUnits < SIMTLanes
+      then do
+        boundsUnits <- makeVecBoundsUnit
+        makeSharedUnits @SIMTNumSetBoundsUnits boundsUnits
+      else return nullServer
+
+  boundsSinks <- makeSinkVectoriser
+    (\vec -> (pipelineOuts.simtInstrInfo, vec)) vecBoundsUnit.reqs
+
   -- Memory requests
   -- ===============
 
@@ -236,8 +256,9 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
 
   -- Merge resume requests
   let resumeReqStream =
-        memResumeReqs `mergeTwo`
-          (vecMulUnit.resps `mergeTwo` vecDivUnit.resps)
+        (if SIMTNumSetBoundsUnits < SIMTLanes then 
+           memResumeReqs `mergeTwo` vecBoundsUnit.resps else memResumeReqs)
+          `mergeTwo` (vecMulUnit.resps `mergeTwo` vecDivUnit.resps)
 
   -- Resume queue
   resumeQueue <- makePipelineQueue 1
@@ -290,10 +311,12 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
                 , execCapMemReqs = capMemSink
                 , execMulReqs = mulSink
                 , execDivReqs = divSink
+                , execBoundsReqs = boundsSink
                 }
-            | (memSink, capMemSink, mulSink, divSink, i) <-
-                zip5 memReqSinks capMemReqSinks
-                     (toList mulSinks) (toList divSinks) [0..] ]
+            | (memSink, capMemSink, mulSink, divSink, boundsSink, i) <-
+                zip6 memReqSinks capMemReqSinks
+                     (toList mulSinks) (toList divSinks)
+                     (toList boundsSinks) [0..] ]
         , simtPushTag = SIMT_PUSH
         , simtPopTag = SIMT_POP
         , useRegFileScalarisation = SIMTEnableRegFileScalarisation == 1
