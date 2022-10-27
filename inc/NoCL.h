@@ -281,6 +281,7 @@ template <typename K> __attribute__ ((noinline))
 template <typename K> __attribute__ ((noinline))
   int noclRunKernel(K* k) {
     unsigned threadsPerBlock = k->blockDim.x * k->blockDim.y;
+    unsigned threadsUsed = threadsPerBlock * k->gridDim.x * k->gridDim.y;
 
     // Limitations for simplicity (TODO: relax)
     assert(k->blockDim.z == 1,
@@ -293,6 +294,8 @@ template <typename K> __attribute__ ((noinline))
       "NoCL: warp size does not divide evenly into block size");
     assert(threadsPerBlock <= SIMTWarps * SIMTLanes,
       "NoCL: block size is too large (exceeds SIMT thread count)");
+    assert(threadsUsed >= SIMTWarps * SIMTLanes,
+      "NoCL: unused SIMT threads (more SIMT threads than CUDA threads)");
 
     // Map hardware threads to CUDA thread&block indices
     // -------------------------------------------------
