@@ -159,7 +159,9 @@ makeScalarCore config inputs = mdo
                 executeM mulReqs divReqs s
                 executeCacheMgmt memReqSink s
                 if config.scalarCoreEnableCHERI
-                  then executeCHERI csrUnit capMemReqSink s
+                  then do
+                    executeCHERI csrUnit capMemReqSink s
+                    executeSetBounds s
                   else executeI_NoCap csrUnit memReqSink s
             }
         , trapCSRs = trapRegs

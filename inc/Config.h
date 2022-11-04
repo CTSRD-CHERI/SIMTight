@@ -135,6 +135,9 @@ NOTE("Size of scalarising capability register file (number of vectors)")
 NOTE("Use shared immutable PCC meta-data for all threads in kernel?")
 #define SIMTUseSharedPCC 1
 
+NOTE("Number of bounds-setting units")
+#define SIMTNumSetBoundsUnits SIMTLanes
+
 NOTE("Compiler")
 NOTE("========")
 
