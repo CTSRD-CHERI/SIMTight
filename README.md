@@ -159,13 +159,21 @@ We musn't forget to `make clean` in the root of the SIMTight repo any
 time [inc/Config.h](inc/Config.h) is changed.  At this point, all of
 the standard build instructions should work as before.
 
+CHERI instructions for setting bounds on capabilities are quite
+expensive in terms of logic area, and do not usually appear in
+performance-critical loops.  Therefore, it can be useful to share
+bounds setting logic between vector lanes:
+
+  * `#define SIMTNumSetBoundsUnits 2`
+
 ## Enabling scalarisation
 
-Scalarisation is an optimastion that spots _uniform_ and _affine_ vectors and
-processes them more efficiently as scalars, reducing on-chip storage and
-increasing performance density.  An _affine_ vector is one in which there is a
-constant stride between each element; a _uniform_ vector is an affine vector
-where the stride is zero, i.e. all elements are equal.
+Scalarisation is an optimastion that spots _uniform_ and _affine_
+vectors and processes them more efficiently as scalars, reducing
+on-chip storage and increasing performance density.  An _affine_
+vector is one in which there is a constant stride between each
+element; a _uniform_ vector is an affine vector where the stride is
+zero, i.e. all elements are equal.
 
 SIMTight implements _dynamic scalarisation_ (i.e. in hardware, at
 runtime), and it can be enabled separately for the integer register
@@ -200,10 +208,10 @@ dynamic spilling is not required):
   * `#define SIMTLogRegFileSize 11`
   * `#define SIMTLogCapRegFileSize 11`
 
-At the moment we have two very basic spill policies: pick first and
-round robin. To enable round robin:
+At the moment we have two spill policies: pick-first and
+least-recently-used. To enable the latter:
 
-  * `#define SIMTUseRoundRobinSpill 1`
+  * `#define SIMTUseLRUSpill 1`
 
 SIMTight also supports an experimental _scalarised vector store
 buffer_ to reduce the cost of compiler-inserted register spills (as
