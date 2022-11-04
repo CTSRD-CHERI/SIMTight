@@ -75,8 +75,11 @@ NOTE("[EXPERIMENTAL] Enable scalarised vector store buffer?")
 NOTE("Size of scalarised vector store buffer")
 #define SIMTSVStoreBufferLogSize 11
 
-NOTE("Use round robin register spilling policy")
-#define SIMTUseRoundRobinSpill 0
+NOTE("Use LRU register spilling policy based on approx mean reg usage")
+#define SIMTUseLRUSpill 0
+
+NOTE("For LRU spill, how many bits to use for mean?")
+#define SIMTRegCountBits 8
 
 NOTE("CPU configuration")
 NOTE("=================")
