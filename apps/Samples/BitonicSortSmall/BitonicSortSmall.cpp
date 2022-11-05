@@ -12,7 +12,7 @@
 #include <Rand.h>
 
 // Size of arrays being sorted
-#define LOCAL_SIZE_LIMIT 4096
+#define LOCAL_SIZE_LIMIT 1024
 
 // Sort two key/value pairs
 inline void twoSort(unsigned *keyA, unsigned* valA,
@@ -95,7 +95,7 @@ int main()
 
   // Array size and number of arrays for benchmarking
   int N = LOCAL_SIZE_LIMIT;
-  int batch = isSim ? 2 : 32;
+  int batch = isSim ? 4 : 32;
 
   // Input and output vectors
   simt_aligned unsigned srcKeys[N*batch], srcVals[N*batch];
@@ -111,7 +111,7 @@ int main()
   // Instantiate kernel
   BitonicSortLocal k;
 
-  // Use a single block of threads
+  // Use a single block of threads per array
   k.blockDim.x = LOCAL_SIZE_LIMIT / 2;
   k.gridDim.x = batch;
 
