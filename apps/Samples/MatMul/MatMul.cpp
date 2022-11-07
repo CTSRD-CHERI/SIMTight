@@ -113,7 +113,7 @@ int main()
 
   // Matrix dimensions for benchmarking
   // (Must be a multiple of SIMTLanes)
-  int size = isSim ? 32 : 256;
+  int size = isSim ? 64 : 256;
 
   // Input and outputs
   simt_aligned int matA[size*size], matB[size*size],

@@ -8,6 +8,8 @@ APPS=(
   Samples/Transpose
   Samples/MatVecMul
   Samples/MatMul
+  Samples/BitonicSortSmall
+  Samples/BitonicSortLarge
   InHouse/BlockedStencil
   InHouse/StripedStencil
   InHouse/VecGCD
@@ -226,10 +228,16 @@ fi
 # Sample Apps
 # ===========
 
-# Function to convert hex to decimal
-function fromHex() {
-  local DEC=$(python3 -c "print('%d' % (0x$1))")
-  echo "$DEC"
+# Function to extract stat count from program output
+function getStat() {
+  if grep -E ^$1: $tmpLog > /dev/null; then
+    local N=$(grep -E ^$1: $tmpLog | \
+      cut -d' ' -f2 | \
+      python3 -c 'import sys; print(sum((int(l, 16) for l in sys.stdin)))')
+    echo "$N"
+  else
+    echo ""
+  fi
 }
 
 # Function to run app and check success (and emit stats)
@@ -241,57 +249,46 @@ checkApp() {
   local tmpLog=$tmpDir/$APP_MANGLED.log
   $(cd ../apps/$APP && $Run > $tmpLog)
   local OK=$(grep "Self test: PASSED" $tmpLog)
-  local CYCLES=$(grep -E ^Cycles: $tmpLog | cut -d' ' -f2)
-  local INSTRS=$(grep -E ^Instrs: $tmpLog | cut -d' ' -f2)
-  local VEC_REGS=$(grep -E ^MaxVecRegs: $tmpLog | cut -d' ' -f2)
-  local CAP_VEC_REGS=$(grep -E ^MaxCapVecRegs: $tmpLog | cut -d' ' -f2)
-  local SCALARISABLE=$(grep -E ^ScalarisableInstrs: $tmpLog | cut -d' ' -f2)
-  local SCALARISED=$(grep -E ^ScalarisedInstrs: $tmpLog | cut -d' ' -f2)
-  local RETRIES=$(grep -E ^Retries: $tmpLog | cut -d' ' -f2)
-  local SUSPS=$(grep -E ^Susps: $tmpLog | cut -d' ' -f2)
-  local SCALAR_SUSPS=$(grep -E ^ScalarSusps: $tmpLog | cut -d' ' -f2)
-  local SCALAR_ABORTS=$(grep -E ^ScalarAborts: $tmpLog | cut -d' ' -f2)
-  local DRAM_ACCS=$(grep -E ^DRAMAccs: $tmpLog | cut -d' ' -f2)
-  local DDRAM_ACCS=$(python3 -c "print('%d' % (0x${DRAM_ACCS}))")
-  local DCYCLES=$(python3 -c "print('%d' % (0x${CYCLES}))")
-  local DINSTRS=$(python3 -c "print('%d' % (0x${INSTRS}))")
-  local IPC=$(python3 -c "print('%.2f' % (float(0x${INSTRS}) / 0x${CYCLES}))")
+  local CYCLES=$(getStat "Cycles")
+  local INSTRS=$(getStat "Instrs")
+  local VEC_REGS=$(getStat "MaxVecRegs")
+  local CAP_VEC_REGS=$(getStat "MaxCapVecRegs")
+  local SCALARISABLE=$(getStat "ScalarisableInstrs")
+  local SCALARISED=$(getStat "ScalarisedInstrs")
+  local RETRIES=$(getStat "Retries")
+  local SUSPS=$(getStat "Susps")
+  local SCALAR_SUSPS=$(getStat "ScalarSusps")
+  local SCALAR_ABORTS=$(getStat "ScalarAborts")
+  local DRAM_ACCS=$(getStat "DRAMAccs")
+  local IPC=$(python3 -c "print('%.2f' % (float(${INSTRS}) / ${CYCLES}))")
   local OPTIONAL_STATS=""
   if [ "$VEC_REGS" != "" ]; then
-    DEC=$(fromHex $VEC_REGS)
-    OPTIONAL_STATS="$OPTIONAL_STATS,VecRegs=$DEC"
+    OPTIONAL_STATS="$OPTIONAL_STATS,VecRegs=$VEC_REGS"
   fi
   if [ "$CAP_VEC_REGS" != "" ]; then
-    DEC=$(fromHex $CAP_VEC_REGS)
-    OPTIONAL_STATS="$OPTIONAL_STATS,CapVecRegs=$DEC"
+    OPTIONAL_STATS="$OPTIONAL_STATS,CapVecRegs=$CAP_VEC_REGS"
   fi
   if [ "$SCALARISABLE" != "" ]; then
-    DEC=$(fromHex $SCALARISABLE)
-    OPTIONAL_STATS="$OPTIONAL_STATS,ScalarisableInstrs=$DEC"
+    OPTIONAL_STATS="$OPTIONAL_STATS,ScalarisableInstrs=$SCALARISABLE"
   fi
   if [ "$SCALARISED" != "" ]; then
-    DEC=$(fromHex $SCALARISED)
-    OPTIONAL_STATS="$OPTIONAL_STATS,ScalarisedInstrs=$DEC"
+    OPTIONAL_STATS="$OPTIONAL_STATS,ScalarisedInstrs=$SCALARISED"
   fi
   if [ "$RETRIES" != "" ]; then
-    DEC=$(fromHex $RETRIES)
-    OPTIONAL_STATS="$OPTIONAL_STATS,Retries=$DEC"
+    OPTIONAL_STATS="$OPTIONAL_STATS,Retries=$RETRIES"
   fi
   if [ "$SUSPS" != "" ]; then
-    DEC=$(fromHex $SUSPS)
-    OPTIONAL_STATS="$OPTIONAL_STATS,Susps=$DEC"
+    OPTIONAL_STATS="$OPTIONAL_STATS,Susps=$SUSPS"
   fi
   if [ "$SCALAR_SUSPS" != "" ]; then
-    DEC=$(fromHex $SCALAR_SUSPS)
-    OPTIONAL_STATS="$OPTIONAL_STATS,ScalarSusps=$DEC"
+    OPTIONAL_STATS="$OPTIONAL_STATS,ScalarSusps=$SCALAR_SUSPS"
   fi
   if [ "$SCALAR_ABORTS" != "" ]; then
-    DEC=$(fromHex $SCALAR_ABORTS)
-    OPTIONAL_STATS="$OPTIONAL_STATS,ScalarAborts=$DEC"
+    OPTIONAL_STATS="$OPTIONAL_STATS,ScalarAborts=$SCALAR_ABORTS"
   fi
   if [ "$EmitStats" != "" ]; then
     test "$OK" != ""
-    assert $? "" " [IPC=$IPC,Instrs=$DINSTRS,Cycles=$DCYCLES,DRAMAccs=$DDRAM_ACCS$OPTIONAL_STATS]"
+    assert $? "" " [IPC=$IPC,Instrs=$INSTRS,Cycles=$CYCLES,DRAMAccs=$DRAM_ACCS$OPTIONAL_STATS]"
   else
     test "$OK" != ""
     assert $? "" ""
