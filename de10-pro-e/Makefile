@@ -1,5 +1,6 @@
 SIMTIGHT_ROOT ?= $(realpath ..)
 NUM_SEEDS ?= 4
+PEBBLES_CABLE_ID ?= 1
 QPF = DE10_Pro.qpf
 
 .PHONY: one
@@ -35,7 +36,7 @@ update-mif: checkenv
 .PHONY: download-sof
 download-sof: checkenv
 	env -u LM_LICENSE_FILE quartus_pgm \
-    -m jtag -o "p;output_files/DE10_Pro.sof" -c 1
+    -m jtag -o "p;output_files/DE10_Pro.sof" -c ${PEBBLES_CABLE_ID}
 
 .PHONY: clean
 clean:
