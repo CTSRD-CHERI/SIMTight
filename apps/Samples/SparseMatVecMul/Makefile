@@ -1,6 +1,6 @@
 SIMTIGHT_ROOT = $(realpath ../../../)
 
-APP_CPP = SPVM-ELL.cpp
+APP_CPP = SparseMatVecMul.cpp
 APP_HDR = 
 RUN_CPP = Run.cpp
 RUN_H   =

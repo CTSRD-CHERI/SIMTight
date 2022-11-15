@@ -6,7 +6,7 @@
 
 // Kernel for sparse matrix vector multipliation on ELLPACK format
 // One thread per matrix row
-struct SPVM_ELL : Kernel {
+struct SparseMatVecMul : Kernel {
   int num_rows;
   int num_cols;
   int num_cols_per_row;
@@ -80,7 +80,7 @@ int main()
     }
 
   // Instantiate kernel
-  SPVM_ELL k;
+  SparseMatVecMul k;
 
   // One thread per row
   int groups = height / SIMTLanes;

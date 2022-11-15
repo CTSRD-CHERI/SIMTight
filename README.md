@@ -1,6 +1,4 @@
-<div class="title-block" style="text-align: center;" align="center">
-<br><img src="doc/SIMTight.svg" width="200"><br><br>
-</div>
+# SIMTight
 
 SIMTight is an FPGA-optimised implementation of the _Single
 Instruction Multiple Threads (SIMT)_ model popularised by NVIDIA GPUs,

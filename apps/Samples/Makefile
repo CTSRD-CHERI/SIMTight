@@ -12,4 +12,4 @@ clean:
 	make -C MatMul clean
 	make -C BitonicSortSmall clean
 	make -C BitonicSortLarge clean
-	make -C SPVM-ELL clean
+	make -C SparseMatVecMul clean

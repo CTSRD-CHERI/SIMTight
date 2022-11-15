@@ -10,7 +10,7 @@ APPS=(
   Samples/MatMul
   Samples/BitonicSortSmall
   Samples/BitonicSortLarge
-  Samples/SPVM-ELL
+  Samples/SparseMatVecMul
   InHouse/BlockedStencil
   InHouse/StripedStencil
   InHouse/VecGCD
