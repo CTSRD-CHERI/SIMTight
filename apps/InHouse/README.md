@@ -1,2 +1,2 @@
 These benchmarks have been developed by people associated with the
-SIMTight project, mainly for teaching purposes.
+SIMTight project.

@@ -14,6 +14,7 @@ APPS=(
   InHouse/BlockedStencil
   InHouse/StripedStencil
   InHouse/VecGCD
+  InHouse/MotionEst
 )
 
 RED='\033[0;31m'
