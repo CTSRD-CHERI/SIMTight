@@ -11,6 +11,7 @@
 #include <Pebbles/Instrs/Atomics.h>
 #include <Pebbles/Instrs/CacheMgmt.h>
 #include <Pebbles/Instrs/SIMTDevice.h>
+#include <Pebbles/CSRs/Sim.h>
 #include <Pebbles/CSRs/Hart.h>
 #include <Pebbles/CSRs/UART.h>
 #include <Pebbles/CSRs/SIMTHost.h>
@@ -436,6 +437,46 @@ INLINE void noclConverge() { pebblesSIMTConverge(); }
 INLINE void __syncthreads() {
   pebblesSIMTConverge();
   pebblesSIMTLocalBarrier();
+}
+
+// Minimal heap allocator
+// ======================
+
+// Use the address of this symbol to determine the base of the heap
+// for dynamic memory allocation
+extern unsigned __heapBase;
+
+// Next available address on heap
+uintptr_t __heapPointer = 0;
+
+// Bare minimal allocator
+// TODO: check for heap overflow
+void* noclMalloc(unsigned numBytes) {
+  // Initialise heap pointer on first use
+  if (__heapPointer == 0) __heapPointer = (uintptr_t) &__heapBase;
+
+  // All allocations are aligned on SIMTLanes*4 byte boundaries
+  unsigned alignBits = SIMTLogLanes+2;
+  unsigned alignMask = (1 << alignBits) - 1;
+
+  // Realign heap pointer if necessary
+  if ((__heapPointer & alignMask) != 0)
+    __heapPointer = (__heapPointer & ~alignMask) + (1 << alignBits);
+
+  // Create pointer to new allocation
+  void* ptr;
+  #if EnableCHERI
+    // TODO: constrain bounds
+    void* almighty = cheri_ddc_get();
+    ptr = cheri_address_set(almighty, __heapPointer);
+  #else
+    ptr = (void*) __heapPointer;
+  #endif
+
+  // Perform allocation
+  __heapPointer += numBytes;
+
+  return ptr;
 }
 
 #endif

@@ -55,7 +55,9 @@ code.v: app.elf
 
 data.v: app.elf
 	$(RV_OBJCOPY) -O verilog --remove-section=.text \
-                --set-section-flags .bss=alloc,load,contents app.elf data.v
+                --set-section-flags .bss=alloc,load,contents \
+                --set-section-flags .sbss=alloc,load,contents \
+                app.elf data.v
 
 app.elf: link.ld $(CFILES)
 	$(RV_CC) $(CFLAGS) -T link.ld -o app.elf $(CFILES)
