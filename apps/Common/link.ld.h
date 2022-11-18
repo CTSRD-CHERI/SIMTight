@@ -25,5 +25,5 @@ SECTIONS
   .eh_frame_hdr : ONLY_IF_RW { KEEP (*(.eh_frame_hdr))
                                      *(.eh_frame_hdr.*) } > globals
   .eh_frame : ONLY_IF_RW { KEEP (*(.eh_frame)) *(.eh_frame.*) } > globals
-  __heapBase = ALIGN(.);
+  //__heapBase = ALIGN(.);
 }

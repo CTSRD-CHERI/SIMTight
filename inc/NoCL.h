@@ -439,6 +439,9 @@ INLINE void __syncthreads() {
   pebblesSIMTLocalBarrier();
 }
 
+/*
+// TODO: Resolve issue with __heapBase symbol on CHERI toolchain.
+
 // Minimal heap allocator
 // ======================
 
@@ -478,5 +481,6 @@ void* noclMalloc(unsigned numBytes) {
 
   return ptr;
 }
+*/
 
 #endif
