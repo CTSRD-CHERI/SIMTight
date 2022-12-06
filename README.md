@@ -232,7 +232,7 @@ In future, we are interested in looking at _partial_ scalarisation
 and _inter-warp_ scalarisation (compressing values that are scalar
 across warps).
 
-# Enabling fast zeroing
+## Enabling fast zeroing
 
 To avoid information leakage between kernel instances, it is desirable
 to zero memory when a kernel completes so that, if the memory
