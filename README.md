@@ -232,6 +232,23 @@ In future, we are interested in looking at _partial_ scalarisation
 and _inter-warp_ scalarisation (compressing values that are scalar
 across warps).
 
+# Enabling fast zeroing
+
+To avoid information leakage between kernel instances, it is desirable
+to zero memory when a kernel completes so that, if the memory
+allocator gives that memory to a future kernel instance, then it
+cannot read senstive data from the prior kernel instance. In cases
+where kernels run concurrently (not supported yet), it may also be
+desirable to zero certain memory areas during a context switch.
+
+SIMTight has experimental support for *fast zeroing* of memory. To
+enable it, set the following flag in [Config.h](inc/Config.h):
+
+  * `#define EnableFastZeroing 1`
+
+For more details, see the [fast zeroing design
+document](doc/FastZeroing.md).
+
 <div style="text-align: center;" align="center">
 <br>
 <br>
