@@ -26,6 +26,7 @@ import Pebbles.Instructions.RV32_xCHERI
 import Pebbles.Instructions.Units.MulUnit
 import Pebbles.Instructions.Units.DivUnit
 import Pebbles.Instructions.Custom.SIMT
+import Pebbles.Instructions.Custom.FastZeroing
 import Pebbles.Instructions.Custom.CacheManagement
 import Pebbles.Memory.Interface
 import Pebbles.Memory.CapSerDes
@@ -52,6 +53,8 @@ data ScalarCoreConfig =
     -- ^ Enable CHERI extensions
   , scalarCoreCapRegInitFile :: Maybe String
     -- ^ File containing initial capability register file (meta-data only)
+  , scalarCoreEnableFastZeroing :: Bool
+    -- ^ Enable fast zeroing extensions
   }
 
 -- | Scalar core inputs
@@ -149,6 +152,8 @@ makeScalarCore config inputs = mdo
             , if config.scalarCoreEnableCHERI then [] else decodeI_NoCap
             , decodeM
             , decodeCacheMgmt
+            , if config.scalarCoreEnableFastZeroing
+                then decodeFastZeroing else []
             , if config.scalarCoreEnableCHERI then decodeCHERI else []
             , decodeSIMT
             ]
@@ -158,6 +163,8 @@ makeScalarCore config inputs = mdo
                 executeI Nothing csrUnit memReqSink s
                 executeM mulReqs divReqs s
                 executeCacheMgmt memReqSink s
+                when config.scalarCoreEnableFastZeroing do
+                  executeFastZeroing memReqSink s
                 if config.scalarCoreEnableCHERI
                   then do
                     executeCHERI csrUnit capMemReqSink s

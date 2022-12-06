@@ -100,7 +100,7 @@ NOTE("Tagged memory")
 NOTE("=============")
 
 NOTE("Is tagged memory enabled? (Needed for CHERI)")
-#define EnableTaggedMem 0
+#define EnableTaggedMem 1
 
 NOTE("Tag cache: line size")
 #define TagCacheLogBeatsPerLine 1
@@ -144,11 +144,39 @@ NOTE("========")
 NOTE("Use clang rather than gcc? (Currently required if CHERI enabled)")
 #define UseClang 0
 
+NOTE("Fast zeroing")
+NOTE("============")
+
+NOTE("[EXPERIMENTAL] Is fast zeroing enabled? (Needs EnabledTaggedMem)")
+#define EnableFastZeroing 1
+
+NOTE("Zero cache: line size")
+#define ZeroCacheLogBeatsPerLine 0
+
+NOTE("Zero cache: number of set-associative ways")
+#define ZeroCacheLogNumWays 2
+
+NOTE("Zero cache: number of sets")
+#define ZeroCacheLogSets 7
+
+NOTE("Zero cache: max number of inflight memory requests")
+#define ZeroCacheLogMaxInflight 5
+
+NOTE("Zero cache: max number of pending requests per way")
+#define ZeroCachePendingReqsPerWay 16
+
+NOTE("Zero cache: optimise caching of large regions of zeros (TODO: broken?)")
+#define ZeroCacheHierarchical 0
+
+NOTE("Zero cache: max partial stores that can be handled without blocking")
+#define ZeroCacheMaxOutstandingPartialStores 4
+
 NOTE("Memory map")
 NOTE("==========")
 
-NOTE("Memory base (after tag bit region)")
-#define MemBase 134217728
+NOTE("Memory base (after tag bit and zero bit regions)")
+NOTE("Currently 2^27 (tag bits) + 2^23 (zero bits)")
+#define MemBase 142606336
 
 NOTE("Space reserved in instruction memory for boot loader")
 #define MaxBootImageBytes 1024

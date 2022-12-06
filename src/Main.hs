@@ -162,6 +162,7 @@ makeCPUCore = makeBoundary "CPUCore" (makeScalarCore config)
           if EnableCHERI == 1
             then Just (scalarCapRegInitFile ++ ".mif")
             else Nothing
+      , scalarCoreEnableFastZeroing = EnableFastZeroing == 1
       }
 
 -- CPU data cache (synthesis boundary)
@@ -186,8 +187,8 @@ makeSIMTDomain (clk, rst) =
     (memReqs, memResps, dramReqs1) <- makeSIMTMemSubsystem dramResps1
 
     -- DRAM bus
-    ((dramResps0, dramResps1), dramReqs) <-
-      makeDRAMBus (dramReqs0, dramReqs1) dramResps
+    ([dramResps0, dramResps1], dramReqs) <-
+      makeDRAMBus [dramReqs0, dramReqs1] dramResps
 
     -- Optional tag controller
     (dramResps, dramFinalReqs) <-
