@@ -13,3 +13,4 @@ clean:
 	make -C BitonicSortSmall clean
 	make -C BitonicSortLarge clean
 	make -C SparseMatVecMul clean
+	make -C FastZeroEval clean
