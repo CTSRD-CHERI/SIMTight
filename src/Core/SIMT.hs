@@ -223,13 +223,12 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
       then do
         -- Serialise CapMemReq to MemReq
         capMemReqs <- makeCapMemReqSerialiser memReqsIlv
-        capMemReqsBuffered <- makeSinkBuffer (makePipelineQueue 1) capMemReqs
         -- Sink of vectors to vector of sinks
         capMemSinks <-
           makeSinkVectoriser
             (\vec -> (pipelineOuts.simtInstrInfo, vec,
                         pipelineOuts.simtScalarisedOpB))
-            capMemReqsBuffered
+            capMemReqs
         -- Convert vector to list
         let capMemSinksList = toList capMemSinks
         let memSinks = map (mapSink toCapMemReq) capMemSinksList
