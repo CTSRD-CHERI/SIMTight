@@ -22,7 +22,7 @@ import Pebbles.Pipeline.Interface
 import Pebbles.Pipeline.SIMT.Management
 import Pebbles.Instructions.RV32_I
 import Pebbles.Instructions.RV32_M
-import Pebbles.Instructions.RV32_xCHERI
+import Pebbles.Instructions.RV32_IxCHERI
 import Pebbles.Instructions.Units.MulUnit
 import Pebbles.Instructions.Units.DivUnit
 import Pebbles.Instructions.Custom.SIMT
@@ -145,24 +145,21 @@ makeScalarCore config inputs = mdo
         , initialPC = config.scalarCoreInitialPC
         , capRegInitFile = config.scalarCoreCapRegInitFile
         , decodeStage = concat
-            [ decodeI
-            , if config.scalarCoreEnableCHERI then [] else decodeI_NoCap
+            [ if config.scalarCoreEnableCHERI then decodeIxCHERI else decodeI
             , decodeM
             , decodeCacheMgmt
-            , if config.scalarCoreEnableCHERI then decodeCHERI else []
             , decodeSIMT
             ]
         , executeStage = \s -> return
             ExecuteStage {
               execute = do
-                executeI Nothing csrUnit memReqSink s
                 executeM mulReqs divReqs s
                 executeCacheMgmt memReqSink s
                 if config.scalarCoreEnableCHERI
                   then do
-                    executeCHERI csrUnit capMemReqSink s
+                    executeIxCHERI Nothing csrUnit capMemReqSink s
                     executeSetBounds s
-                  else executeI_NoCap csrUnit memReqSink s
+                  else executeI Nothing csrUnit memReqSink s
             }
         , trapCSRs = trapRegs
         , checkPCCFunc =

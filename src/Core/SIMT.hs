@@ -37,7 +37,7 @@ import Pebbles.Instructions.RV32_I
 import Pebbles.Instructions.RV32_M
 import Pebbles.Instructions.RV32_A
 import Pebbles.Instructions.Mnemonics
-import Pebbles.Instructions.RV32_xCHERI
+import Pebbles.Instructions.RV32_IxCHERI
 import Pebbles.Instructions.Units.MulUnit
 import Pebbles.Instructions.Units.DivUnit
 import Pebbles.Instructions.Units.BoundsUnit
@@ -100,16 +100,15 @@ makeSIMTExecuteStage enCHERI =
     return
       ExecuteStage {
         execute = do
-          executeI (Just ins.execMulReqs) csrUnit ins.execMemReqs s
           executeM ins.execMulReqs ins.execDivReqs s
           if enCHERI
             then do
-              executeCHERI csrUnit ins.execCapMemReqs s
+              executeIxCHERI (Just ins.execMulReqs) csrUnit ins.execCapMemReqs s
               if SIMTNumSetBoundsUnits < SIMTLanes
                 then executeBoundsUnit ins.execBoundsReqs s
                 else executeSetBounds s
             else do
-              executeI_NoCap csrUnit ins.execMemReqs s
+              executeI (Just ins.execMulReqs) csrUnit ins.execMemReqs s
               executeA ins.execMemReqs s
       }
 
@@ -288,14 +287,10 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
             if config.simtCoreEnableCHERI then Just checkPCC else Nothing
         , useSharedPCC = SIMTUseSharedPCC == 1
         , decodeStage = concat
-            [ decodeI
-            , if config.simtCoreEnableCHERI
-                then decodeCHERI
-                else decodeI_NoCap
+            [ if config.simtCoreEnableCHERI
+                then decodeIxCHERI ++ decodeAxCHERI
+                else decodeI ++ decodeA
             , decodeM
-            , if config.simtCoreEnableCHERI
-                then decodeCHERI_A
-                else decodeA
             , decodeSIMT
             ]
         , executeStage =
@@ -333,7 +328,6 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
             ]
         , scalarUnitDecodeStage = concat
             [ decodeI
-            , decodeI_NoCap
             , decodeM
             , decodeSIMT
             ]
@@ -353,7 +347,6 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
                   executeI (Just scalarMulSink)
                              scalarCSRUnit scalarMemReqs s
                   executeM scalarMulSink scalarDivSink s
-                  executeI_NoCap scalarCSRUnit scalarMemReqs s
               }
         , regSpillBaseAddr = let a << b = a * 2^b in REG_SPILL_BASE
         , useLRUSpill = SIMTUseLRUSpill == 1
