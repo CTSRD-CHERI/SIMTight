@@ -157,9 +157,10 @@ makeScalarCore config inputs = mdo
                 executeCacheMgmt memReqSink s
                 if config.scalarCoreEnableCHERI
                   then do
-                    executeIxCHERI Nothing csrUnit capMemReqSink s
+                    executeIxCHERI Nothing (Just csrUnit)
+                                           (Just capMemReqSink) s
                     executeSetBounds s
-                  else executeI Nothing csrUnit memReqSink s
+                  else executeI Nothing (Just csrUnit) (Just memReqSink) s
             }
         , trapCSRs = trapRegs
         , checkPCCFunc =

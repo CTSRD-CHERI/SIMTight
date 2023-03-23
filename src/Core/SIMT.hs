@@ -103,12 +103,14 @@ makeSIMTExecuteStage enCHERI =
           executeM ins.execMulReqs ins.execDivReqs s
           if enCHERI
             then do
-              executeIxCHERI (Just ins.execMulReqs) csrUnit ins.execCapMemReqs s
+              executeIxCHERI (Just ins.execMulReqs) (Just csrUnit)
+                             (Just ins.execCapMemReqs) s
               if SIMTNumSetBoundsUnits < SIMTLanes
                 then executeBoundsUnit ins.execBoundsReqs s
                 else executeSetBounds s
             else do
-              executeI (Just ins.execMulReqs) csrUnit ins.execMemReqs s
+              executeI (Just ins.execMulReqs) (Just csrUnit)
+                       (Just ins.execMemReqs) s
               executeA ins.execMemReqs s
       }
 
@@ -325,9 +327,16 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
             , BEQ, BNE, BLT, BLTU, BGE, BGEU
             , MUL, DIV
             , SIMT_PUSH, SIMT_POP
-            ]
+            ] ++ if config.simtCoreEnableCHERI
+                   then [ CGetPerm, CGetType, CGetBase, CGetLen
+                        , CGetTag, CGetSealed, CGetFlags, CGetAddr
+                        , CAndPerm, CSetFlags, CSetAddr, CIncOffset
+                        , CSetBounds, CSetBoundsExact, CRRL, CRAM
+                        , CMove, CClearTag, CSpecialRW, CSealEntry
+                        ]
+                   else []
         , scalarUnitDecodeStage = concat
-            [ decodeI
+            [ if config.simtCoreEnableCHERI then decodeIxCHERI else decodeI
             , decodeM
             , decodeSIMT
             ]
@@ -335,17 +344,16 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
             if enScalarUnit && SIMTEnableAffineScalarisation == 1
               then Just ADD else Nothing
         , scalarUnitExecuteStage = \s -> do
-            -- CSRs not supported in scalar unit
-            let scalarCSRUnit = nullCSRUnit
- 
-            -- Memory access not supported in scalar unit
-            let scalarMemReqs = nullSink
-
             return
               ExecuteStage {
                 execute = do
-                  executeI (Just scalarMulSink)
-                             scalarCSRUnit scalarMemReqs s
+                  if config.simtCoreEnableCHERI
+                    then do
+                      executeIxCHERI (Just scalarMulSink)
+                                     Nothing Nothing s
+                      executeSetBounds s
+                    else executeI (Just scalarMulSink)
+                                  Nothing Nothing s
                   executeM scalarMulSink scalarDivSink s
               }
         , regSpillBaseAddr = let a << b = a * 2^b in REG_SPILL_BASE
