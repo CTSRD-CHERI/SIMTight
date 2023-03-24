@@ -12,13 +12,22 @@ CHERI_EN_COND = $(findstring 1, $(CHERI_EN))
 USE_CLANG ?= $(shell echo -n UseClang \
               | cpp -P -imacros $(CONFIG_H) - | xargs)
 
+# Use RV32E
+USE_RV32E ?= $(shell echo -n UseRV32E \
+              | cpp -P -imacros $(CONFIG_H) - | xargs)
+
 # RISC-V subset
 ifeq ($(CHERI_EN), 1)
   RV_ARCH = rv32imaxcheri
   RV_ABI = il32pc64
 else
-  RV_ARCH = rv32ima
-  RV_ABI = ilp32
+  ifeq ($(USE_RV32E), 1)
+    RV_ARCH = rv32ema
+    RV_ABI = ilp32e
+  else
+    RV_ARCH = rv32ima
+    RV_ABI = ilp32
+  endif
 endif
 
 ifeq ($(USE_CLANG), 1)

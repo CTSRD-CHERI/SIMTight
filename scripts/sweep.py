@@ -38,19 +38,27 @@ config["DynRegSpill"] = config["RegFileScalarisation"] + [
     ("SIMTRegFileSize", "256")
   , ("SIMTCapRegFileSize", "256")
   ]
+config["DynHalfRF"] = [
+    ("SIMTEnableRegFileScalarisation", "1")
+  , ("SIMTRegFilePreventScalarDetection", "1")
+  , ("SIMTUseLRUSpill", "1")
+  , ("SIMTRegFileSize", "1024")
+  ]
+config["StaticHalfRF"] = [
+    ("UseRV32E", "1")
+  ]
 
 # Combinations of configs that are of interest
 configCombos = [
-    ["GCC"]
-  , ["GCC", "ScalarUnit", "StoreBuffer"]
-  , ["Clang", "RegFileScalarisation"]
-  , ["Clang", "ScalarUnit"]
-  , ["Clang", "StoreBuffer"]
-  , ["Clang", "ScalarUnit", "StoreBuffer"]
-  , ["CHERI"]
+    ["Clang"]
   , ["CHERI", "RegFileScalarisation"]
-  , ["CHERI", "StoreBuffer"]
   , ["CHERI", "DynRegSpill"]
+  , ["GCC", "DynHalfRF"]
+  , ["GCC", "StaticHalfRF"]
+  , ["CHERI", "StoreBuffer"]
+  , ["CHERI", "ScalarUnit"]
+  , ["Clang", "DynRegSpill", "StoreBuffer", "ScalarUnit"]
+  , ["CHERI", "DynRegSpill", "StoreBuffer", "ScalarUnit"]
   ]
 
 # Get directory containing script
