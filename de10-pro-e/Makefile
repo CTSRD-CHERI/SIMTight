@@ -1,5 +1,5 @@
 SIMTIGHT_ROOT ?= $(realpath ..)
-NUM_SEEDS ?= 4
+NUM_SEEDS ?= 8
 PEBBLES_CABLE_ID ?= 1
 QPF = DE10_Pro.qpf
 
