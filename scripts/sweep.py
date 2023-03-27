@@ -35,8 +35,8 @@ config["StoreBuffer"] = config["RegFileScalarisation"] + [
     ("SIMTEnableSVStoreBuffer", "1")
   ]
 config["DynRegSpill"] = config["RegFileScalarisation"] + [
-    ("SIMTRegFileSize", "256")
-  , ("SIMTCapRegFileSize", "256")
+    ("SIMTRegFileSize", "512")
+  , ("SIMTCapRegFileSize", "192")
   ]
 config["DynHalfRF"] = [
     ("SIMTEnableRegFileScalarisation", "1")
@@ -53,12 +53,16 @@ configCombos = [
     ["Clang"]
   , ["CHERI", "RegFileScalarisation"]
   , ["CHERI", "DynRegSpill"]
-  , ["GCC", "DynHalfRF"]
-  , ["GCC", "StaticHalfRF"]
   , ["CHERI", "StoreBuffer"]
   , ["CHERI", "ScalarUnit"]
   , ["Clang", "DynRegSpill", "StoreBuffer", "ScalarUnit"]
   , ["CHERI", "DynRegSpill", "StoreBuffer", "ScalarUnit"]
+  ]
+
+# Config combos of interest when benchmarking only
+benchCombos = [
+    ["GCC", "DynHalfRF"]
+  , ["GCC", "StaticHalfRF"]
   ]
 
 # Get directory containing script
@@ -99,6 +103,7 @@ elif sys.argv[1] == "synth":
   # Remove old log file
   os.chdir(repoDir + "/de10-pro")
   os.system("rm -f synth.log")
+  os.system("rm -rf Synth-*")
   # Synthesise each combination using quartus DSE
   for combo in configCombos:
     name = "Baseline" if combo == [] else "+".join(combo)
@@ -110,19 +115,24 @@ elif sys.argv[1] == "synth":
     os.system("make > /dev/null")
     os.chdir(repoDir + "/de10-pro")
     os.system("./prepare_dse.sh")
-    os.system("make many > /dev/null")
+    os.system('BLC_FLAGS="enable-namer-plugin" make many > /dev/null')
     # Save report
     os.system("echo >> synth.log")
     os.system("echo ====== " + name + " ====== >> synth.log")
     os.system("echo >> synth.log")
     os.system("make report | grep -v 'Info:' >> synth.log")
+    os.system("mkdir -p Synth-" + name)
+    os.system("find dse/*" +
+              " | grep DE10_Pro.fit.place.rpt" +
+              " | tr '/' '_'" +
+              " | xargs -i cp {} Synth-" + name)
   clean()
 elif sys.argv[1] == "bench":
   # Remove old log file
   os.chdir(repoDir + "/test")
   os.system("rm -f bench.log")
-  # Test each combination in simulation
-  for combo in configCombos:
+  # Benchmark each combination in simulation
+  for combo in (configCombos + benchCombos):
     name = "Baseline" if combo == [] else "+".join(combo)
     print("Config: " + name)
     clean()
