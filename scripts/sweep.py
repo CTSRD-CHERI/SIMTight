@@ -147,7 +147,7 @@ elif sys.argv[1] == "bench":
     os.system("echo >> bench.log")
     os.system("echo ====== " + name + " ====== >> bench.log")
     os.system("echo >> bench.log")
-    os.system("./test.sh --fpga-e --stats >> bench.log")
+    os.system("./test.sh --fpga-e --stats --apps-only >> bench.log")
 else:
   printUsage()
   sys.exit(-1)

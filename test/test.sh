@@ -181,8 +181,19 @@ if [ "$TestFPGA" != "" ]; then
   # Program FPGA
   if [ "$NoPgm" == "" ]; then
     echo -n "Programming FPGA: "
-    make -s -C ../$QPROG download-sof > /dev/null
-    assert $?
+    RETRY=0
+    while true; do
+      make -s -C ../$QPROG download-sof > /dev/null
+      if [ "$?" == "0" ]; then
+        break
+      fi
+      if [ "$RETRY" == "5" ]; then
+        echo "Failed to program FPGA"
+        exit -1
+      fi
+      RETRY=$(($RETRY+1))
+      sleep 10
+    done
   fi
   echo
 fi
