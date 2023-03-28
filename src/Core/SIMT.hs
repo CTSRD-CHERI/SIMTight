@@ -316,7 +316,9 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
         , simtPushTag = SIMT_PUSH
         , simtPopTag = SIMT_POP
         , useRegFileScalarisation = SIMTEnableRegFileScalarisation == 1
-        , useCapRegFileScalarisation = SIMTEnableCapRegFileScalarisation == 1
+        , useCapRegFileScalarisation =
+               config.simtCoreEnableCHERI
+            && SIMTEnableCapRegFileScalarisation == 1
         , useAffineScalarisation = SIMTEnableAffineScalarisation == 1
         , useScalarUnit = enScalarUnit
         , scalarUnitAllowList =

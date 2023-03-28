@@ -115,7 +115,7 @@ elif sys.argv[1] == "synth":
     os.system("make > /dev/null")
     os.chdir(repoDir + "/de10-pro")
     os.system("./prepare_dse.sh")
-    os.system('BLC_FLAGS="enable-namer-plugin" make many > /dev/null')
+    os.system('make many > /dev/null')
     # Save report
     os.system("echo >> synth.log")
     os.system("echo ====== " + name + " ====== >> synth.log")
