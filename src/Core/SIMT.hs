@@ -342,9 +342,17 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
             , decodeM
             , decodeSIMT
             ]
-        , scalarUnitAffineAdder =
+        , scalarUnitAffineAdd =
             if enScalarUnit && SIMTEnableAffineScalarisation == 1
               then Just ADD else Nothing
+        , scalarUnitAffineCMove =
+            if config.simtCoreEnableCHERI &&
+                 enScalarUnit && SIMTEnableAffineScalarisation == 1
+              then Just CMove else Nothing
+        , scalarUnitAffineCIncOffset =
+            if config.simtCoreEnableCHERI &&
+                 enScalarUnit && SIMTEnableAffineScalarisation == 1
+              then Just CIncOffset else Nothing
         , scalarUnitExecuteStage = \s -> do
             return
               ExecuteStage {

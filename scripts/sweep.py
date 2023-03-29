@@ -124,8 +124,7 @@ elif sys.argv[1] == "synth":
     os.system("mkdir -p Synth-" + name)
     os.system("find dse/*" +
               " | grep DE10_Pro.fit.place.rpt" +
-              " | tr '/' '_'" +
-              " | xargs -i cp {} Synth-" + name)
+              " | xargs -i cp --parents {} Synth-" + name)
   clean()
 elif sys.argv[1] == "bench":
   # Remove old log file
