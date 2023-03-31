@@ -81,6 +81,9 @@ NOTE("Use LRU register spilling policy based on approx mean reg usage")
 NOTE("For LRU spill, how many bits to use for mean?")
 #define SIMTRegCountBits 8
 
+NOTE("Use round-robin register spilling policy")
+#define SIMTUseRRSpill 0
+
 NOTE("Prevent scalar detection in scalarising reg file")
 #define SIMTRegFilePreventScalarDetection 0
 
