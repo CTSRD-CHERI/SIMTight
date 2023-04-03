@@ -144,6 +144,12 @@ NOTE("Use shared immutable PCC meta-data for all threads in kernel?")
 NOTE("Number of bounds-setting units")
 #define SIMTNumSetBoundsUnits 1
 
+NOTE("Use shared vector scratchpad between int and cap reg files?")
+#define SIMTUseSharedVecScratchpad 0
+
+NOTE("When using shared vector spad, this is the spill threshold for caps")
+#define SIMTSharedVecSpadCapThreshold 192
+
 NOTE("Compiler")
 NOTE("========")
 

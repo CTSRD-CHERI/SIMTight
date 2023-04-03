@@ -369,6 +369,8 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
         , regSpillBaseAddr = let a << b = a * 2^b in REG_SPILL_BASE
         , useLRUSpill = SIMTUseLRUSpill == 1
         , useRRSpill = SIMTUseRRSpill == 1
+        , useSharedVectorScratchpad =
+           SIMTUseSharedVecScratchpad == 1
         }
 
   -- Pipeline instantiation
