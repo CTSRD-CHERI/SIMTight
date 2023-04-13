@@ -35,8 +35,9 @@ config["StoreBuffer"] = config["RegFileScalarisation"] + [
     ("SIMTEnableSVStoreBuffer", "1")
   ]
 config["DynRegSpill"] = config["RegFileScalarisation"] + [
-    ("SIMTRegFileSize", "512")
-  , ("SIMTCapRegFileSize", "192")
+    ("SIMTRegFileSize", "1024")
+  , ("SIMTCapRegFileSize", "1024")
+  , ("SIMTUseSharedVecScratchpad", "1")
   ]
 config["DynHalfRF"] = [
     ("SIMTEnableRegFileScalarisation", "1")

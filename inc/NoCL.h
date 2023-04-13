@@ -402,8 +402,9 @@ template <typename K> __attribute__ ((noinline))
     printStat("Retries: ", STAT_SIMT_RETRIES);
 
     #if SIMTEnableRegFileScalarisation
-      // Get max number of vector registers used
+      // Get number of vector registers used
       printStat("MaxVecRegs: ", STAT_SIMT_MAX_VEC_REGS);
+      printStat("TotalVecRegs: ", STAT_SIMT_TOTAL_VEC_REGS);
       #if SIMTEnableScalarUnit
         // Get number of instrs executed on scalar unit
         printStat("ScalarisedInstrs: ", STAT_SIMT_SCALARISABLE_INSTRS);
@@ -418,8 +419,9 @@ template <typename K> __attribute__ ((noinline))
     #endif
 
     #if SIMTEnableCapRegFileScalarisation
-      // Get max number of vector registers used
+      // Get number of vector registers used
       printStat("MaxCapVecRegs: ", STAT_SIMT_MAX_CAP_VEC_REGS);
+      printStat("TotalCapVecRegs: ", STAT_SIMT_TOTAL_CAP_VEC_REGS);
     #endif
 
     // Get number of DRAM accesses

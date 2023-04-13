@@ -267,6 +267,8 @@ checkApp() {
   local INSTRS=$(getStat "Instrs" "sum")
   local VEC_REGS=$(getStat "MaxVecRegs" "max")
   local CAP_VEC_REGS=$(getStat "MaxCapVecRegs" "max")
+  local TOTAL_VEC_REGS=$(getStat "TotalVecRegs" "sum")
+  local TOTAL_CAP_VEC_REGS=$(getStat "TotalCapVecRegs" "sum")
   local SCALARISABLE=$(getStat "ScalarisableInstrs" "sum")
   local SCALARISED=$(getStat "ScalarisedInstrs" "sum")
   local RETRIES=$(getStat "Retries" "sum")
@@ -277,10 +279,16 @@ checkApp() {
   local IPC=$(python3 -c "print('%.2f' % (float(${INSTRS}) / ${CYCLES}))")
   local OPTIONAL_STATS=""
   if [ "$VEC_REGS" != "" ]; then
-    OPTIONAL_STATS="$OPTIONAL_STATS,VecRegs=$VEC_REGS"
+    OPTIONAL_STATS="$OPTIONAL_STATS,MaxVecRegs=$VEC_REGS"
   fi
   if [ "$CAP_VEC_REGS" != "" ]; then
-    OPTIONAL_STATS="$OPTIONAL_STATS,CapVecRegs=$CAP_VEC_REGS"
+    OPTIONAL_STATS="$OPTIONAL_STATS,MaxCapVecRegs=$CAP_VEC_REGS"
+  fi
+  if [ "$TOTAL_VEC_REGS" != "" ]; then
+    OPTIONAL_STATS="$OPTIONAL_STATS,TotalVecRegs=$TOTAL_VEC_REGS"
+  fi
+  if [ "$TOTAL_CAP_VEC_REGS" != "" ]; then
+    OPTIONAL_STATS="$OPTIONAL_STATS,TotalCapVecRegs=$TOTAL_CAP_VEC_REGS"
   fi
   if [ "$SCALARISABLE" != "" ]; then
     OPTIONAL_STATS="$OPTIONAL_STATS,ScalarisableInstrs=$SCALARISABLE"

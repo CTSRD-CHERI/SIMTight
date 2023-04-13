@@ -87,6 +87,9 @@ NOTE("Use round-robin register spilling policy")
 NOTE("Prevent scalar detection in scalarising reg file")
 #define SIMTRegFilePreventScalarDetection 0
 
+NOTE("Total vector count sample rate")
+#define SIMTTotalVecCountSampleRate 2048
+
 NOTE("CPU configuration")
 NOTE("=================")
 
