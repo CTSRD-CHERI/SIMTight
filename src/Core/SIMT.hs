@@ -32,6 +32,7 @@ import Pebbles.Pipeline.SIMT.Management
 import Pebbles.Pipeline.Interface
 import Pebbles.Memory.Interface
 import Pebbles.Memory.CapSerDes
+import Pebbles.Memory.CoalescingUnit
 import Pebbles.Memory.DRAM.Interface
 import Pebbles.Instructions.RV32_I
 import Pebbles.Instructions.RV32_M
@@ -149,9 +150,11 @@ makeSIMTCore ::
      -- ^ Memory responses
   -> DRAMStatSigs
      -- ^ For DRAM stat counters
+  -> CoalUnitPerfStats
+     -- ^ For coalescing unit stats 
   -> Module (Stream SIMTResp)
      -- ^ SIMT management responses
-makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
+makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
 
   -- Scalar unit enabled?
   let enScalarUnit = SIMTEnableScalarUnit == 1
@@ -382,6 +385,7 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
     , simtScalarResumeReqs = toStream scalarResumeQueue
     , simtDRAMStatSigs = dramStatSigs
     , simtMemReqs = fromList memReqSinks
+    , simtCoalStats = coalStats
     }
 
   return pipelineOuts.simtMgmtResps

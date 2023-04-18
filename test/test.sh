@@ -276,6 +276,10 @@ checkApp() {
   local SCALAR_SUSPS=$(getStat "ScalarSusps" "sum")
   local SCALAR_ABORTS=$(getStat "ScalarAborts" "sum")
   local DRAM_ACCS=$(getStat "DRAMAccs" "sum")
+  local SB_LOAD_HIT=$(getStat "SBLoadHit" "sum")
+  local SB_LOAD_MISS=$(getStat "SBLoadMiss" "sum")
+  local SB_CAP_LOAD_HIT=$(getStat "SBCapLoadHit" "sum")
+  local SB_CAP_LOAD_MISS=$(getStat "SBCapLoadMiss" "sum")
   local IPC=$(python3 -c "print('%.2f' % (float(${INSTRS}) / ${CYCLES}))")
   local OPTIONAL_STATS=""
   if [ "$VEC_REGS" != "" ]; then
@@ -307,6 +311,18 @@ checkApp() {
   fi
   if [ "$SCALAR_ABORTS" != "" ]; then
     OPTIONAL_STATS="$OPTIONAL_STATS,ScalarAborts=$SCALAR_ABORTS"
+  fi
+  if [ "$SB_LOAD_HIT" != "" ]; then
+    OPTIONAL_STATS="$OPTIONAL_STATS,SBLoadHit=$SB_LOAD_HIT"
+  fi
+  if [ "$SB_LOAD_MISS" != "" ]; then
+    OPTIONAL_STATS="$OPTIONAL_STATS,SBLoadMiss=$SB_LOAD_MISS"
+  fi
+  if [ "$SB_CAP_LOAD_HIT" != "" ]; then
+    OPTIONAL_STATS="$OPTIONAL_STATS,SBCapLoadHit=$SB_CAP_LOAD_HIT"
+  fi
+  if [ "$SB_CAP_LOAD_MISS" != "" ]; then
+    OPTIONAL_STATS="$OPTIONAL_STATS,SBCapLoadMiss=$SB_CAP_LOAD_MISS"
   fi
   if [ "$EmitStats" != "" ]; then
     test "$OK" != ""
