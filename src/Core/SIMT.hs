@@ -374,6 +374,7 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
         , useRRSpill = SIMTUseRRSpill == 1
         , useSharedVectorScratchpad =
            SIMTUseSharedVecScratchpad == 1
+        , usesCap = instrsThatUseCapMetaData
         }
 
   -- Pipeline instantiation
