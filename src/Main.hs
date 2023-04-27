@@ -310,7 +310,7 @@ makeSIMTMemSubsystem dramResps = mdo
     -- SRAM-related addresses
     simtStacksStart = 2 ^ (DRAMAddrWidth + DRAMBeatLogBytes) -
       2 ^ (SIMTLogLanes + SIMTLogWarps + SIMTLogBytesPerStack)
-    sramSize = 2 ^ (SIMTLogLanes + SIMTLogWordsPerSRAMBank+2)
+    sramSize = 2 ^ (SIMTLogSRAMBanks + SIMTLogWordsPerSRAMBank+2)
     sramBase = simtStacksStart - sramSize
 
     -- Determine if request maps to banked SRAMs

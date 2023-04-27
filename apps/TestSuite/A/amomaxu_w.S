@@ -20,7 +20,7 @@ RVTEST_CODE_BEGIN
   #define ADDR (\
     1 << (DRAMAddrWidth + DRAMBeatLogBytes) - \
     1 << (SIMTLogLanes + SIMTLogWarps + SIMTLogBytesPerStack) - \
-    1 << (SIMTLogLanes + SIMTLogWordsPerSRAMBank + 2))
+    1 << (SIMTLogSRAMBanks + SIMTLogWordsPerSRAMBank + 2))
 
   # Use only a single thread for this test
   csrrw t3, 0xf14, zero
