@@ -12,8 +12,8 @@ featuring:
   * Parallel scalar/vector pipelines, exploiting scalarisation for
     increased throughput
   * Register file and store buffer compression, exploiting scalarisation for
-    reduced onchip storage and energy
-  * Eliminates register size and spill overhead of CHERI almost entirely
+    reduced on-chip storage and energy
+  * Significantly reduces register size and spill overhead of CHERI
   * Runs [CUDA-like C++ library](doc/NoCL.md) and [benchmark suite](apps/)
     (in pure capability mode)
   * Implemented in Haskell using the
@@ -29,16 +29,14 @@ part of the UKRI's Digital Security by Design programme.
 
 ## Default SoC
 
-The default SIMTight SoC consists of a host CPU and a 32-lane
-64-warp GPGPU sharing DRAM, both supporting the CHERI-RISC-V ISA.
+The default SIMTight SoC consists of a host CPU and a 32-lane 64-warp
+GPGPU sharing DRAM, both supporting the CHERI-RISC-V ISA.  A sample
+project is included for the [DE10-Pro](http://de10-pro.terasic.com)
+([revD](de10-pro/) and [revE](de10-pro-e/)) FPGA development board.
 
 <div style="text-align: center;" align="center">
 <img src="doc/SoC.svg" width="450">
 </div>
-
-A sample project is included for the
-[DE10-Pro](http://de10-pro.terasic.com) ([revD](de10-pro/) and
-[revE](de10-pro-e/)) FPGA development board.
 
 ## Build instructions
 
@@ -211,6 +209,15 @@ least-recently-used. To enable the latter:
 
   * `#define SIMTUseLRUSpill 1`
 
+When CHERI is enabled, it's possible to share vector register memory
+between the integer and capability meta-data register files.  
+
+  * `#define SIMTUseSharedVecScratchpad 1`
+
+In this case, both register file sizes must be defined the same.  This
+option causes a one cycle pipeline bubble when loading a capability
+meta-data vector from the register file.
+
 SIMTight also supports an experimental _scalarised vector store
 buffer_ to reduce the cost of compiler-inserted register spills (as
 opposed to hardware-inserted dynamic spills), at low hardware cost,
@@ -218,7 +225,7 @@ which can be enabled as follows.
 
   * `#define SIMTEnableSVStoreBuffer 1`
 
-As well as reducing onchip storage, scalarisation is also exploited to
+As well as reducing on-chip storage, scalarisation is also exploited to
 improve runtime performance: enabling a scalar pipeline in the SIMT
 core allows an entire warp to be executed on a single execution unit
 in a single cycle (when the instruction is detected as scalarisable),
