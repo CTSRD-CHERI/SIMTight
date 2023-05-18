@@ -323,6 +323,8 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
                config.simtCoreEnableCHERI
             && SIMTEnableCapRegFileScalarisation == 1
         , useAffineScalarisation = SIMTEnableAffineScalarisation == 1
+        , usePartialScalarisationInt = SIMTEnablePartialScalarisationInt == 1
+        , usePartialScalarisationCap = SIMTEnablePartialScalarisationCap == 1
         , useScalarUnit = enScalarUnit
         , scalarUnitAllowList =
             [ ADD, SUB, SLT, SLTU, AND, OR, XOR

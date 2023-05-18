@@ -1,7 +1,7 @@
 # SIMTight
 
-SIMTight is an FPGA-optimised implementation of the _Single
-Instruction Multiple Threads (SIMT)_ model popularised by NVIDIA GPUs,
+SIMTight is a fully synthesisable GPGPU implementing the _Single
+Instruction Multiple Threads (SIMT)_ model popularised by NVIDIA,
 featuring:
 
   * RISC-V instruction set (RV32IMAxCHERI) 
@@ -184,12 +184,9 @@ These options alone only enable scalarisation of uniform vectors.  To
 enable scalariastion of affine vectors, apply the following settings
 
   * `#define SIMTEnableAffineScalarisation 1`
-  * `#define SIMTAffineScalarisationBits 4`
 
-The second of these parameters defines the number of bits used to
-represent the constant stride between vector elements.  Note that
-affine scalarisation is never used in the register file holding
-capability meta-data, where it wouldn't make much sense.
+Note that affine scalarisation is not used in the register file
+holding capability meta-data, regardless of this setting.
 
 SIMTight exploits scalarisation to reduce register file storage
 requirements. Hence, it is desirable to set the number of physical
