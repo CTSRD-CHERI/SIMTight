@@ -1,6 +1,6 @@
 # SIMTight
 
-SIMTight is an FPGA-optimised implementation of the _Single
+SIMTight is a fully synthesisable GPGPU implementing the _Single
 Instruction Multiple Threads (SIMT)_ model popularised by NVIDIA GPUs,
 featuring:
 
@@ -30,9 +30,10 @@ part of the UKRI's Digital Security by Design programme.
 ## Default SoC
 
 The default SIMTight SoC consists of a host CPU and a 32-lane 64-warp
-GPGPU sharing DRAM, both supporting the CHERI-RISC-V ISA.  A sample
-project is included for the [DE10-Pro](http://de10-pro.terasic.com)
-([revD](de10-pro/) and [revE](de10-pro-e/)) FPGA development board.
+streaming multiprocessor sharing DRAM, both supporting the
+CHERI-RISC-V ISA.  A sample project is included for the
+[DE10-Pro](http://de10-pro.terasic.com) ([revD](de10-pro/) and
+[revE](de10-pro-e/)) FPGA development board.
 
 <div style="text-align: center;" align="center">
 <img src="doc/SoC.svg" width="450">
