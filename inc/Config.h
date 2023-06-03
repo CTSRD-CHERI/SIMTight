@@ -81,6 +81,15 @@ NOTE("Use LRU register spilling policy based on approx mean reg usage")
 NOTE("For LRU spill, how many bits to use for mean?")
 #define SIMTRegCountBits 8
 
+NOTE("Use round-robin register spilling policy")
+#define SIMTUseRRSpill 0
+
+NOTE("Prevent scalar detection in scalarising reg file")
+#define SIMTRegFilePreventScalarDetection 0
+
+NOTE("Total vector count sample rate")
+#define SIMTTotalVecCountSampleRate 2048
+
 NOTE("CPU configuration")
 NOTE("=================")
 
@@ -133,16 +142,25 @@ NOTE("Size of scalarising capability register file (number of vectors)")
 #define SIMTCapRegFileSize 2048
 
 NOTE("Use shared immutable PCC meta-data for all threads in kernel?")
-#define SIMTUseSharedPCC 1
+#define SIMTUseSharedPCC 0
 
 NOTE("Number of bounds-setting units")
-#define SIMTNumSetBoundsUnits SIMTLanes
+#define SIMTNumSetBoundsUnits 1
+
+NOTE("Use shared vector scratchpad between int and cap reg files?")
+#define SIMTUseSharedVecScratchpad 0
+
+NOTE("When using shared vector spad, this is the spill threshold for caps")
+#define SIMTSharedVecSpadCapThreshold 192
 
 NOTE("Compiler")
 NOTE("========")
 
 NOTE("Use clang rather than gcc? (Currently required if CHERI enabled)")
 #define UseClang 0
+
+NOTE("Tell compiler to use 16 regs instead of 32?")
+#define UseRV32E 0
 
 NOTE("Memory map")
 NOTE("==========")

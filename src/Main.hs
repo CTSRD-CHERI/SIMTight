@@ -180,10 +180,12 @@ makeSIMTDomain (clk, rst) =
 
     -- SIMT core
     simtMgmtResps <-
-      makeSIMTAccelerator simtMgmtReqs memReqs memResps dramStatSigs
+      makeSIMTAccelerator simtMgmtReqs memReqs memResps
+                          dramStatSigs coalPerfStats
 
     -- SIMT memory subsystem
-    (memReqs, memResps, dramReqs1) <- makeSIMTMemSubsystem dramResps1
+    (memReqs, memResps, dramReqs1, coalPerfStats) <-
+      makeSIMTMemSubsystem dramResps1
 
     -- DRAM bus
     ((dramResps0, dramResps1), dramReqs) <-
@@ -239,7 +241,8 @@ makeSIMTMemSubsystem ::
                    , Vec SIMTLanes (Option MemReq)
                    , Option (ScalarVal 33) )
             , Source (SIMTPipelineInstrInfo, Vec SIMTLanes (Option MemResp))
-            , Stream (DRAMReq ()) )
+            , Stream (DRAMReq ())
+            , CoalUnitPerfStats )
 makeSIMTMemSubsystem dramResps = mdo
     -- Memory request queue
     memReqsQueue :: Queue (SIMTPipelineInstrInfo,
@@ -273,7 +276,7 @@ makeSIMTMemSubsystem dramResps = mdo
           , isSRAMAccess      = isBankedSRAMAccess
           , canBuffer         = isStackAccess
           }
-    (memResps, sramReqs, dramReqs) <-
+    (memResps, sramReqs, dramReqs, coalPerfStats) <-
       makeSIMTCoalescingUnit coalUnitOpts
         memReqs1 dramResps sramResps
 
@@ -301,13 +304,13 @@ makeSIMTMemSubsystem dramResps = mdo
       then error "SRAM base address not suitably aligned"
       else return ()
 
-    return (toSink memReqsQueue, memResps1, dramReqs)
+    return (toSink memReqsQueue, memResps1, dramReqs, coalPerfStats)
 
   where
     -- SRAM-related addresses
     simtStacksStart = 2 ^ (DRAMAddrWidth + DRAMBeatLogBytes) -
       2 ^ (SIMTLogLanes + SIMTLogWarps + SIMTLogBytesPerStack)
-    sramSize = 2 ^ (SIMTLogLanes + SIMTLogWordsPerSRAMBank+2)
+    sramSize = 2 ^ (SIMTLogSRAMBanks + SIMTLogWordsPerSRAMBank+2)
     sramBase = simtStacksStart - sramSize
 
     -- Determine if request maps to banked SRAMs

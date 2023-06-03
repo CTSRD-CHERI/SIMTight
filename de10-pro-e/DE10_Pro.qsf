@@ -1735,3 +1735,5 @@ set_global_assignment -name SEARCH_PATH ../pebbles/src/CHERI/Verilog/
 set_global_assignment -name SEED 2
 set_global_assignment -name IP_FILE ../pebbles/blarney/blarney-vendor-ip/IntelFPGA/AvalonStreamClockCrosser/AvalonStreamClockCrosser.ip
 set_global_assignment -name VERILOG_FILE ../pebbles/blarney/blarney-vendor-ip/IntelFPGA/PipelinedDivider/PipelinedDivider.v
+set_global_assignment -name OPTIMIZATION_MODE "SUPERIOR PERFORMANCE WITH MAXIMUM PLACEMENT EFFORT"
+set_global_assignment -name FAST_PRESERVE OFF -entity DE10_Pro

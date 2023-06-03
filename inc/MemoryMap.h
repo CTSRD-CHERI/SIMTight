@@ -19,7 +19,7 @@ NOTE("These stacks appear at the end of DRAM")
 
 NOTE("Sum of sizes of banked SRAMs")
 #define BANKED_SRAMS_SIZE \
-  (1 << (SIMTLogLanes + SIMTLogWordsPerSRAMBank+2))
+  (1 << (SIMTLogSRAMBanks + SIMTLogWordsPerSRAMBank+2))
 
 NOTE("SIMT local memory is toward the end of DRAM, before the SIMT stacks")
 #define LOCAL_MEM_BASE (DRAM_SIZE - SIMT_STACKS_SIZE - BANKED_SRAMS_SIZE)

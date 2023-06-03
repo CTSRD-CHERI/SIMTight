@@ -296,7 +296,7 @@ https://fpgasoftware.intel.com/eula.-->
         <ipxact:parameter parameterId="clockRate" type="longint">
           <ipxact:name>clockRate</ipxact:name>
           <ipxact:displayName>Clock rate</ipxact:displayName>
-          <ipxact:value>200000000</ipxact:value>
+          <ipxact:value>175000000</ipxact:value>
         </ipxact:parameter>
         <ipxact:parameter parameterId="clockRateKnown" type="bit">
           <ipxact:name>clockRateKnown</ipxact:name>
@@ -1157,7 +1157,7 @@ https://fpgasoftware.intel.com/eula.-->
         <ipxact:parameter parameterId="gui_output_clock_frequency2" type="real">
           <ipxact:name>gui_output_clock_frequency2</ipxact:name>
           <ipxact:displayName>Desired Frequency</ipxact:displayName>
-          <ipxact:value>200.0</ipxact:value>
+          <ipxact:value>175.0</ipxact:value>
         </ipxact:parameter>
         <ipxact:parameter parameterId="gui_output_clock_frequency3" type="real">
           <ipxact:name>gui_output_clock_frequency3</ipxact:name>
@@ -1247,7 +1247,7 @@ https://fpgasoftware.intel.com/eula.-->
         <ipxact:parameter parameterId="gui_output_clock_frequency_ps2" type="real">
           <ipxact:name>gui_output_clock_frequency_ps2</ipxact:name>
           <ipxact:displayName>Desired Frequency</ipxact:displayName>
-          <ipxact:value>5000.0</ipxact:value>
+          <ipxact:value>5714.286</ipxact:value>
         </ipxact:parameter>
         <ipxact:parameter parameterId="gui_output_clock_frequency_ps3" type="real">
           <ipxact:name>gui_output_clock_frequency_ps3</ipxact:name>
@@ -1997,7 +1997,7 @@ https://fpgasoftware.intel.com/eula.-->
                     &lt;/entry&gt;
                     &lt;entry&gt;
                         &lt;key&gt;clockRate&lt;/key&gt;
-                        &lt;value&gt;200000000&lt;/value&gt;
+                        &lt;value&gt;175000000&lt;/value&gt;
                     &lt;/entry&gt;
                     &lt;entry&gt;
                         &lt;key&gt;clockRateKnown&lt;/key&gt;
@@ -2055,7 +2055,7 @@ https://fpgasoftware.intel.com/eula.-->
                 &lt;consumedSystemInfos&gt;
                     &lt;entry&gt;
                         &lt;key&gt;CLOCK_RATE&lt;/key&gt;
-                        &lt;value&gt;200000000&lt;/value&gt;
+                        &lt;value&gt;175000000&lt;/value&gt;
                     &lt;/entry&gt;
                 &lt;/consumedSystemInfos&gt;
             &lt;/value&gt;

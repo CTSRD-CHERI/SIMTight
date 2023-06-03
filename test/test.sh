@@ -181,8 +181,19 @@ if [ "$TestFPGA" != "" ]; then
   # Program FPGA
   if [ "$NoPgm" == "" ]; then
     echo -n "Programming FPGA: "
-    make -s -C ../$QPROG download-sof > /dev/null
-    assert $?
+    RETRY=0
+    while true; do
+      make -s -C ../$QPROG download-sof > /dev/null
+      if [ "$?" == "0" ]; then
+        break
+      fi
+      if [ "$RETRY" == "5" ]; then
+        echo "Failed to program FPGA"
+        exit -1
+      fi
+      RETRY=$(($RETRY+1))
+      sleep 10
+    done
   fi
   echo
 fi
@@ -231,11 +242,12 @@ fi
 # ===========
 
 # Function to extract stat count from program output
+# Parameterised by reduction function
 function getStat() {
   if grep -E ^$1: $tmpLog > /dev/null; then
     local N=$(grep -E ^$1: $tmpLog | \
       cut -d' ' -f2 | \
-      python3 -c 'import sys; print(sum((int(l, 16) for l in sys.stdin)))')
+      python3 -c "import sys; print($2((int(l, 16) for l in sys.stdin)))")
     echo "$N"
   else
     echo ""
@@ -251,24 +263,36 @@ checkApp() {
   local tmpLog=$tmpDir/$APP_MANGLED.log
   $(cd ../apps/$APP && $Run > $tmpLog)
   local OK=$(grep "Self test: PASSED" $tmpLog)
-  local CYCLES=$(getStat "Cycles")
-  local INSTRS=$(getStat "Instrs")
-  local VEC_REGS=$(getStat "MaxVecRegs")
-  local CAP_VEC_REGS=$(getStat "MaxCapVecRegs")
-  local SCALARISABLE=$(getStat "ScalarisableInstrs")
-  local SCALARISED=$(getStat "ScalarisedInstrs")
-  local RETRIES=$(getStat "Retries")
-  local SUSPS=$(getStat "Susps")
-  local SCALAR_SUSPS=$(getStat "ScalarSusps")
-  local SCALAR_ABORTS=$(getStat "ScalarAborts")
-  local DRAM_ACCS=$(getStat "DRAMAccs")
+  local CYCLES=$(getStat "Cycles" "sum")
+  local INSTRS=$(getStat "Instrs" "sum")
+  local VEC_REGS=$(getStat "MaxVecRegs" "max")
+  local CAP_VEC_REGS=$(getStat "MaxCapVecRegs" "max")
+  local TOTAL_VEC_REGS=$(getStat "TotalVecRegs" "sum")
+  local TOTAL_CAP_VEC_REGS=$(getStat "TotalCapVecRegs" "sum")
+  local SCALARISABLE=$(getStat "ScalarisableInstrs" "sum")
+  local SCALARISED=$(getStat "ScalarisedInstrs" "sum")
+  local RETRIES=$(getStat "Retries" "sum")
+  local SUSPS=$(getStat "Susps" "sum")
+  local SCALAR_SUSPS=$(getStat "ScalarSusps" "sum")
+  local SCALAR_ABORTS=$(getStat "ScalarAborts" "sum")
+  local DRAM_ACCS=$(getStat "DRAMAccs" "sum")
+  local SB_LOAD_HIT=$(getStat "SBLoadHit" "sum")
+  local SB_LOAD_MISS=$(getStat "SBLoadMiss" "sum")
+  local SB_CAP_LOAD_HIT=$(getStat "SBCapLoadHit" "sum")
+  local SB_CAP_LOAD_MISS=$(getStat "SBCapLoadMiss" "sum")
   local IPC=$(python3 -c "print('%.2f' % (float(${INSTRS}) / ${CYCLES}))")
   local OPTIONAL_STATS=""
   if [ "$VEC_REGS" != "" ]; then
-    OPTIONAL_STATS="$OPTIONAL_STATS,VecRegs=$VEC_REGS"
+    OPTIONAL_STATS="$OPTIONAL_STATS,MaxVecRegs=$VEC_REGS"
   fi
   if [ "$CAP_VEC_REGS" != "" ]; then
-    OPTIONAL_STATS="$OPTIONAL_STATS,CapVecRegs=$CAP_VEC_REGS"
+    OPTIONAL_STATS="$OPTIONAL_STATS,MaxCapVecRegs=$CAP_VEC_REGS"
+  fi
+  if [ "$TOTAL_VEC_REGS" != "" ]; then
+    OPTIONAL_STATS="$OPTIONAL_STATS,TotalVecRegs=$TOTAL_VEC_REGS"
+  fi
+  if [ "$TOTAL_CAP_VEC_REGS" != "" ]; then
+    OPTIONAL_STATS="$OPTIONAL_STATS,TotalCapVecRegs=$TOTAL_CAP_VEC_REGS"
   fi
   if [ "$SCALARISABLE" != "" ]; then
     OPTIONAL_STATS="$OPTIONAL_STATS,ScalarisableInstrs=$SCALARISABLE"
@@ -287,6 +311,18 @@ checkApp() {
   fi
   if [ "$SCALAR_ABORTS" != "" ]; then
     OPTIONAL_STATS="$OPTIONAL_STATS,ScalarAborts=$SCALAR_ABORTS"
+  fi
+  if [ "$SB_LOAD_HIT" != "" ]; then
+    OPTIONAL_STATS="$OPTIONAL_STATS,SBLoadHit=$SB_LOAD_HIT"
+  fi
+  if [ "$SB_LOAD_MISS" != "" ]; then
+    OPTIONAL_STATS="$OPTIONAL_STATS,SBLoadMiss=$SB_LOAD_MISS"
+  fi
+  if [ "$SB_CAP_LOAD_HIT" != "" ]; then
+    OPTIONAL_STATS="$OPTIONAL_STATS,SBCapLoadHit=$SB_CAP_LOAD_HIT"
+  fi
+  if [ "$SB_CAP_LOAD_MISS" != "" ]; then
+    OPTIONAL_STATS="$OPTIONAL_STATS,SBCapLoadMiss=$SB_CAP_LOAD_MISS"
   fi
   if [ "$EmitStats" != "" ]; then
     test "$OK" != ""

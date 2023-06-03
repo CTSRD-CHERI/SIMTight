@@ -402,8 +402,9 @@ template <typename K> __attribute__ ((noinline))
     printStat("Retries: ", STAT_SIMT_RETRIES);
 
     #if SIMTEnableRegFileScalarisation
-      // Get max number of vector registers used
+      // Get number of vector registers used
       printStat("MaxVecRegs: ", STAT_SIMT_MAX_VEC_REGS);
+      printStat("TotalVecRegs: ", STAT_SIMT_TOTAL_VEC_REGS);
       #if SIMTEnableScalarUnit
         // Get number of instrs executed on scalar unit
         printStat("ScalarisedInstrs: ", STAT_SIMT_SCALARISABLE_INSTRS);
@@ -415,11 +416,22 @@ template <typename K> __attribute__ ((noinline))
         // Get potential scalarisable instructions
         printStat("ScalarisableInstrs: ", STAT_SIMT_SCALARISABLE_INSTRS);
       #endif
+      #if SIMTEnableSVStoreBuffer
+        // Store buffer stats
+        printStat("SBLoadHit: ", STAT_SIMT_SB_LOAD_HIT);
+        printStat("SBLoadMiss: ", STAT_SIMT_SB_LOAD_MISS);
+      #endif
     #endif
 
     #if SIMTEnableCapRegFileScalarisation
-      // Get max number of vector registers used
+      // Get number of vector registers used
       printStat("MaxCapVecRegs: ", STAT_SIMT_MAX_CAP_VEC_REGS);
+      printStat("TotalCapVecRegs: ", STAT_SIMT_TOTAL_CAP_VEC_REGS);
+      #if SIMTEnableSVStoreBuffer
+        // Store buffer stats
+        printStat("SBCapLoadHit: ", STAT_SIMT_SB_CAP_LOAD_HIT);
+        printStat("SBCapLoadMiss: ", STAT_SIMT_SB_CAP_LOAD_MISS);
+      #endif
     #endif
 
     // Get number of DRAM accesses

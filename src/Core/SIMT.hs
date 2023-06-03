@@ -32,12 +32,13 @@ import Pebbles.Pipeline.SIMT.Management
 import Pebbles.Pipeline.Interface
 import Pebbles.Memory.Interface
 import Pebbles.Memory.CapSerDes
+import Pebbles.Memory.CoalescingUnit
 import Pebbles.Memory.DRAM.Interface
 import Pebbles.Instructions.RV32_I
 import Pebbles.Instructions.RV32_M
 import Pebbles.Instructions.RV32_A
 import Pebbles.Instructions.Mnemonics
-import Pebbles.Instructions.RV32_xCHERI
+import Pebbles.Instructions.RV32_IxCHERI
 import Pebbles.Instructions.Units.MulUnit
 import Pebbles.Instructions.Units.DivUnit
 import Pebbles.Instructions.Units.BoundsUnit
@@ -100,16 +101,17 @@ makeSIMTExecuteStage enCHERI =
     return
       ExecuteStage {
         execute = do
-          executeI (Just ins.execMulReqs) csrUnit ins.execMemReqs s
           executeM ins.execMulReqs ins.execDivReqs s
           if enCHERI
             then do
-              executeCHERI csrUnit ins.execCapMemReqs s
+              executeIxCHERI (Just ins.execMulReqs) (Just csrUnit)
+                             (Just ins.execCapMemReqs) s
               if SIMTNumSetBoundsUnits < SIMTLanes
                 then executeBoundsUnit ins.execBoundsReqs s
                 else executeSetBounds s
             else do
-              executeI_NoCap csrUnit ins.execMemReqs s
+              executeI (Just ins.execMulReqs) (Just csrUnit)
+                       (Just ins.execMemReqs) s
               executeA ins.execMemReqs s
       }
 
@@ -148,9 +150,11 @@ makeSIMTCore ::
      -- ^ Memory responses
   -> DRAMStatSigs
      -- ^ For DRAM stat counters
+  -> CoalUnitPerfStats
+     -- ^ For coalescing unit stats 
   -> Module (Stream SIMTResp)
      -- ^ SIMT management responses
-makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
+makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
 
   -- Scalar unit enabled?
   let enScalarUnit = SIMTEnableScalarUnit == 1
@@ -223,13 +227,12 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
       then do
         -- Serialise CapMemReq to MemReq
         capMemReqs <- makeCapMemReqSerialiser memReqsIlv
-        capMemReqsBuffered <- makeSinkBuffer (makePipelineQueue 1) capMemReqs
         -- Sink of vectors to vector of sinks
         capMemSinks <-
           makeSinkVectoriser
             (\vec -> (pipelineOuts.simtInstrInfo, vec,
                         pipelineOuts.simtScalarisedOpB))
-            capMemReqsBuffered
+            capMemReqs
         -- Convert vector to list
         let capMemSinksList = toList capMemSinks
         let memSinks = map (mapSink toCapMemReq) capMemSinksList
@@ -289,14 +292,10 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
             if config.simtCoreEnableCHERI then Just checkPCC else Nothing
         , useSharedPCC = SIMTUseSharedPCC == 1
         , decodeStage = concat
-            [ decodeI
-            , if config.simtCoreEnableCHERI
-                then decodeCHERI
-                else decodeI_NoCap
+            [ if config.simtCoreEnableCHERI
+                then decodeIxCHERI ++ decodeAxCHERI
+                else decodeI ++ decodeA
             , decodeM
-            , if config.simtCoreEnableCHERI
-                then decodeCHERI_A
-                else decodeA
             , decodeSIMT
             ]
         , executeStage =
@@ -320,7 +319,9 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
         , simtPushTag = SIMT_PUSH
         , simtPopTag = SIMT_POP
         , useRegFileScalarisation = SIMTEnableRegFileScalarisation == 1
-        , useCapRegFileScalarisation = SIMTEnableCapRegFileScalarisation == 1
+        , useCapRegFileScalarisation =
+               config.simtCoreEnableCHERI
+            && SIMTEnableCapRegFileScalarisation == 1
         , useAffineScalarisation = SIMTEnableAffineScalarisation == 1
         , useScalarUnit = enScalarUnit
         , scalarUnitAllowList =
@@ -331,33 +332,49 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
             , BEQ, BNE, BLT, BLTU, BGE, BGEU
             , MUL, DIV
             , SIMT_PUSH, SIMT_POP
-            ]
+            ] ++ if config.simtCoreEnableCHERI
+                   then [ CGetPerm, CGetType, CGetBase, CGetLen
+                        , CGetTag, CGetSealed, CGetFlags, CGetAddr
+                        , CAndPerm, CSetFlags, CSetAddr, CIncOffset
+                        , CSetBounds, CSetBoundsExact, CRRL, CRAM
+                        , CMove, CClearTag, CSpecialRW, CSealEntry
+                        ]
+                   else []
         , scalarUnitDecodeStage = concat
-            [ decodeI
-            , decodeI_NoCap
+            [ if config.simtCoreEnableCHERI then decodeIxCHERI else decodeI
             , decodeM
             , decodeSIMT
             ]
-        , scalarUnitAffineAdder =
+        , scalarUnitAffineAdd =
             if enScalarUnit && SIMTEnableAffineScalarisation == 1
               then Just ADD else Nothing
+        , scalarUnitAffineCMove =
+            if config.simtCoreEnableCHERI &&
+                 enScalarUnit && SIMTEnableAffineScalarisation == 1
+              then Just CMove else Nothing
+        , scalarUnitAffineCIncOffset =
+            if config.simtCoreEnableCHERI &&
+                 enScalarUnit && SIMTEnableAffineScalarisation == 1
+              then Just CIncOffset else Nothing
         , scalarUnitExecuteStage = \s -> do
-            -- CSRs not supported in scalar unit
-            let scalarCSRUnit = nullCSRUnit
- 
-            -- Memory access not supported in scalar unit
-            let scalarMemReqs = nullSink
-
             return
               ExecuteStage {
                 execute = do
-                  executeI (Just scalarMulSink)
-                             scalarCSRUnit scalarMemReqs s
+                  if config.simtCoreEnableCHERI
+                    then do
+                      executeIxCHERI (Just scalarMulSink)
+                                     Nothing Nothing s
+                      executeSetBounds s
+                    else executeI (Just scalarMulSink)
+                                  Nothing Nothing s
                   executeM scalarMulSink scalarDivSink s
-                  executeI_NoCap scalarCSRUnit scalarMemReqs s
               }
         , regSpillBaseAddr = let a << b = a * 2^b in REG_SPILL_BASE
         , useLRUSpill = SIMTUseLRUSpill == 1
+        , useRRSpill = SIMTUseRRSpill == 1
+        , useSharedVectorScratchpad =
+           SIMTUseSharedVecScratchpad == 1
+        , usesCap = instrsThatUseCapMetaData
         }
 
   -- Pipeline instantiation
@@ -369,6 +386,7 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs = mdo
     , simtScalarResumeReqs = toStream scalarResumeQueue
     , simtDRAMStatSigs = dramStatSigs
     , simtMemReqs = fromList memReqSinks
+    , simtCoalStats = coalStats
     }
 
   return pipelineOuts.simtMgmtResps
