@@ -1,8 +1,7 @@
 # SIMTight
 
 SIMTight is a fully synthesisable GPGPU implementing the _Single
-Instruction Multiple Threads (SIMT)_ model popularised by NVIDIA GPUs,
-featuring:
+Instruction Multiple Threads (SIMT)_ model, featuring:
 
   * RISC-V instruction set (RV32IMAxCHERI) 
   * Low-area design with high IPC on classic GPGPU workloads
