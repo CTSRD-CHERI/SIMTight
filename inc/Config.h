@@ -60,9 +60,6 @@ NOTE("Use scalarising register file?")
 NOTE("Use affine scalarisation, or just plain uniform scalarisation?")
 #define SIMTEnableAffineScalarisation 0
 
-NOTE("For affine scalarisation, how many bits to use for the stride?")
-#define SIMTAffineScalarisationBits 4
-
 NOTE("Size of scalarising register file (number of vectors)")
 #define SIMTRegFileSize 2048
 

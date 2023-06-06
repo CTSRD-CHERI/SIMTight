@@ -184,12 +184,9 @@ These options alone only enable scalarisation of uniform vectors.  To
 enable scalariastion of affine vectors, apply the following settings
 
   * `#define SIMTEnableAffineScalarisation 1`
-  * `#define SIMTAffineScalarisationBits 4`
 
-The second of these parameters defines the number of bits used to
-represent the constant stride between vector elements.  Note that
-affine scalarisation is never used in the register file holding
-capability meta-data, where it wouldn't make much sense.
+Note that affine scalarisation is never used in the register file
+holding capability meta-data, where it wouldn't make much sense.
 
 SIMTight exploits scalarisation to reduce register file storage
 requirements. Hence, it is desirable to set the number of physical
