@@ -231,10 +231,24 @@ workloads, this increases perforance density significantly.
 
   * `#define SIMTEnableScalarUnit 1`
 
-In future, we are interested in looking at _partial_ scalarisation
-(compressing vectors that are partly scalar, due to thread divergence)
-and _inter-warp_ scalarisation (compressing values that are scalar
-across warps).
+To enable the intial value optimisation (IVO) in the capability
+meta-data register file:
+
+  `#define SIMTCapRFUseInitValOpt 1`
+  `#define SIMTCapRFLogNumPartialMasks 8`
+
+This a simple form of partial scalarisation allowing compact storage
+of vectors that can be partioned into an arbitrary scalar value and
+the initial value (null capability meta-data in this case) using a bit
+mask.  These bit masks need to be stored alongside their associated
+scalar values but are allocated dynamically on demand so that the cost
+is not paid for every scalar register.  The parameter
+`SIMTCapRFLogNumPartialMasks` determines the max number of masks that
+can be stored.  If the limit is reached then the optimisation simply
+becomes unavailable.
+
+In future, we are interested in looking at general partial
+scalarisation, as well as inter-warp scalarisation.
 
 <div style="text-align: center;" align="center">
 <br>

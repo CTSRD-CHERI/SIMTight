@@ -55,16 +55,16 @@ NOTE("Latency of full-throughput divider (more latency = higher Fmax)")
 #define SIMTFullDividerLatency 12
 
 NOTE("Use scalarising register file?")
-#define SIMTEnableRegFileScalarisation 0
+#define SIMTEnableRegFileScalarisation 1
 
 NOTE("Use affine scalarisation, or just plain uniform scalarisation?")
-#define SIMTEnableAffineScalarisation 0
+#define SIMTEnableAffineScalarisation 1
 
 NOTE("Size of scalarising register file (number of vectors)")
 #define SIMTRegFileSize 2048
 
 NOTE("Use dedicated scalar unit, allowing parallel scalar/vector execution?")
-#define SIMTEnableScalarUnit 0
+#define SIMTEnableScalarUnit 1
 
 NOTE("[EXPERIMENTAL] Enable scalarised vector store buffer?")
 #define SIMTEnableSVStoreBuffer 0
@@ -106,7 +106,7 @@ NOTE("Tagged memory")
 NOTE("=============")
 
 NOTE("Is tagged memory enabled? (Needed for CHERI)")
-#define EnableTaggedMem 0
+#define EnableTaggedMem 1
 
 NOTE("Tag cache: line size")
 #define TagCacheLogBeatsPerLine 1
@@ -130,13 +130,20 @@ NOTE("CHERI support")
 NOTE("=============")
 
 NOTE("Is CHERI enabled? (If so, see UseClang and EnableTaggedMem settings)")
-#define EnableCHERI 0
+#define EnableCHERI 1
 
 NOTE("Use scalarising register file for capability meta-data?")
-#define SIMTEnableCapRegFileScalarisation 0
+#define SIMTEnableCapRegFileScalarisation 1
 
 NOTE("Size of scalarising capability register file (number of vectors)")
 #define SIMTCapRegFileSize 2048
+
+NOTE("Use initial value optimisation in cap reg file?")
+NOTE("This is a simple form of partial scalarisation")
+#define SIMTCapRFUseInitValOpt 1
+
+NOTE("The number of registers that hold partial scalars")
+#define SIMTCapRFLogNumPartialMasks 8
 
 NOTE("Use shared immutable PCC meta-data for all threads in kernel?")
 #define SIMTUseSharedPCC 0
@@ -154,7 +161,7 @@ NOTE("Compiler")
 NOTE("========")
 
 NOTE("Use clang rather than gcc? (Currently required if CHERI enabled)")
-#define UseClang 0
+#define UseClang 1
 
 NOTE("Tell compiler to use 16 regs instead of 32?")
 #define UseRV32E 0

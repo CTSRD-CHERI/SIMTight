@@ -242,6 +242,7 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
               fmap (\s -> ScalarVal {
                             val = zeroExtend s.val
                           , stride = s.stride
+                          , partial = s.partial
                           })
                    pipelineOuts.simtScalarisedOpB.scalarisedVal
         -- Sink of vectors to vector of sinks
