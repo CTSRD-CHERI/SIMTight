@@ -140,10 +140,10 @@ NOTE("Size of scalarising capability register file (number of vectors)")
 
 NOTE("Use initial value optimisation in cap reg file?")
 NOTE("This is a simple form of partial scalarisation")
-#define SIMTCapRFUseInitValOpt 1
+#define SIMTCapRFUseInitValOpt 0
 
 NOTE("The number of registers that hold partial scalars")
-#define SIMTCapRFLogNumPartialMasks 8
+#define SIMTCapRFLogNumPartialMasks 0
 
 NOTE("Use shared immutable PCC meta-data for all threads in kernel?")
 #define SIMTUseSharedPCC 0
