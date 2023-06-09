@@ -234,8 +234,8 @@ workloads, this increases perforance density significantly.
 To enable the intial value optimisation (IVO) in the capability
 meta-data register file:
 
-  `#define SIMTCapRFUseInitValOpt 1`
-  `#define SIMTCapRFLogNumPartialMasks 8`
+  * `#define SIMTCapRFUseInitValOpt 1`
+  * `#define SIMTCapRFLogNumPartialMasks 8`
 
 This a simple form of partial scalarisation allowing compact storage
 of vectors that can be partioned into an arbitrary scalar value and
