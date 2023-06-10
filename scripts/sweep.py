@@ -58,8 +58,7 @@ configCombos = [
   , ["CHERI", "DynRegSpill"]
   , ["CHERI", "StoreBuffer"]
   , ["CHERI", "ScalarUnit"]
-  # ["Clang", "DynRegSpill", "StoreBuffer", "ScalarUnit"]
-  #, ["CHERI", "DynRegSpill", "StoreBuffer", "ScalarUnit"]
+  , ["CHERI", "DynRegSpill", "StoreBuffer", "ScalarUnit"]
   ]
 
 # Config combos of interest when benchmarking only
