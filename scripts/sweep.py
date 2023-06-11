@@ -48,6 +48,10 @@ config["DynHalfRF"] = [
 config["StaticHalfRF"] = [
     ("UseRV32E", "1")
   ]
+config["CapInitValOpt"] = [
+    ("SIMTCapRFUseInitValOpt", "1")
+  , ("SIMTCapRFLogNumPartialMasks", "8")
+  ]
 
 # Combinations of configs that are of interest
 configCombos = [
@@ -59,6 +63,7 @@ configCombos = [
   , ["CHERI", "StoreBuffer"]
   , ["CHERI", "ScalarUnit"]
   , ["CHERI", "DynRegSpill", "StoreBuffer", "ScalarUnit"]
+  , ["CHERI", "DynRegSpill", "StoreBuffer", "ScalarUnit", "CapInitValOpt"]
   ]
 
 # Config combos of interest when benchmarking only
