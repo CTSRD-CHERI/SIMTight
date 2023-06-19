@@ -55,16 +55,16 @@ NOTE("Latency of full-throughput divider (more latency = higher Fmax)")
 #define SIMTFullDividerLatency 12
 
 NOTE("Use scalarising register file?")
-#define SIMTEnableRegFileScalarisation 1
+#define SIMTEnableRegFileScalarisation 0
 
 NOTE("Use affine scalarisation, or just plain uniform scalarisation?")
-#define SIMTEnableAffineScalarisation 1
+#define SIMTEnableAffineScalarisation 0
 
 NOTE("Size of scalarising register file (number of vectors)")
 #define SIMTRegFileSize 2048
 
 NOTE("Use dedicated scalar unit, allowing parallel scalar/vector execution?")
-#define SIMTEnableScalarUnit 1
+#define SIMTEnableScalarUnit 0
 
 NOTE("[EXPERIMENTAL] Enable scalarised vector store buffer?")
 #define SIMTEnableSVStoreBuffer 0
@@ -106,7 +106,7 @@ NOTE("Tagged memory")
 NOTE("=============")
 
 NOTE("Is tagged memory enabled? (Needed for CHERI)")
-#define EnableTaggedMem 1
+#define EnableTaggedMem 0
 
 NOTE("Tag cache: line size")
 #define TagCacheLogBeatsPerLine 1
@@ -130,10 +130,10 @@ NOTE("CHERI support")
 NOTE("=============")
 
 NOTE("Is CHERI enabled? (If so, see UseClang and EnableTaggedMem settings)")
-#define EnableCHERI 1
+#define EnableCHERI 0
 
 NOTE("Use scalarising register file for capability meta-data?")
-#define SIMTEnableCapRegFileScalarisation 1
+#define SIMTEnableCapRegFileScalarisation 0
 
 NOTE("Size of scalarising capability register file (number of vectors)")
 #define SIMTCapRegFileSize 2048
@@ -161,7 +161,7 @@ NOTE("Compiler")
 NOTE("========")
 
 NOTE("Use clang rather than gcc? (Currently required if CHERI enabled)")
-#define UseClang 1
+#define UseClang 0
 
 NOTE("Tell compiler to use 16 regs instead of 32?")
 #define UseRV32E 0
