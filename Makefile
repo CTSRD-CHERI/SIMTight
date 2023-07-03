@@ -1,4 +1,19 @@
 PEBBLES_ROOT ?= pebbles
+user=$(if $(shell id -u),$(shell id -u),9001)
+group=$(if $(shell id -g),$(shell id -g),1000)
+
+# Build the docker image
+build-docker:
+	 (cd Docker; docker build --build-arg UID=$(user) --build-arg GID=$(group) . --tag simtight-ubuntu2204)
+
+# Enter the docker image
+shell: build-docker
+	docker run -it --shm-size 256m --hostname simtight-ubuntu2204 -u $(user) -v $(shell pwd):/workspace simtightubuntu2204:latest /bin/bash
+
+# Fetch submodules
+sync:
+	git submodule sync
+	git submodule update --init --recursive
 
 .PHONY: verilog
 verilog:
