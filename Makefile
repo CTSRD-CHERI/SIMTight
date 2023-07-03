@@ -14,6 +14,7 @@ shell: build-docker
 sync:
 	git submodule sync
 	git submodule update --init --recursive
+	git clone https://github.com/CTSRD-CHERI/cheribuild
 
 .PHONY: verilog
 verilog:

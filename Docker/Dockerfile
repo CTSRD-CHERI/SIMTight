@@ -17,7 +17,7 @@ RUN apt-get update -y \
                           libgmp-dev python3 python3-pip g++\
                           clang llvm lld clang-tidy clang-format \
                           gcc-multilib gcc cmake sudo wget vim \
-                          curl
+                          curl tmux git
 
 # Install CHERI dependencies
 RUN apt-get update -y \
@@ -36,7 +36,8 @@ RUN mkdir -p /srcPkgs \
     && tar xzvf verible-*-x86_64.tar.gz -C verible --strip-components 1
 
 # Append any packages you need here
-# RUN apt-get ...
+# RUN apt-get update -y \
+#     && apt-get install -y ...
 
 CMD ["bash"]
 
@@ -47,7 +48,7 @@ RUN echo "dev-user     ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER dev-user
 
 # Install Python packages 
-ENV PATH="/home/dev-user/.ghcup/bin:${PATH}:/home/dev-user/.local/bin"
+ENV PATH="/home/dev-user/cheri/output/sdk/bin:/home/dev-user/.ghcup/bin:${PATH}:/home/dev-user/.local/bin"
 RUN pip3 install --user --upgrade pip \
     && pip3 install black colorlog toml tabulate isort
 # Install GHC 
@@ -63,7 +64,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | \
 RUN printf "\
 \nexport LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:\$LIBRARY_PATH \
 \n# Basic PATH setup \
-\nexport PATH=/workspace/scripts:/home/dev-user/.local/bin:\$PATH:/home/dev-user/.ghcup/bin \
+\nexport PATH=/home/dev-user/cheri/output/sdk/bin:/workspace/scripts:/home/dev-user/.local/bin:\$PATH:/home/dev-user/.ghcup/bin \
 \n# Thread setup \
 \nexport nproc=\$(grep -c ^processor /proc/cpuinfo) \
 \n# Terminal color... \
