@@ -8,7 +8,7 @@ build-docker:
 
 # Enter the docker image
 shell: build-docker
-	docker run -it --shm-size 256m --hostname simtight-ubuntu2204 -u $(user) -v $(shell pwd):/workspace simtightubuntu2204:latest /bin/bash
+	docker run -it --shm-size 256m --hostname simtight-ubuntu2204 -u $(user) -v $(shell pwd):/workspace simtight-ubuntu2204:latest /bin/bash
 
 # Fetch submodules
 sync:

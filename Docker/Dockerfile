@@ -16,7 +16,17 @@ RUN apt-get update -y \
     && apt-get install -y verilator gcc-riscv64-unknown-elf \
                           libgmp-dev python3 python3-pip g++\
                           clang llvm lld clang-tidy clang-format \
-                          gcc-multilib gcc cmake
+                          gcc-multilib gcc cmake sudo wget vim \
+                          curl
+
+# Install CHERI dependencies
+RUN apt-get update -y \
+    && apt-get install -y autoconf automake libtool pkg-config \
+                          clang bison cmake mercurial ninja-build \
+                          samba flex texinfo time libglib2.0-dev \
+                          libpixman-1-dev libarchive-dev libarchive-tools \
+                          libbz2-dev libattr1-dev libcap-ng-dev \
+                          libexpat1-dev libgmp-dev
 
 # Install SystemVerilog formatter
 RUN mkdir -p /srcPkgs \
