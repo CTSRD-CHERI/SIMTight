@@ -36,10 +36,12 @@ RUN useradd -r -g $GID -u $UID -m -d /home/dev-user -s /sbin/nologin -c "User" d
 RUN echo "dev-user     ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER dev-user
 
-# Install PyTorch and Torch-MLIR
+# Install Python packages 
 ENV PATH="${PATH}:/home/dev-user/.local/bin"
-RUN pip3 install --user --upgrade pip 
-RUN pip3 install black colorlog toml tabulate isort
+RUN pip3 install --user --upgrade pip \
+    && pip3 install black colorlog toml tabulate isort
+# Install GHC 
+RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 
 # Add environment variables
 RUN printf "\
