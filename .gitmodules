@@ -1,3 +1,6 @@
 [submodule "pebbles"]
 	path = pebbles
 	url = https://github.com/blarney-lang/pebbles
+[submodule "llvm-project"]
+	path = llvm-project
+	url = git@github.com:CTSRD-CHERI/llvm-project.git
