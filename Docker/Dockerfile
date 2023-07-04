@@ -17,7 +17,7 @@ RUN apt-get update -y \
                           libgmp-dev python3 python3-pip g++\
                           clang llvm lld clang-tidy clang-format \
                           gcc-multilib gcc cmake sudo wget vim \
-                          curl tmux git
+                          curl tmux git bc
 
 # Install CHERI dependencies
 RUN apt-get update -y \
