@@ -19,9 +19,3 @@ cd $SIMTIGHT/cheribuild && \
 --run/custom-qemu-path ../qemu \
 --source-root ../cheri
 
-
-# cd $SIMTIGHT/cheribuild && \
-# ./cheribuild.py sdk-riscv64-purecap \
-# --pretend \
-# --llvm/source-directory ../llvm-project \
-# --source-root ../cheri
