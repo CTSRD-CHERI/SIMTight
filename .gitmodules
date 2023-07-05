@@ -1,3 +1,18 @@
 [submodule "pebbles"]
 	path = pebbles
 	url = https://github.com/blarney-lang/pebbles
+[submodule "llvm-project"]
+	path = llvm-project
+	url = git@github.com:CTSRD-CHERI/llvm-project.git
+[submodule "cheribsd"]
+	path = cheribsd
+	url = https://github.com/CTSRD-CHERI/cheribsd
+[submodule "qemu"]
+	path = qemu
+	url = git@github.com:CTSRD-CHERI/qemu.git
+[submodule "gdb"]
+	path = gdb
+	url = git@github.com:CTSRD-CHERI/gdb.git
+[submodule "cheribuild"]
+	path = cheribuild
+	url = git@github.com:CTSRD-CHERI/cheribuild.git
