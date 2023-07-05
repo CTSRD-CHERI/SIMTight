@@ -64,7 +64,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | \
 RUN printf "\
 \nexport LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:\$LIBRARY_PATH \
 \n# Basic PATH setup \
-\nexport PATH=/home/dev-user/cheri/output/sdk/bin:/workspace/scripts:/home/dev-user/.local/bin:\$PATH:/home/dev-user/.ghcup/bin \
+\nexport PATH=/workspace/cheri/output/sdk/bin:/workspace/scripts:/home/dev-user/.local/bin:\$PATH:/home/dev-user/.ghcup/bin \
 \n# Thread setup \
 \nexport nproc=\$(grep -c ^processor /proc/cpuinfo) \
 \n# Terminal color... \
