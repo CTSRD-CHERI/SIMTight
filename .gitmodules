@@ -13,3 +13,6 @@
 [submodule "gdb"]
 	path = gdb
 	url = git@github.com:CTSRD-CHERI/gdb.git
+[submodule "cheribuild"]
+	path = cheribuild
+	url = git@github.com:CTSRD-CHERI/cheribuild.git
