@@ -1,4 +1,5 @@
 PEBBLES_ROOT ?= pebbles
+username=$(shell echo ${USER})
 user=$(if $(shell id -u),$(shell id -u),9001)
 group=$(if $(shell id -g),$(shell id -g),1000)
 
@@ -8,12 +9,12 @@ build-docker:
 
 # Enter the docker image
 shell: build-docker
-	docker run -it --shm-size 256m --hostname simtight-ubuntu2204 -u $(user) -v $(shell pwd):/workspace simtight-ubuntu2204:latest /bin/bash
+	docker run -it --shm-size 256m --hostname simtight-ubuntu2204 -u $(user) -v $(shell pwd):/workspace -v /home/$(username)/.ssh:/home/dev-user/.ssh simtight-ubuntu2204:latest /bin/bash
 
 # Fetch submodules
 sync:
 	git submodule sync
-	git submodule update --init --recursive
+	git submodule update --recursive
 	git clone https://github.com/CTSRD-CHERI/cheribuild
 
 .PHONY: verilog
