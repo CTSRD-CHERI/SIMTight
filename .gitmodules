@@ -7,3 +7,6 @@
 [submodule "cheribsd"]
 	path = cheribsd
 	url = https://github.com/CTSRD-CHERI/cheribsd
+[submodule "qemu"]
+	path = qemu
+	url = git@github.com:CTSRD-CHERI/qemu.git
