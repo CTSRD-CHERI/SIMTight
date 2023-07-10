@@ -31,7 +31,7 @@ GROUP=$(if $(shell id -g),$(shell id -g),1000)
 # Build the docker image
 .PHONY: build-docker
 build-docker:
-	 (cd Docker; docker build --build-arg UID=$(USER) --build-arg GID=$(GROUP) . --tag simtight-ubuntu2204)
+	 (cd docker; docker build --build-arg UID=$(USER) --build-arg GID=$(GROUP) . --tag simtight-ubuntu2204)
 
 # Enter the docker image
 .PHONY: shell
