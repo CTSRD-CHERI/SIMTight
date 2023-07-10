@@ -10,3 +10,6 @@
 [submodule "cheri-tools/cheribsd"]
 	path = cheri-tools/cheribsd
 	url = git@github.com:CTSRD-CHERI/cheribsd.git
+[submodule "cheri-tools/gdb"]
+	path = cheri-tools/gdb
+	url = git@github.com:CTSRD-CHERI/gdb.git
