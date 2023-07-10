@@ -48,7 +48,7 @@ RUN echo "dev-user     ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER dev-user
 
 # Install Python packages 
-ENV PATH="/home/dev-user/cheri/output/sdk/bin:/home/dev-user/.ghcup/bin:${PATH}:/home/dev-user/.local/bin"
+ENV PATH="/home/dev-user/.ghcup/bin:${PATH}:/home/dev-user/.local/bin"
 RUN pip3 install --user --upgrade pip \
     && pip3 install black colorlog toml tabulate isort
 # Install GHC 
