@@ -7,3 +7,6 @@
 [submodule "cheri-tools/qemu"]
 	path = cheri-tools/qemu
 	url = git@github.com:CTSRD-CHERI/qemu.git
+[submodule "cheri-tools/cheribsd"]
+	path = cheri-tools/cheribsd
+	url = git@github.com:CTSRD-CHERI/cheribsd.git
