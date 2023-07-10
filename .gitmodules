@@ -4,3 +4,6 @@
 [submodule "cheri-tools/llvm-project"]
 	path = cheri-tools/llvm-project
 	url = git@github.com:CTSRD-CHERI/llvm-project.git
+[submodule "cheri-tools/qemu"]
+	path = cheri-tools/qemu
+	url = git@github.com:CTSRD-CHERI/qemu.git
