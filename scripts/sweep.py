@@ -34,9 +34,14 @@ config["ScalarUnit"] = config["RegFileScalarisation"] + [
 config["StoreBuffer"] = config["RegFileScalarisation"] + [
     ("SIMTEnableSVStoreBuffer", "1")
   ]
-config["DynRegSpill"] = config["RegFileScalarisation"] + [
+config["DynRegSpill512"] = config["RegFileScalarisation"] + [
     ("SIMTRegFileSize", "512")
   , ("SIMTCapRegFileSize", "512")
+  , ("SIMTUseSharedVecScratchpad", "1")
+  ]
+config["DynRegSpill2043"] = config["RegFileScalarisation"] + [
+    ("SIMTRegFileSize", "2043")
+  , ("SIMTCapRegFileSize", "2043")
   , ("SIMTUseSharedVecScratchpad", "1")
   ]
 config["DynHalfRF"] = [
@@ -55,15 +60,14 @@ config["CapInitValOpt"] = [
 
 # Combinations of configs that are of interest
 configCombos = [
-    ["Clang"]
+    ["Clang"] 
   , ["Clang", "StoreBuffer"]
-  , ["Clang", "ScalarUnit"]
-  , ["CHERI", "RegFileScalarisation"]
-  , ["CHERI", "DynRegSpill"]
-  , ["CHERI", "StoreBuffer"]
-  , ["CHERI", "ScalarUnit"]
-  , ["CHERI", "DynRegSpill", "StoreBuffer", "ScalarUnit"]
-  , ["CHERI", "DynRegSpill", "StoreBuffer", "ScalarUnit", "CapInitValOpt"]
+  , ["Clang", "StoreBuffer", "ScalarUnit"]
+  , ["CHERI"] 
+  , ["CHERI", "StoreBuffer"] 
+  , ["CHERI", "StoreBuffer", "CapInitValOpt"]
+  , ["CHERI", "DynRegSpill512", "CapInitValOpt"]
+  , ["CHERI", "StoreBuffer", "DynRegSpill2043", "CapInitValOpt"]
   ]
 
 # Config combos of interest when benchmarking only
@@ -100,6 +104,7 @@ if sys.argv[1] == "test":
   # Test each combination in simulation
   for combo in configCombos:
     name = "Baseline" if combo == [] else "+".join(combo)
+    print("Config: " + name)
     clean()
     applySettings(combo)
     os.chdir(repoDir + "/test")
@@ -151,11 +156,8 @@ elif sys.argv[1] == "bench":
     os.system("make one > /dev/null")
     # Run benchmarks
     os.chdir(repoDir + "/test")
-    os.system("echo >> bench.log")
-    os.system("echo ====== " + name + " ====== >> bench.log")
-    os.system("echo >> bench.log")
     # Default to revD FPGA
-    os.system("./test.sh --fpga-d --stats --apps-only >> bench.log")
+    os.system("./test.sh --fpga-d --stats --apps-only >> " + name + ".bench")
 else:
   printUsage()
   sys.exit(-1)
