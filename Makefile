@@ -18,6 +18,12 @@ clean:
 	make -C sim clean
 	make -C pebbles clean
 
+.PHONY: mrproper
+mrproper: clean
+	rm -rf cheri-tools/cheri
+	rm -rf cheri-tools/cheribuild
+	rm -rf cheri-tools/llvm-project
+
 # Fetch submodules
 .PHONY: sync
 sync:
@@ -38,8 +44,8 @@ build-docker:
 shell: build-docker
 	docker run -it --shm-size 256m --hostname simtight-ubuntu2204 -u $(USER) -v /home/$(shell whoami)/.ssh:/home/dev-user/.ssh  -v $(shell pwd):/workspace simtight-ubuntu2204:latest /bin/bash
 
-# Build cheri-tools in the docker 
+# Build known-compatible version of the CHERI tools
 .PHONY: build-cheri-tools
 build-cheri-tools: 
-	bash scripts/build-cheri.sh	
+	bash cheri-tools/build-cheri.sh	
 

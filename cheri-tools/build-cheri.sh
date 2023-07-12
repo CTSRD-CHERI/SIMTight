@@ -17,6 +17,7 @@ SIMTIGHT=${SCRIPT_DIR}/..
 # Clean the cheri tools directory for a new build
 # --------------------------------------------------------------------
 mkdir -p $SIMTIGHT/cheri-tools
+rm -rf $SIMTIGHT/cheri-tools/cheri
 rm -rf $SIMTIGHT/cheri-tools/cheribuild
 rm -rf $SIMTIGHT/cheri-tools/llvm-project
 
