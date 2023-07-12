@@ -39,7 +39,7 @@ shell: build-docker
 	docker run -it --shm-size 256m --hostname simtight-ubuntu2204 -u $(USER) -v /home/$(shell whoami)/.ssh:/home/dev-user/.ssh  -v $(shell pwd):/workspace simtight-ubuntu2204:latest /bin/bash
 
 # Build cheri-tools in the docker 
-.PHONY: shell
-build: 
+.PHONY: build-cheri-tools
+build-cheri-tools: 
 	bash scripts/build-cheri.sh	
 
