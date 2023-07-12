@@ -39,8 +39,6 @@ git fetch --depth=1 origin $cheribuild_commithash
 git checkout $cheribuild_commithash -b $branch
 cd ..
 
-exit 1
-
 # LLVM
 git clone --recursive git@github.com:CTSRD-CHERI/llvm-project.git
 cd llvm-project
@@ -52,6 +50,6 @@ cd ..
 # Build cheri tools 
 # --------------------------------------------------------------------
 cd $SIMTIGHT/cheri-tools/cheribuild && \
-./cheribuild.py sdk-riscv64-purecap \
+./cheribuild.py llvm \
 --llvm/source-directory ../llvm-project \
 --source-root ../cheri
