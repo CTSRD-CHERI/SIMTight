@@ -66,7 +66,7 @@ configCombos = [
   , ["CHERI"] 
   , ["CHERI", "StoreBuffer"] 
   , ["CHERI", "StoreBuffer", "CapInitValOpt"]
-  , ["CHERI", "DynRegSpill512", "CapInitValOpt"]
+  , ["CHERI", "StoreBuffer", "DynRegSpill512", "CapInitValOpt"]
   , ["CHERI", "StoreBuffer", "DynRegSpill2043", "CapInitValOpt"]
   ]
 
