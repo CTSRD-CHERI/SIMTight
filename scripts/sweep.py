@@ -38,17 +38,18 @@ config["DynRegSpill512"] = config["RegFileScalarisation"] + [
     ("SIMTRegFileSize", "512")
   , ("SIMTCapRegFileSize", "512")
   , ("SIMTUseSharedVecScratchpad", "1")
+  , ("SIMTUseLRUSpill", "1")
+  ]
+config["DynRegSpill1024"] = config["RegFileScalarisation"] + [
+    ("SIMTRegFileSize", "1024")
+  , ("SIMTCapRegFileSize", "1024")
+  , ("SIMTUseSharedVecScratchpad", "1")
+  , ("SIMTUseLRUSpill", "1")
   ]
 config["DynRegSpill2043"] = config["RegFileScalarisation"] + [
     ("SIMTRegFileSize", "2043")
   , ("SIMTCapRegFileSize", "2043")
   , ("SIMTUseSharedVecScratchpad", "1")
-  ]
-config["DynHalfRF"] = [
-    ("SIMTEnableRegFileScalarisation", "1")
-  , ("SIMTRegFilePreventScalarDetection", "1")
-  , ("SIMTUseLRUSpill", "1")
-  , ("SIMTRegFileSize", "1024")
   ]
 config["StaticHalfRF"] = [
     ("UseRV32E", "1")
@@ -60,21 +61,21 @@ config["CapInitValOpt"] = [
 
 # Combinations of configs that are of interest
 configCombos = [
-    ["Clang"] 
-  , ["Clang", "StoreBuffer"]
-  , ["Clang", "StoreBuffer", "ScalarUnit"]
-  , ["CHERI"] 
-  , ["CHERI", "StoreBuffer"] 
-  , ["CHERI", "StoreBuffer", "CapInitValOpt"]
-  , ["CHERI", "StoreBuffer", "DynRegSpill512", "CapInitValOpt"]
-  , ["CHERI", "StoreBuffer", "DynRegSpill2043", "CapInitValOpt"]
+     ["Clang"] 
+   , ["Clang", "StoreBuffer"]
+   , ["Clang", "StoreBuffer", "ScalarUnit"]
+   , ["CHERI"] 
+   , ["CHERI", "StoreBuffer"] 
+   , ["CHERI", "StoreBuffer", "CapInitValOpt"]
+   , ["CHERI", "StoreBuffer", "DynRegSpill512", "CapInitValOpt"]
+   , ["CHERI", "StoreBuffer", "DynRegSpill2043", "CapInitValOpt"]
   ]
 
 # Config combos of interest when benchmarking only
 benchCombos = [
     ["GCC"]
-  , ["GCC", "DynHalfRF"]
-  , ["GCC", "StaticHalfRF"]
+  , ["GCC", "StoreBuffer", "DynRegSpill1024"]
+  , ["GCC", "StoreBuffer", "StaticHalfRF"]
   ]
 
 # Get directory containing script

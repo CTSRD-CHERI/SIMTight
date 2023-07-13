@@ -243,7 +243,9 @@ makeSIMTMemSubsystem ::
             , Source (SIMTPipelineInstrInfo, Vec SIMTLanes (Option MemResp))
             , Stream (DRAMReq ())
             , CoalUnitPerfStats )
-makeSIMTMemSubsystem dramResps = mdo
+makeSIMTMemSubsystem =
+  makeBoundary "SIMTMemSubsystem" \dramResps -> mdo
+
     -- Memory request queue
     memReqsQueue :: Queue (SIMTPipelineInstrInfo,
                             Vec SIMTLanes (Option MemReq),
