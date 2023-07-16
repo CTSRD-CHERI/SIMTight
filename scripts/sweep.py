@@ -73,7 +73,7 @@ configCombos = [
 
 # Config combos of interest when benchmarking only
 benchCombos = [
-    ["GCC"]
+    ["GCC", "StoreBuffer"]
   , ["GCC", "StoreBuffer", "DynRegSpill1024"]
   , ["GCC", "StoreBuffer", "StaticHalfRF"]
   ]
