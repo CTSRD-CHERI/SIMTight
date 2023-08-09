@@ -42,7 +42,7 @@ CHERI-RISC-V ISA.  A sample project is included for the
 
 We'll need Verilator, a RISC-V compiler, and GHC 9.2.1 or later.
 
-On Ubuntu 20.04, we can do:
+On Ubuntu 20.04 or 22.04, we can do:
 
 ```sh
 $ sudo apt install verilator
@@ -51,7 +51,8 @@ $ sudo apt install libgmp-dev
 ```
 
 For GHC 9.2.1 or later, [ghcup](https://www.haskell.org/ghcup/) can be
-used.
+used. If you're having difficulty meeting the dependencies, please
+use our [docker container](docker/).
 
 Now, we recursively clone the repo:
 
@@ -131,25 +132,29 @@ To enable CHERI, some additional preparation is required.  First, edit
   * `#define EnableTaggedMem 1`
   * `#define UseClang 1`
 
-Second, install the CHERI-Clang compiler using
-[cheribuild](https://github.com/CTSRD-CHERI/cheribuild).  Assuming all
-of [cheribuild's
+
+Second, install the CHERI-Clang compiler using our
+[script](cheri-tools/build-cheri.sh).  Assuming
+all of [cheribuild's
 dependencies](https://github.com/CTSRD-CHERI/cheribuild#pre-build-setup)
 are met, we can simply do:
 
 ```sh
-$ git clone https://github.com/CTSRD-CHERI/cheribuild
-$ cd cheribuild
-$ ./cheribuild.py sdk-riscv64-purecap
+$ cd cheri-tools
+$ ./build-cheri.sh
 ```
 
-Note that a clean build on or after 19 Aug 2021 is required.  By
-default, this will install the compiler into `~/cheri/`.  We then need
-to add the compiler to our `PATH`:
+This will install the compiler into
+`$(pwd)/cheri/output/sdk/bin`, which we can then add to our
+`PATH`:
 
 ```sh
-export PATH=~/cheri/output/sdk/bin:$PATH
+export PATH=$(pwd)/cheri/output/sdk/bin:$PATH
 ```
+
+If you're having difficulty meeting any of [cheribuild's
+dependencies](https://github.com/CTSRD-CHERI/cheribuild#pre-build-setup),
+please use our [docker container](docker/).
 
 We musn't forget to `make clean` in the root of the SIMTight repo any
 time [inc/Config.h](inc/Config.h) is changed.  At this point, all of

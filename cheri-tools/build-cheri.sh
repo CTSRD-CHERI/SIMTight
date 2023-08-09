@@ -11,15 +11,13 @@ set -o nounset
 # The absolute path to the directory of this script.
 # --------------------------------------------------------------------
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-SIMTIGHT=${SCRIPT_DIR}/..
 
 # --------------------------------------------------------------------
 # Clean the cheri tools directory for a new build
 # --------------------------------------------------------------------
-mkdir -p $SIMTIGHT/cheri-tools
-rm -rf $SIMTIGHT/cheri-tools/cheri
-rm -rf $SIMTIGHT/cheri-tools/cheribuild
-rm -rf $SIMTIGHT/cheri-tools/llvm-project
+rm -rf $SCRIPT_DIR/cheri
+rm -rf $SCRIPT_DIR/cheribuild
+rm -rf $SCRIPT_DIR/llvm-project
 
 # --------------------------------------------------------------------
 # Commit info 
@@ -31,7 +29,7 @@ llvm_commithash="19d402e23fcaa197e1d40547da403dc17e13c7ae"
 # --------------------------------------------------------------------
 # Clone the submodules with certain commit number
 # --------------------------------------------------------------------
-cd $SIMTIGHT/cheri-tools
+cd $SCRIPT_DIR/
 
 # Cheribuild
 git clone --recursive git@github.com:CTSRD-CHERI/cheribuild.git
@@ -50,7 +48,7 @@ cd ..
 # --------------------------------------------------------------------
 # Build cheri tools 
 # --------------------------------------------------------------------
-cd $SIMTIGHT/cheri-tools/cheribuild && \
+cd $SCRIPT_DIR/cheribuild && \
 ./cheribuild.py llvm \
 --llvm/source-directory ../llvm-project \
 --source-root ../cheri
