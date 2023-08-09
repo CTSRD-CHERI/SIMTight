@@ -48,7 +48,7 @@ RUN echo "dev-user     ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER dev-user
 
 # Install Python packages 
-ENV PATH="/home/dev-user/cheri/output/sdk/bin:/home/dev-user/.ghcup/bin:${PATH}:/home/dev-user/.local/bin"
+ENV PATH="/home/dev-user/.ghcup/bin:${PATH}:/home/dev-user/.local/bin"
 RUN pip3 install --user --upgrade pip \
     && pip3 install black colorlog toml tabulate isort
 # Install GHC 
@@ -64,7 +64,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | \
 RUN printf "\
 \nexport LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:\$LIBRARY_PATH \
 \n# Basic PATH setup \
-\nexport PATH=/home/dev-user/cheri/output/sdk/bin:/workspace/scripts:/home/dev-user/.local/bin:\$PATH:/home/dev-user/.ghcup/bin \
+\nexport PATH=/workspace/scripts:/home/dev-user/.local/bin:\$PATH:/home/dev-user/.ghcup/bin \
 \n# Thread setup \
 \nexport nproc=\$(grep -c ^processor /proc/cpuinfo) \
 \n# Terminal color... \
