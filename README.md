@@ -66,11 +66,11 @@ build and run the SIMTight simulator:
 ```sh
 $ cd sim
 $ make
-$ ./sim
+$ ./sim &
 ```
 
-While the simulator is running, we can build and run the test suite
-in a separate terminal:
+With the simulator running in the background, we can build and run the
+test suite:
 
 ```sh
 $ cd apps/TestSuite
