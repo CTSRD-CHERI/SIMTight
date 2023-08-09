@@ -60,9 +60,6 @@ NOTE("Use scalarising register file?")
 NOTE("Use affine scalarisation, or just plain uniform scalarisation?")
 #define SIMTEnableAffineScalarisation 0
 
-NOTE("For affine scalarisation, how many bits to use for the stride?")
-#define SIMTAffineScalarisationBits 4
-
 NOTE("Size of scalarising register file (number of vectors)")
 #define SIMTRegFileSize 2048
 
@@ -140,6 +137,13 @@ NOTE("Use scalarising register file for capability meta-data?")
 
 NOTE("Size of scalarising capability register file (number of vectors)")
 #define SIMTCapRegFileSize 2048
+
+NOTE("Use initial value optimisation in cap reg file?")
+NOTE("This is a simple form of partial scalarisation")
+#define SIMTCapRFUseInitValOpt 0
+
+NOTE("The number of registers that hold partial scalars")
+#define SIMTCapRFLogNumPartialMasks 0
 
 NOTE("Use shared immutable PCC meta-data for all threads in kernel?")
 #define SIMTUseSharedPCC 0

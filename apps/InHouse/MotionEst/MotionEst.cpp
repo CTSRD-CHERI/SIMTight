@@ -19,7 +19,7 @@ struct MotionEst : Kernel {
   // Output SAD per motion vector per pixel block
   unsigned int* sads;
 
-  void kernel() {
+  INLINE void kernel() {
     // Region dimensions
     int regionWidth = 1 << regionLogWidth;
     int regionHeight = 1 << regionLogHeight;
