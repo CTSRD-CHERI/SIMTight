@@ -17,6 +17,12 @@ RVTEST_CODE_BEGIN
   # Check that cap is unsealed
   TEST_CASE( 2, x2, 0xffffffff, cgettype x2, c1; );
 
+  # Setup null cap
+  add x1, x0, 0
+
+  # Check that cap is unsealed
+  TEST_CASE( 3, x2, 0xffffffff, cgettype x2, c1; );
+
   TEST_PASSFAIL
 
 RVTEST_CODE_END

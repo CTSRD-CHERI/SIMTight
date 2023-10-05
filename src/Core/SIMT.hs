@@ -38,7 +38,8 @@ import Pebbles.Instructions.RV32_I
 import Pebbles.Instructions.RV32_M
 import Pebbles.Instructions.RV32_A
 import Pebbles.Instructions.Mnemonics
-import Pebbles.Instructions.RV32_IxCHERI
+import Pebbles.Instructions.RV32_IxCHERI.CapPipe qualified as CapPipe
+import Pebbles.Instructions.RV32_IxCHERI.CapMem qualified as CapMem
 import Pebbles.Instructions.Units.MulUnit
 import Pebbles.Instructions.Units.DivUnit
 import Pebbles.Instructions.Units.BoundsUnit
@@ -104,11 +105,9 @@ makeSIMTExecuteStage enCHERI =
           executeM ins.execMulReqs ins.execDivReqs s
           if enCHERI
             then do
-              executeIxCHERI (Just ins.execMulReqs) (Just csrUnit)
-                             (Just ins.execCapMemReqs) s
-              if SIMTNumSetBoundsUnits < SIMTLanes
-                then executeBoundsUnit ins.execBoundsReqs s
-                else executeSetBounds s
+              CapMem.executeIxCHERI (Just ins.execMulReqs) (Just csrUnit)
+                                    (Just ins.execCapMemReqs) s
+              CapMem.executeBoundsUnit ins.execBoundsReqs s
             else do
               executeI (Just ins.execMulReqs) (Just csrUnit)
                        (Just ins.execMemReqs) s
@@ -205,11 +204,8 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
   -- ====================
 
   vecBoundsUnit <-
-    if SIMTNumSetBoundsUnits < SIMTLanes
-      then do
-        boundsUnits <- makeVecBoundsUnit
-        makeSharedUnits @SIMTNumSetBoundsUnits boundsUnits
-      else return nullServer
+    do boundsUnits <- makeVecBoundsUnit
+       makeSharedUnits @SIMTNumSetBoundsUnits boundsUnits
 
   boundsSinks <- makeSinkVectoriser
     (\vec -> (pipelineOuts.simtInstrInfo, vec)) vecBoundsUnit.reqs
@@ -260,7 +256,7 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
 
   -- Merge resume requests
   let resumeReqStream =
-        (if SIMTNumSetBoundsUnits < SIMTLanes then 
+        (if config.simtCoreEnableCHERI then 
            memResumeReqs `mergeTwo` vecBoundsUnit.resps else memResumeReqs)
           `mergeTwo` (vecMulUnit.resps `mergeTwo` vecDivUnit.resps)
 
@@ -290,11 +286,12 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
         , instrMemBase = config.simtCoreInstrMemBase
         , enableStatCounters = SIMTEnableStatCounters == 1
         , checkPCCFunc =
-            if config.simtCoreEnableCHERI then Just checkPCC else Nothing
+            if config.simtCoreEnableCHERI
+              then Just CapPipe.checkPCC else Nothing
         , useSharedPCC = SIMTUseSharedPCC == 1
         , decodeStage = concat
             [ if config.simtCoreEnableCHERI
-                then decodeIxCHERI ++ decodeAxCHERI
+                then CapMem.decodeIxCHERI ++ CapMem.decodeAxCHERI
                 else decodeI ++ decodeA
             , decodeM
             , decodeSIMT
@@ -342,7 +339,8 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
                         ]
                    else []
         , scalarUnitDecodeStage = concat
-            [ if config.simtCoreEnableCHERI then decodeIxCHERI else decodeI
+            [ if config.simtCoreEnableCHERI
+                then CapPipe.decodeIxCHERI else decodeI
             , decodeM
             , decodeSIMT
             ]
@@ -363,9 +361,9 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
                 execute = do
                   if config.simtCoreEnableCHERI
                     then do
-                      executeIxCHERI (Just scalarMulSink)
-                                     Nothing Nothing s
-                      executeSetBounds s
+                      CapPipe.executeIxCHERI (Just scalarMulSink)
+                                             Nothing Nothing s
+                      CapPipe.executeSetBounds s
                     else executeI (Just scalarMulSink)
                                   Nothing Nothing s
                   executeM scalarMulSink scalarDivSink s
@@ -375,7 +373,7 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
         , useRRSpill = SIMTUseRRSpill == 1
         , useSharedVectorScratchpad =
            SIMTUseSharedVecScratchpad == 1
-        , usesCap = instrsThatUseCapMetaData
+        , usesCap = CapPipe.instrsThatUseCapMetaData
         }
 
   -- Pipeline instantiation
