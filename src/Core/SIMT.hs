@@ -374,6 +374,7 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
         , useSharedVectorScratchpad =
            SIMTUseSharedVecScratchpad == 1
         , usesCap = CapPipe.instrsThatUseCapMetaData
+        , wantBoundsA = CapMem.wantBoundsA
         }
 
   -- Pipeline instantiation
