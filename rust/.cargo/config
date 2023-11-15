@@ -1,0 +1,11 @@
+[target.riscv32ima-unknown-none-elf]
+rustflags = [
+  "-C", "link-arg=-Tmemory.x",
+  "-C", "link-arg=-Tlink.x",
+]
+
+[unstable]
+build-std = ["core"]
+
+[build]
+target = "riscv32ima-unknown-none-elf.json"

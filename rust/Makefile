@@ -1,0 +1,43 @@
+SIMTIGHT_ROOT ?= $(realpath ../)
+PEBBLES_ROOT  ?= $(realpath $(SIMTIGHT_ROOT)/pebbles)
+TARGET_BINARY ?= target/riscv32ima-unknown-none-elf/release/simtight-rust-app
+RV_OBJCOPY     = riscv64-unknown-elf-objcopy
+
+.PHONY: all
+all: code.v data.v
+
+code.v: $(TARGET_BINARY)
+	$(RV_OBJCOPY) -O verilog --only-section=.text $(TARGET_BINARY) code.v
+
+data.v: $(TARGET_BINARY)
+	$(RV_OBJCOPY) -O verilog --remove-section=.text \
+                --set-section-flags .bss=alloc,load,contents \
+                --set-section-flags .sbss=alloc,load,contents \
+                $(TARGET_BINARY) data.v
+
+Run: checkenv code.v data.v Run.cpp
+	g++ -std=c++11 -O2 -I $(PEBBLES_ROOT)/inc \
+    -I $(SIMTIGHT_ROOT)/inc -o Run Run.cpp \
+    -fno-exceptions -ljtag_atlantic -lpthread \
+    -Wl,--no-as-needed -ljtag_client \
+    -L $(QUARTUS_ROOTDIR)/linux64/ -Wl,-rpath,$(QUARTUS_ROOTDIR)/linux64
+
+RunSim: code.v data.v Run.cpp
+	g++ -DSIMULATE -O2 -I $(PEBBLES_ROOT)/inc \
+    -I $(SIMTIGHT_ROOT)/inc -o RunSim Run.cpp
+
+$(TARGET_BINARY): memory.x src/*.rs
+	cargo build --release
+
+memory.x: memory.x.h
+	cpp -P -I $(SIMTIGHT_ROOT)/inc memory.x.h > memory.x
+
+# Raise error if QUARTUS_ROOTDIR not set
+.PHONY: checkenv
+checkenv:
+	$(if $(value QUARTUS_ROOTDIR), , $(error Please set QUARTUS_ROOTDIR))
+
+.PHONY: clean
+clean:
+	cargo clean
+	rm -f memory.x code.v data.v Run RunSim Cargo.lock

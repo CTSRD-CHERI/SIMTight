@@ -1,0 +1,8 @@
+[package]
+name = "simtight-rust-app"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+riscv-rt = "0.11.0"
+panic-halt = "0.2.0"
