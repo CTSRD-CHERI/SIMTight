@@ -37,15 +37,15 @@ RunSim: Run.cpp
 	@g++ -DSIMULATE -O2 -I $(PEBBLES_ROOT)/inc \
     -I $(SIMTIGHT_ROOT)/inc -o RunSim Run.cpp
 
-$(TARGET_BINARY): memory.x src/prims/config.rs src/*.rs
-	cargo build --example $(EXAMPLE) --release --features "${FEATURES}"
+$(TARGET_BINARY): memory.x src/prims/config.rs src/*.rs examples/$(EXAMPLE).rs
+	@cargo build --example $(EXAMPLE) --release --features "${FEATURES}"
 
 memory.x: memory.x.h
-	cpp -P -I $(SIMTIGHT_ROOT)/inc memory.x.h | grep '.' > memory.x
+	@cpp -P -I $(SIMTIGHT_ROOT)/inc memory.x.h | grep '.' > memory.x
 
 src/prims/config.rs: config.rs.h
-	mkdir -p src/prims/
-	cpp -P -I $(SIMTIGHT_ROOT)/inc -I $(SIMTIGHT_ROOT)/pebbles/inc config.rs.h \
+	@mkdir -p src/prims/
+	@cpp -P -I $(SIMTIGHT_ROOT)/inc -I $(SIMTIGHT_ROOT)/pebbles/inc config.rs.h \
     | grep '.' > src/prims/config.rs
 
 # Raise error if QUARTUS_ROOTDIR not set
@@ -55,5 +55,5 @@ checkenv:
 
 .PHONY: clean
 clean:
-	cargo clean
-	rm -f memory.x Run RunSim Cargo.lock src/prims/config.rs *.v
+	@cargo clean
+	@rm -f memory.x Run RunSim Cargo.lock src/prims/config.rs *.v

@@ -430,6 +430,9 @@ pub fn nocl_run_kernel_verbose<K : Code>(dims : &Dims, params : &mut K) -> u32 {
     }
   }
 
+  // Get number of DRAM accesses
+  print_stat("DRAMAccs: ", prims::config::STAT_DRAM_ACCESSES);
+
   ret
 }
 

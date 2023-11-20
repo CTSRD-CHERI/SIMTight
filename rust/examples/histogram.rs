@@ -92,7 +92,7 @@ fn main() -> ! {
   for i in 0 .. 256 { golden_bins[i] = 0 }
   for i in 0 .. N {
     let idx = input.val[i] as usize;
-    golden_bins[idx] = golden_bins[idx] + 1
+    golden_bins[idx] += 1
   }
   for i in 0 .. 256 {
     ok = ok && bins.val[i] == golden_bins[i]
