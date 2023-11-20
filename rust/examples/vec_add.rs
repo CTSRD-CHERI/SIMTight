@@ -2,23 +2,16 @@
 #![no_main]
 #![allow(unused)]
 
-// External crates being used
-// ==========================
+// Crates being used
+// =================
 
 extern crate panic_halt;
 use riscv_rt::entry;
 
-// Local imports
-// =============
-
-pub mod prims;
-use prims::*;
-
-pub mod nocl;
+extern crate nocl;
 use nocl::*;
-
-pub mod rand;
-use rand::*;
+use nocl::rand::*;
+use nocl::prims::*;
 
 // Benchmark
 // =========
@@ -87,6 +80,5 @@ fn main() -> ! {
   putchar(b'\n');
 
   // The end
-  putchar(0);
-  loop {}
+  end()
 }

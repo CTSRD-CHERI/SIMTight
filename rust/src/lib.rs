@@ -1,7 +1,18 @@
 // Port of NoCL to Rust.
 
+#![no_std]
+#![allow(unused)]
+
+// Imports
+// =======
+
 use core::mem;
-use crate::prims;
+
+pub mod prims;
+use prims::*;
+
+pub mod rand;
+use rand::*;
 
 // Memory alignment
 // ================

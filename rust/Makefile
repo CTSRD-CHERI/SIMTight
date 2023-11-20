@@ -1,33 +1,43 @@
 SIMTIGHT_ROOT ?= $(realpath ../)
 PEBBLES_ROOT  ?= $(realpath $(SIMTIGHT_ROOT)/pebbles)
-TARGET_BINARY ?= target/riscv32ima-unknown-none-elf/release/simtight-rust-app
+EXAMPLE_BASE  ?= target/riscv32ima-unknown-none-elf/release/examples/
+EXAMPLE       ?= vec_add
+TARGET_BINARY ?= $(EXAMPLE_BASE)/$(EXAMPLE)
 RV_OBJCOPY     = riscv64-unknown-elf-objcopy
 
 .PHONY: all
-all: code.v data.v
+all: $(EXAMPLE)-code.v $(EXAMPLE)-data.v
 
-code.v: $(TARGET_BINARY)
-	@$(RV_OBJCOPY) -O verilog --only-section=.text $(TARGET_BINARY) code.v
+$(EXAMPLE)-code.v: $(TARGET_BINARY)
+	@$(RV_OBJCOPY) -O verilog --only-section=.text $(TARGET_BINARY) $@
 
-data.v: $(TARGET_BINARY)
+$(EXAMPLE)-data.v: $(TARGET_BINARY)
 	@$(RV_OBJCOPY) -O verilog --remove-section=.text \
                 --set-section-flags .bss=alloc,load,contents \
                 --set-section-flags .sbss=alloc,load,contents \
-                $(TARGET_BINARY) data.v
+                $(TARGET_BINARY) $@
 
-Run: checkenv code.v data.v Run.cpp
+.PHONY: run-sim
+run-sim: RunSim $(EXAMPLE)-code.v $(EXAMPLE)-data.v
+	./RunSim $(EXAMPLE)
+
+.PHONY: run
+run: RunSim $(EXAMPLE)-code.v $(EXAMPLE)-data.v
+	./Run $(EXAMPLE)
+
+Run: checkenv Run.cpp
 	@g++ -std=c++11 -O2 -I $(PEBBLES_ROOT)/inc \
     -I $(SIMTIGHT_ROOT)/inc -o Run Run.cpp \
     -fno-exceptions -ljtag_atlantic -lpthread \
     -Wl,--no-as-needed -ljtag_client \
     -L $(QUARTUS_ROOTDIR)/linux64/ -Wl,-rpath,$(QUARTUS_ROOTDIR)/linux64
 
-RunSim: code.v data.v Run.cpp
+RunSim: Run.cpp
 	@g++ -DSIMULATE -O2 -I $(PEBBLES_ROOT)/inc \
     -I $(SIMTIGHT_ROOT)/inc -o RunSim Run.cpp
 
 $(TARGET_BINARY): memory.x src/prims/config.rs src/*.rs
-	cargo build --release
+	cargo build --example $(EXAMPLE) --release
 
 memory.x: memory.x.h
 	cpp -P -I $(SIMTIGHT_ROOT)/inc memory.x.h | grep '.' > memory.x
@@ -45,4 +55,4 @@ checkenv:
 .PHONY: clean
 clean:
 	cargo clean
-	rm -f memory.x code.v data.v Run RunSim Cargo.lock src/prims/config.rs
+	rm -f memory.x Run RunSim Cargo.lock src/prims/config.rs *.v

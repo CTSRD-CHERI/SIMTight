@@ -304,3 +304,15 @@ pub fn cache_flush_full() -> () {
   // Issue a fence to ensure flush is complete
   fence()
 }
+
+// Send null to UART and jump to boot loader
+pub fn end() -> ! {
+  putchar(0);
+  unsafe {
+    core::arch::asm!(
+      "jr {base}",
+         base = in(reg) config::MEM_BASE,
+    )
+  }
+  loop {}
+}

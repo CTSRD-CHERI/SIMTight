@@ -3,6 +3,7 @@
 #include <Pebbles/CSRs/StatIds.h>
 
 // Hardware parameters
+pub const MEM_BASE                     : u32 = MemBase;
 pub const SIMT_LANES                   : usize = SIMTLanes;
 pub const SIMT_WARPS                   : usize = SIMTWarps;
 pub const SIMT_LOG_LANES               : usize = SIMTLogLanes;
