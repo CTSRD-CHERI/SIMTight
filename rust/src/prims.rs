@@ -12,6 +12,15 @@ pub fn sim_emit(word: u32) -> () {
   }
 }
 
+// Terminate simulator
+pub fn sim_finish() -> () {
+  unsafe {
+    core::arch::asm!(
+      "csrw 0x801, zero"
+    );
+  }
+}
+
 // Can we send a byte to the UART?
 pub fn uart_can_put() -> bool {
   let can_put : u32;
@@ -101,7 +110,7 @@ pub fn hart_id() -> u32 {
   unsafe {
     core::arch::asm!(
       "csrrw {result}, 0xf14, zero",
-         result = out(reg) id,
+         result = out(reg) id, options(nomem)
     );
   }
   id
@@ -114,7 +123,7 @@ pub fn simt_push() -> () {
     // Custom instruction
     // Opcode: 0000000 rs2 rs1 000 rd 0001001, with rd=0, rs1=0, rs2=0
     core::arch::asm!(
-      ".word 0x00050009"
+      ".word 0x00050009", options(nomem)
     )
   }
 }
@@ -126,7 +135,7 @@ pub fn simt_pop() -> () {
     // Custom instruction
     // Opcode: 0000000 rs2 rs1 001 rd 0001001, with rd=0, rs1=0, rs2=0
     core::arch::asm!(
-      ".word 0x00051009"
+      ".word 0x00051009", options(nomem)
     )
   }
 }
@@ -315,4 +324,19 @@ pub fn end() -> ! {
     )
   }
   loop {}
+}
+
+// Atomic fetch and add
+#[inline(always)]
+pub fn atomic_add(var: &mut i32, inc: i32) -> i32 {
+  unsafe {
+    let ret;
+    core::arch::asm!(
+      "amoadd.w {rd}, {i}, 0({v})",
+         rd = out(reg) ret,
+         v = in(reg) var,
+         i = in(reg) inc,
+    );
+    ret
+  }
 }

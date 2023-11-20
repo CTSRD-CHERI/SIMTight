@@ -5,7 +5,6 @@
 // Crates being used
 // =================
 
-extern crate panic_halt;
 use riscv_rt::entry;
 
 extern crate nocl;

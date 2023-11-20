@@ -448,3 +448,15 @@ pub fn nocl_converge() { prims::simt_converge() }
 // Barrier synchronisation
 #[inline(always)]
 pub fn syncthreads() { prims::simt_converge(); prims::simt_barrier() }
+
+// Panic handling
+// ==============
+
+use core::panic::PanicInfo;
+
+#[panic_handler]
+fn panic(_info: &PanicInfo) -> ! {
+  prims::sim_emit(0xdeaddead);
+  prims::sim_finish();
+  loop {}
+}
