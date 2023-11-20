@@ -2,6 +2,7 @@ SIMTIGHT_ROOT ?= $(realpath ../)
 PEBBLES_ROOT  ?= $(realpath $(SIMTIGHT_ROOT)/pebbles)
 EXAMPLE_BASE  ?= target/riscv32ima-unknown-none-elf/release/examples/
 EXAMPLE       ?= vec_add
+FEATURES      ?=
 TARGET_BINARY ?= $(EXAMPLE_BASE)/$(EXAMPLE)
 RV_OBJCOPY     = riscv64-unknown-elf-objcopy
 
@@ -37,7 +38,7 @@ RunSim: Run.cpp
     -I $(SIMTIGHT_ROOT)/inc -o RunSim Run.cpp
 
 $(TARGET_BINARY): memory.x src/prims/config.rs src/*.rs
-	cargo build --example $(EXAMPLE) --release
+	cargo build --example $(EXAMPLE) --release --features "${FEATURES}"
 
 memory.x: memory.x.h
 	cpp -P -I $(SIMTIGHT_ROOT)/inc memory.x.h | grep '.' > memory.x

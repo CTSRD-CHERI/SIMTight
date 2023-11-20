@@ -5,7 +5,6 @@
 // Crates being used
 // =================
 
-//extern crate panic_halt;
 use riscv_rt::entry;
 
 extern crate nocl;
@@ -53,7 +52,10 @@ fn run<'t> (my : &My, shared : &mut Mem, params: &mut Histogram<'t>) {
 #[entry]
 fn main() -> ! {
   // Vector size for benchmarking
+  #[cfg(not(feature = "large_data_set"))]
   const N : usize = 3000;
+  #[cfg(feature = "large_data_set")]
+  const N : usize = 1000000;
 
   // Input and output vectors
   let mut input : NoCLAligned<[u8; N]> = nocl_aligned([0; N]);

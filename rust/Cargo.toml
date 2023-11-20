@@ -8,3 +8,6 @@ riscv-rt = "0.11.0"
 
 [profile.release]
 debug = true
+
+[features]
+large_data_set = []

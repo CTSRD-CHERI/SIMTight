@@ -34,7 +34,10 @@ impl Code for VecAdd<'_> {
 #[entry]
 fn main() -> ! {
   // Vector size for benchmarking
+  #[cfg(not(feature = "large_data_set"))]
   const N : usize = 3000;
+  #[cfg(feature = "large_data_set")]
+  const N : usize = 1000000;
 
   // Input and output vectors
   let mut a : NoCLAligned<[u32; N]> = nocl_aligned([0; N]);
