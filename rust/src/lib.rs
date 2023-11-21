@@ -88,7 +88,7 @@ pub struct Mem {
 
 // Allocate `n` elements of type `T`.
 #[inline(always)]
-pub fn alloc<T>(mem : &mut Mem, n : usize) -> &mut[T] {
+pub fn alloc<'t0, 't1, T>(mem : &'t0 mut Mem, n : usize) -> &'t1 mut[T] {
   unsafe {
     let num_bytes = n * mem::size_of::<T>();
     let num_bytes_with_padding =

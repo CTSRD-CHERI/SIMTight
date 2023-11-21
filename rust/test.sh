@@ -6,6 +6,7 @@ APPS=(
   vec_add
   histogram
   reduce
+  scan
 )
 
 # Options
