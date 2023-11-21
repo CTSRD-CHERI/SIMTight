@@ -5,6 +5,7 @@ source ../test/test-lib.sh
 APPS=(
   vec_add
   histogram
+  reduce
 )
 
 # Options

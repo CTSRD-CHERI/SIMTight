@@ -110,7 +110,7 @@ pub fn hart_id() -> u32 {
   unsafe {
     core::arch::asm!(
       "csrrw {result}, 0xf14, zero",
-         result = out(reg) id, options(nomem)
+         result = out(reg) id, options(nomem, pure)
     );
   }
   id
@@ -192,6 +192,7 @@ pub fn simt_get_kernel_addr() -> usize {
 
 // Assert condition on SIMT core.
 // Emit in simulation and loop on failure.
+#[inline(always)]
 pub fn simt_assert(cond : bool) {
   if !cond { sim_emit(0xdeadbeef); loop {} }
 }

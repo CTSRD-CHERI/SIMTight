@@ -84,7 +84,6 @@ fn main() -> ! {
 
   // Invoke kernel
   nocl_run_kernel_verbose(&dims, &mut params);
-  putstr("Kernel done\n");
 
   // Check result
   let mut ok = true;
