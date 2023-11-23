@@ -7,6 +7,10 @@ APPS=(
   histogram
   reduce
   scan
+  transpose
+  mat_vec_mul
+  mat_mul
+  bitonic_sort_small
 )
 
 # Options
@@ -100,6 +104,7 @@ if [ "$TestSim" != "" ]; then
   echo "Apps (Simulation)"
   echo "================="
   echo
+  make clean 2> /dev/null
   if [ "$EmitStats" != "" ]; then
     echo "(NOTE: simulation stats can be misleading due to tiny workloads)"
     echo
@@ -121,6 +126,7 @@ if [ "$TestFPGA" != "" ] ; then
   echo "Apps (FPGA)"
   echo "==========="
   echo
+  make clean 2> /dev/null
   tmpDir=$(mktemp -d -t simtight-test-XXXX)
   for APP in ${APPS[@]}; do
     echo -n "$APP (build): "
