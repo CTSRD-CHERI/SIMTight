@@ -59,6 +59,39 @@ fn log2_floor(input : usize) -> usize {
   count
 }
 
+// 2D arrays
+// =========
+
+use core::ops::{Index, IndexMut};
+
+pub struct Array2D<'t, T> {
+  pub width : usize,
+  pub elems : &'t mut [T]
+}
+
+impl<T> Index<usize> for Array2D<'_, T> {
+  type Output = [T];
+  #[inline(always)]
+  fn index<'a>(&'a self, i: usize) -> &'a [T] {
+    let base = i*self.width;
+    &self.elems[base .. base + self.width]
+  }
+}
+
+impl<T> IndexMut<usize> for Array2D<'_, T> {
+  #[inline(always)]
+  fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut [T] {
+    let base = i*self.width;
+    &mut self.elems[base .. base + self.width]
+  }
+}
+
+// Construct 2D array from elements and dimensions
+pub fn array_2d<'t, T>(es : &'t mut [T], w : usize, _h : usize)
+         -> Array2D<'t, T> {
+  Array2D { width : w, elems: es }
+}
+
 // Data types
 // ==========
 
@@ -159,7 +192,7 @@ pub trait Code {
 // =========================
 
 // Execute kernel code for every NoCL thread.
-#[inline(always)]
+#[inline(never)]
 fn nocl_simt_main<K : Code>() -> ! {
   prims::simt_push();
 
