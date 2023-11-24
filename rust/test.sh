@@ -11,6 +11,8 @@ APPS=(
   mat_vec_mul
   mat_mul
   bitonic_sort_small
+  bitonic_sort_large
+  sparse_mat_vec_mul
 )
 
 # Options
