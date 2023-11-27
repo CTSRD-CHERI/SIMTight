@@ -13,6 +13,8 @@ APPS=(
   bitonic_sort_small
   bitonic_sort_large
   sparse_mat_vec_mul
+  blocked_stencil
+  striped_stencil
 )
 
 # Options
