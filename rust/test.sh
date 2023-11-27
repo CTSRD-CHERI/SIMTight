@@ -15,6 +15,8 @@ APPS=(
   sparse_mat_vec_mul
   blocked_stencil
   striped_stencil
+  vec_gcd
+  motion_est
 )
 
 # Options
