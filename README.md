@@ -10,17 +10,15 @@ Instruction Multiple Threads (SIMT)_ model, featuring:
     behaviour in hardware)
   * Parallel scalar/vector pipelines, exploiting scalarisation for
     increased throughput
-  * Register file and store buffer compression, exploiting scalarisation for
+  * Register file and cache compression, exploiting scalarisation for
     reduced on-chip storage and energy
   * Significantly reduces register size and spill overhead of CHERI
   * Runs [CUDA-like C++ library](doc/NoCL.md) and [benchmark suite](apps/)
     (in pure capability mode)
+  * Runs [CUDA-like Rust library](rust/) and [benchmark suite](rust/examples/)
   * Implemented in Haskell using the
     [Blarney](https://github.com/blarney-lang/blarney)
     hardware description library
-  * Modular separation of instruction set and pipelines using the
-    [Pebbles](//github.com/blarney-lang/pebbles)
-    framework
 
 SIMTight is being developed on the [CAPcelerate
 project](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/V000381/1),
