@@ -12,22 +12,27 @@ use nocl::*;
 use nocl::rand::*;
 use nocl::prims::*;
 
+extern crate alloc;
+use alloc::vec;
+use alloc::vec::*;
+use alloc::boxed::*;
+
 // Benchmark
 // =========
 
 const BLOCK_SIZE: usize = (prims::config::SIMT_WARPS *
                            prims::config::SIMT_LANES) as usize;
 
-struct Scan<'t> {
+struct Scan {
   len    : usize,
-  input  : &'t [i32],
-  output : &'t mut [i32]
+  input  : Box<[i32]>,
+  output : Box<[i32]>
 }
 
-impl Code for Scan<'_> {
+impl Code for Scan {
 
 #[inline(always)]
-fn run<'t> (my : &My, shared : &mut Mem, params: &mut Scan<'t>) {
+fn run (my : &My, shared : &mut Scratch, params: &mut Scan) {
   let mut temp_in = alloc::<i32>(shared, BLOCK_SIZE);
   let mut temp_out = alloc::<i32>(shared, BLOCK_SIZE);
 
@@ -63,6 +68,8 @@ fn run<'t> (my : &My, shared : &mut Mem, params: &mut Scan<'t>) {
 
 #[entry]
 fn main() -> ! {
+  nocl_init();
+
   // Vector size for benchmarking
   #[cfg(not(feature = "large_data_set"))]
   const N : usize = 4096;
@@ -70,13 +77,13 @@ fn main() -> ! {
   const N : usize = 1024000;
 
   // Input and output vectors
-  let mut input : NoCLAligned<[i32; N]> = nocl_aligned([0; N]);
-  let mut output : NoCLAligned<[i32; N]> = nocl_aligned([0; N]);
+  let mut input : Vec<i32> = vec![0; N];
+  let mut output : Vec<i32> = vec![0; N];
 
   // Initialise inputs
   let mut seed : u32 = 1;
   for i in 0..N {
-    input.val[i] = rand15(&mut seed) as i32
+    input[i] = rand15(&mut seed) as i32
   }
 
   // Use a single block of threads
@@ -90,18 +97,18 @@ fn main() -> ! {
   // Kernel parameters
   let mut params =
     Scan { len    : N,
-           input  : &input.val[..],
-           output : &mut output.val[..] };
+           input  : input.into(),
+           output : output.into() };
 
   // Invoke kernel
-  nocl_run_kernel_verbose(&dims, &mut params);
+  let params = nocl_run_kernel_verbose(dims, params);
 
   // Check result
   let mut ok = true;
   let mut acc : i32 = 0;
   for i in 0..N {
-    acc += input.val[i];
-    ok = ok && output.val[i] == acc
+    acc += params.input[i];
+    ok = ok && params.output[i] == acc
   }
 
 

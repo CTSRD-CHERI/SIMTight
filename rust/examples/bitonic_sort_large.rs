@@ -22,6 +22,11 @@ use nocl::*;
 use nocl::rand::*;
 use nocl::prims::*;
 
+extern crate alloc;
+use alloc::vec;
+use alloc::vec::*;
+use alloc::boxed::*;
+
 // Benchmark
 // =========
 
@@ -37,20 +42,20 @@ fn two_sort(keys : &mut [u32], vals : &mut [u32],
   nocl_converge()
 }
 
-struct BitonicSortLocal<'t> {
-  d_srckey_arg : &'t [u32],
-  d_srcval_arg : &'t [u32],
-  d_dstkey_arg : &'t mut [u32],
-  d_dstval_arg : &'t mut [u32]
+struct BitonicSortLocal {
+  d_srckey_arg : Box<[u32]>,
+  d_srcval_arg : Box<[u32]>,
+  d_dstkey_arg : Box<[u32]>,
+  d_dstval_arg : Box<[u32]>
 }
 
 // Bottom-level bitonic sort
 // Even / odd subarrays (of LOCAL_SIZE_LIMIT points) are
 // sorted in opposite directions
-impl Code for BitonicSortLocal<'_> {
+impl Code for BitonicSortLocal {
 
 #[inline(always)]
-fn run<'t> (my : &My, shared : &mut Mem, params: &mut BitonicSortLocal<'t>) {
+fn run (my : &My, shared : &mut Scratch, params: &mut BitonicSortLocal) {
   let mut l_key = alloc::<u32>(shared, LOCAL_SIZE_LIMIT);
   let mut l_val = alloc::<u32>(shared, LOCAL_SIZE_LIMIT);
 
@@ -107,19 +112,19 @@ fn run<'t> (my : &My, shared : &mut Mem, params: &mut BitonicSortLocal<'t>) {
 
 }
 
-struct BitonicMergeGlobal<'t> {
+struct BitonicMergeGlobal {
   length   : usize,
   size     : usize,
   stride   : usize,
   sort_dir : bool,
-  d_key    : &'t mut [u32],
-  d_val    : &'t mut [u32]
+  d_key    : Box<[u32]>,
+  d_val    : Box<[u32]>
 }
 
-impl Code for BitonicMergeGlobal<'_> {
+impl Code for BitonicMergeGlobal {
 
 #[inline(always)]
-fn run<'t> (my : &My, shared : &mut Mem, params: &mut BitonicMergeGlobal<'t>) {
+fn run (my : &My, shared : &mut Scratch, params: &mut BitonicMergeGlobal) {
   let global_id = my.block_dim.x * my.block_idx.x + my.thread_idx.x;
   let global_comparator_i = global_id;
   let comparator_i = global_comparator_i & (params.length / 2 - 1);
@@ -148,21 +153,21 @@ fn run<'t> (my : &My, shared : &mut Mem, params: &mut BitonicMergeGlobal<'t>) {
 
 }
 
-struct BitonicMergeLocal<'t> {
+struct BitonicMergeLocal {
   length       : usize,
   size         : usize,
   stride_arg   : usize,
   sort_dir     : bool,
-  d_key_arg : &'t mut [u32],
-  d_val_arg : &'t mut [u32]
+  d_key_arg    : Box<[u32]>,
+  d_val_arg    : Box<[u32]>
 }
 
 //Combined bitonic merge steps for
 //'size' > LOCAL_SIZE_LIMIT and 'stride' = [1 .. LOCAL_SIZE_LIMIT / 2]
-impl Code for BitonicMergeLocal<'_> {
+impl Code for BitonicMergeLocal {
 
 #[inline(always)]
-fn run<'t> (my : &My, shared : &mut Mem, params: &mut BitonicMergeLocal<'t>) {
+fn run (my : &My, shared : &mut Scratch, params: &mut BitonicMergeLocal) {
   let mut l_key = alloc::<u32>(shared, LOCAL_SIZE_LIMIT);
   let mut l_val = alloc::<u32>(shared, LOCAL_SIZE_LIMIT);
 
@@ -201,6 +206,8 @@ fn run<'t> (my : &My, shared : &mut Mem, params: &mut BitonicMergeLocal<'t>) {
 
 #[entry]
 fn main() -> ! {
+  nocl_init();
+
   // Vector size for benchmarking
   #[cfg(not(feature = "large_data_set"))]
   const N : usize = 1 << 13;
@@ -208,16 +215,16 @@ fn main() -> ! {
   const N : usize = 1 << 18;
 
   // Input and output vectors
-  let mut srckeys : NoCLAligned<[u32; N]> = nocl_aligned([0; N]);
-  let mut srcvals : NoCLAligned<[u32; N]> = nocl_aligned([0; N]);
-  let mut dstkeys : NoCLAligned<[u32; N]> = nocl_aligned([0; N]);
-  let mut dstvals : NoCLAligned<[u32; N]> = nocl_aligned([0; N]);
+  let mut srckeys : Vec<u32> = vec![0; N];
+  let mut srcvals : Vec<u32> = vec![0; N];
+  let mut dstkeys : Vec<u32> = vec![0; N];
+  let mut dstvals : Vec<u32> = vec![0; N];
 
   // Initialise inputs
   let mut seed : u32 = 1;
   for i in 0 .. N {
-    srckeys.val[i] = rand15(&mut seed);
-    srcvals.val[i] = rand15(&mut seed)
+    srckeys[i] = rand15(&mut seed);
+    srcvals[i] = rand15(&mut seed)
   }
 
   // Blck & grid dimensions for all kernel invocations
@@ -229,14 +236,18 @@ fn main() -> ! {
     };
 
   // Launch BitonicSortLocal
+  let mut dstkeys : Box<[u32]> = dstkeys.into();
+  let mut dstvals : Box<[u32]> = dstvals.into();
   let mut bsl_params =
     BitonicSortLocal {
-      d_srckey_arg : &srckeys.val[..],
-      d_srcval_arg : &srcvals.val[..],
-      d_dstkey_arg : &mut dstkeys.val[..],
-      d_dstval_arg : &mut dstvals.val[..]
+      d_srckey_arg : srckeys.into(),
+      d_srcval_arg : srcvals.into(),
+      d_dstkey_arg : dstkeys,
+      d_dstval_arg : dstvals
     };
-  nocl_run_kernel_verbose(&dims, &mut bsl_params);
+  let bsl_params = nocl_run_kernel_verbose(dims, bsl_params);
+  let mut dstkeys = bsl_params.d_dstkey_arg;
+  let mut dstvals = bsl_params.d_dstval_arg;
 
   let mut size = 2 * LOCAL_SIZE_LIMIT;
   while size <= N {
@@ -250,10 +261,12 @@ fn main() -> ! {
             size     : size,
             stride   : stride,
             sort_dir : true,
-            d_key    : &mut dstkeys.val[..],
-            d_val    : &mut dstvals.val[..]
+            d_key    : dstkeys,
+            d_val    : dstvals
           };
-        nocl_run_kernel_verbose(&dims, &mut bmg_params);
+        let bmg_params = nocl_run_kernel_verbose(dims, bmg_params);
+        dstkeys = bmg_params.d_key;
+        dstvals = bmg_params.d_val;
       }
       else {
         // Launch BitonicMergeLocal
@@ -263,10 +276,12 @@ fn main() -> ! {
             size        : size,
             stride_arg  : stride,
             sort_dir    : true,
-            d_key_arg   : &mut dstkeys.val[..],
-            d_val_arg   : &mut dstvals.val[..]
+            d_key_arg   : dstkeys,
+            d_val_arg   : dstvals
           };
-        nocl_run_kernel_verbose(&dims, &mut bml_params);
+        let bml_params = nocl_run_kernel_verbose(dims, bml_params);
+        dstkeys = bml_params.d_key_arg;
+        dstvals = bml_params.d_val_arg;
         break
       }
       stride = stride >> 1
@@ -277,7 +292,7 @@ fn main() -> ! {
   // Check result
   let mut ok = true;
   for i in 0 .. N-1 {
-    ok = ok && dstkeys.val[i] <= dstkeys.val[i+1]
+    ok = ok && dstkeys[i] <= dstkeys[i+1]
   }
 
   // Display result

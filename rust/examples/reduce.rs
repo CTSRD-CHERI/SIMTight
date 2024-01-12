@@ -12,27 +12,31 @@ use nocl::*;
 use nocl::rand::*;
 use nocl::prims::*;
 
+extern crate alloc;
+use alloc::vec;
+use alloc::vec::*;
+use alloc::boxed::*;
+
 // Benchmark
 // =========
 
 const BLOCK_SIZE: usize = (prims::config::SIMT_WARPS *
                            prims::config::SIMT_LANES) as usize;
 
-struct Reduce<'t> {
-  len    : usize,
-  input  : &'t [i32],
-  sum    : &'t mut i32
+struct Reduce {
+  input  : Box<[i32]>,
+  sum    : Box<i32>
 }
 
-impl Code for Reduce<'_> {
+impl Code for Reduce {
 
 #[inline(always)]
-fn run<'t> (my : &My, shared : &mut Mem, params: &mut Reduce<'t>) {
+fn run (my : &My, shared : &mut Mem, params: &mut Reduce) {
   let mut block = alloc::<i32>(shared, BLOCK_SIZE);
 
   // Sum global memory
   block[my.thread_idx.x] = 0;
-  for i in (my.thread_idx.x .. params.len).step_by(my.block_dim.x) {
+  for i in (my.thread_idx.x .. params.input.len()).step_by(my.block_dim.x) {
     block[my.thread_idx.x] += params.input[i]
   }
 
@@ -56,6 +60,8 @@ fn run<'t> (my : &My, shared : &mut Mem, params: &mut Reduce<'t>) {
 
 #[entry]
 fn main() -> ! {
+  nocl_init();
+
   // Vector size for benchmarking
   #[cfg(not(feature = "large_data_set"))]
   const N : usize = 3000;
@@ -63,15 +69,15 @@ fn main() -> ! {
   const N : usize = 1000000;
 
   // Input and output vectors
-  let mut input : NoCLAligned<[i32; N]> = nocl_aligned([0; N]);
-  let mut sum : i32 = 0;
+  let mut input : Vec<i32> = vec![0; N];
+  let mut sum = 0;
 
   // Initialise inputs
   let mut seed : u32 = 1;
   let mut acc : i32 = 0;
   for i in 0..N {
     let r = rand15(&mut seed) as i32;
-    input.val[i] = r;
+    input[i] = r;
     acc += r
   }
 
@@ -85,15 +91,14 @@ fn main() -> ! {
  
   // Kernel parameters
   let mut params =
-    Reduce { len   : N,
-             input : &input.val[..],
-             sum   : &mut sum };
+    Reduce { input : input.into(),
+             sum   : sum.into() };
 
   // Invoke kernel
-  nocl_run_kernel_verbose(&dims, &mut params);
+  params = nocl_run_kernel_verbose(dims, params);
 
   // Check result
-  let ok = sum == acc;
+  let ok = *params.sum == acc;
 
   // Display result
   putstr("Self test: ");

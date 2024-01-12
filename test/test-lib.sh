@@ -130,7 +130,7 @@ prepare_sim() {
     ./sim &
     SIM_PID=$!
   else
-    stdbuf -oL ./sim > $WorkingDir/$SIM_LOG_FILE &
+    (stdbuf -oL -eL ./sim &> $SIM_LOG_FILE) &
     SIM_PID=$!
   fi
   sleep 1

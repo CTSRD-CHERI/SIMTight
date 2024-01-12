@@ -23,7 +23,7 @@ run-sim: RunSim $(EXAMPLE)-code.v $(EXAMPLE)-data.v
 	./RunSim $(EXAMPLE)
 
 .PHONY: run
-run: RunSim $(EXAMPLE)-code.v $(EXAMPLE)-data.v
+run: Run $(EXAMPLE)-code.v $(EXAMPLE)-data.v
 	./Run $(EXAMPLE)
 
 Run: checkenv Run.cpp

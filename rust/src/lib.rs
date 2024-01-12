@@ -7,12 +7,54 @@
 // =======
 
 use core::mem;
+use core::alloc::Layout;
+use core::alloc::GlobalAlloc;
+use linked_list_allocator::LockedHeap;
+
+extern crate alloc;
+use alloc::boxed::*;
 
 pub mod prims;
 use prims::*;
 
 pub mod rand;
 use rand::*;
+
+// Memory allocator
+// ================
+
+extern "C" {
+  static _sheap: u8;
+  static _heap_size: u8;
+}
+
+struct AlignedLockedHeap {
+  heap: LockedHeap
+}
+
+#[global_allocator]
+static ALLOCATOR : AlignedLockedHeap =
+  AlignedLockedHeap { heap: LockedHeap::empty() };
+
+unsafe impl GlobalAlloc for AlignedLockedHeap {
+  unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
+    let aligned_layout = Layout::from_size_align_unchecked(layout.size(),
+                           core::cmp::max(layout.align(), 128));
+    self.heap.alloc(aligned_layout)
+  }
+  unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {
+    self.heap.dealloc(ptr, layout)
+  }
+}
+
+pub fn nocl_init() {
+  // Initialise allocator
+  unsafe {
+    let heap_start = &_sheap as *const u8 as usize;
+    let heap_size = &_heap_size as *const u8 as usize;
+    ALLOCATOR.heap.lock().init(heap_start as *mut u8, heap_size);
+  }
+}
 
 // Memory alignment
 // ================
@@ -37,6 +79,11 @@ pub fn nocl_aligned<T>(a: T) -> NoCLAligned<T> {
     val: a,
   }
 }
+
+// Buffers
+// =======
+
+pub type Buffer<T> = Box<[T]>;
 
 // Utility functions
 // =================
@@ -118,6 +165,9 @@ pub struct Mem {
   // Byte pointer to next remaining space
   next : *mut u8
 }
+
+// Perhaps a better name
+pub type Scratch = Mem;
 
 // Allocate `n` elements of type `T`.
 #[inline(always)]
@@ -282,7 +332,7 @@ fn nocl_simt_entry<K : Code>() -> ! {
 
 // Run given kernel on device.
 // Return error code given by device.
-pub fn nocl_run_kernel<K : Code>(dims : &Dims, params : &mut K) -> u32 {
+pub fn nocl_run_kernel<K : Code>(dims : Dims, mut params : K) -> (K, u32) {
   let threads_per_block = dims.block_dim.x * dims.block_dim.y;
   let threads_used = threads_per_block * dims.grid_dim.x * dims.grid_dim.y;
   let simt_threads = prims::config::SIMT_WARPS *
@@ -370,9 +420,9 @@ pub fn nocl_run_kernel<K : Code>(dims : &Dims, params : &mut K) -> u32 {
   // Create kernel structure
   let k = 
     Kernel {
-      dims: *dims,
+      dims: dims,
       map: map,
-      params: params,
+      params: &mut params,
     };
 
   // Set address of kernel structure
@@ -392,7 +442,9 @@ pub fn nocl_run_kernel<K : Code>(dims : &Dims, params : &mut K) -> u32 {
 
   // Wait for kernel response
   while !prims::simt_host_can_get() {};
-  prims::simt_host_get()
+  let ret = prims::simt_host_get();
+
+  (params, ret)
 }
 
 // Ask device for particular performance stat
@@ -407,8 +459,8 @@ pub fn print_stat(msg : &str, stat_id : u32) -> ()
 
 // Run given kernel on device.
 // Emit stats and any error messages.
-pub fn nocl_run_kernel_verbose<K : Code>(dims : &Dims, params : &mut K) -> u32 {
-  let ret = nocl_run_kernel(dims, params);
+pub fn nocl_run_kernel_verbose<K : Code>(dims : Dims, mut params : K) -> K {
+  let (params, ret) = nocl_run_kernel(dims, params);
 
   // Check return code
   if ret == 1 { prims::putstr("Kernel failed\n") };
@@ -466,7 +518,7 @@ pub fn nocl_run_kernel_verbose<K : Code>(dims : &Dims, params : &mut K) -> u32 {
   // Get number of DRAM accesses
   print_stat("DRAMAccs: ", prims::config::STAT_DRAM_ACCESSES);
 
-  ret
+  params
 }
 
 // Convergence and synchronisation

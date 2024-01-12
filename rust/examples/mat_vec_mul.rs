@@ -12,23 +12,28 @@ use nocl::*;
 use nocl::rand::*;
 use nocl::prims::*;
 
+extern crate alloc;
+use alloc::vec;
+use alloc::vec::*;
+use alloc::boxed::*;
+
 // Benchmark
 // =========
 
 const BLOCK_SIZE: usize = prims::config::SIMT_LANES as usize;
 
-struct MatVecMul<'t> {
+struct MatVecMul {
   width   : usize,
   height  : usize,
-  mat     : &'t [i32],
-  vec_in  : &'t [i32],
-  vec_out : &'t mut [i32]
+  mat     : Box<[i32]>,
+  vec_in  : Box<[i32]>,
+  vec_out : Box<[i32]>
 }
 
-impl Code for MatVecMul<'_> {
+impl Code for MatVecMul {
 
 #[inline(always)]
-fn run<'t> (my : &My, shared : &mut Mem, params: &mut MatVecMul<'t>) {
+fn run (my : &My, shared : &mut Scratch, params: &mut MatVecMul) {
   let mut partial = alloc::<i32>(shared, BLOCK_SIZE);
 
   for y in (my.block_idx.x .. params.height).step_by(my.grid_dim.x) {
@@ -64,6 +69,8 @@ fn run<'t> (my : &My, shared : &mut Mem, params: &mut MatVecMul<'t>) {
 
 #[entry]
 fn main() -> ! {
+  nocl_init();
+
   // Matrix size for benchmarking
   #[cfg(not(feature = "large_data_set"))]
   const WIDTH : usize = 128;
@@ -75,21 +82,18 @@ fn main() -> ! {
   const HEIGHT : usize = 1024;
 
   // Input and output matrix data
-  let mut mat : NoCLAligned<[i32; WIDTH*HEIGHT]> =
-        nocl_aligned([0; WIDTH*HEIGHT]);
-  let mut vec_in : NoCLAligned<[i32; WIDTH]> =
-        nocl_aligned([0; WIDTH]);
-  let mut vec_out : NoCLAligned<[i32; HEIGHT]> =
-        nocl_aligned([0; HEIGHT]);
+  let mut mat : Vec<i32> = vec![0; WIDTH*HEIGHT];
+  let mut vec_in : Vec<i32> = vec![0; WIDTH];
+  let mut vec_out : Vec<i32> = vec![0; HEIGHT];
 
   // Initialise inputs
   let mut seed : u32 = 1;
   for j in 0..WIDTH {
-    vec_in.val[j] = rand15(&mut seed) as i32
+    vec_in[j] = rand15(&mut seed) as i32
   }
   for i in 0..HEIGHT {
     for j in 0..WIDTH {
-      mat.val[i*WIDTH + j] = rand15(&mut seed) as i32
+      mat[i*WIDTH + j] = rand15(&mut seed) as i32
     }
   }
 
@@ -106,21 +110,21 @@ fn main() -> ! {
   let mut params =
     MatVecMul { width   : WIDTH,
                 height  : HEIGHT,
-                mat     : &mat.val[..],
-                vec_in  : &vec_in.val[..],
-                vec_out : &mut vec_out.val[..] };
+                mat     : mat.into(),
+                vec_in  : vec_in.into(),
+                vec_out : vec_out.into() };
 
   // Invoke kernel
-  nocl_run_kernel_verbose(&dims, &mut params);
+  let params = nocl_run_kernel_verbose(dims, params);
 
   // Check result
   let mut ok = true;
   for i in 0 .. HEIGHT {
     let mut sum = 0;
     for j in 0 .. WIDTH {
-      sum += mat.val[i*WIDTH+j] * vec_in.val[j]
+      sum += params.mat[i*WIDTH+j] * params.vec_in[j]
     }
-    ok = ok && sum == vec_out.val[i]
+    ok = ok && sum == params.vec_out[i]
   }
 
   // Display result
