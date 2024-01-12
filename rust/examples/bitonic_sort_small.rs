@@ -22,6 +22,11 @@ use nocl::*;
 use nocl::rand::*;
 use nocl::prims::*;
 
+extern crate alloc;
+use alloc::vec;
+use alloc::vec::*;
+use alloc::boxed::*;
+
 // Benchmark
 // =========
 
@@ -37,19 +42,19 @@ fn two_sort(keys : &mut [u32], vals : &mut [u32],
   nocl_converge()
 }
 
-struct BitonicSortLocal<'t> {
+struct BitonicSortLocal {
   length       : usize,
   sort_dir     : bool,
-  d_srckey_arg : &'t [u32],
-  d_srcval_arg : &'t [u32],
-  d_dstkey_arg : &'t mut [u32],
-  d_dstval_arg : &'t mut [u32]
+  d_srckey_arg : Box<[u32]>,
+  d_srcval_arg : Box<[u32]>,
+  d_dstkey_arg : Box<[u32]>,
+  d_dstval_arg : Box<[u32]>
 }
 
-impl Code for BitonicSortLocal<'_> {
+impl Code for BitonicSortLocal {
 
 #[inline(always)]
-fn run<'t> (my : &My, shared : &mut Mem, params: &mut BitonicSortLocal<'t>) {
+fn run (my : &My, shared : &mut Scratch, params: &mut BitonicSortLocal) {
   let mut l_key = alloc::<u32>(shared, LOCAL_SIZE_LIMIT);
   let mut l_val = alloc::<u32>(shared, LOCAL_SIZE_LIMIT);
 
@@ -103,6 +108,8 @@ fn run<'t> (my : &My, shared : &mut Mem, params: &mut BitonicSortLocal<'t>) {
 
 #[entry]
 fn main() -> ! {
+  nocl_init();
+
   // Vector size for benchmarking
   const N : usize = LOCAL_SIZE_LIMIT;
   #[cfg(not(feature = "large_data_set"))]
@@ -111,16 +118,16 @@ fn main() -> ! {
   const BATCH : usize = 32;
 
   // Input and output vectors
-  let mut srckeys : NoCLAligned<[u32; N*BATCH]> = nocl_aligned([0; N*BATCH]);
-  let mut srcvals : NoCLAligned<[u32; N*BATCH]> = nocl_aligned([0; N*BATCH]);
-  let mut dstkeys : NoCLAligned<[u32; N*BATCH]> = nocl_aligned([0; N*BATCH]);
-  let mut dstvals : NoCLAligned<[u32; N*BATCH]> = nocl_aligned([0; N*BATCH]);
+  let mut srckeys : Vec<u32> = vec![0; N*BATCH];
+  let mut srcvals : Vec<u32> = vec![0; N*BATCH];
+  let mut dstkeys : Vec<u32> = vec![0; N*BATCH];
+  let mut dstvals : Vec<u32> = vec![0; N*BATCH];
 
   // Initialise inputs
   let mut seed : u32 = 1;
   for i in 0 .. N*BATCH {
-    srckeys.val[i] = rand15(&mut seed);
-    srcvals.val[i] = rand15(&mut seed)
+    srckeys[i] = rand15(&mut seed);
+    srcvals[i] = rand15(&mut seed)
   }
 
   // Use a single block of threads
@@ -136,20 +143,20 @@ fn main() -> ! {
     BitonicSortLocal {
       length       : N,
       sort_dir     : true,
-      d_srckey_arg : &srckeys.val[..],
-      d_srcval_arg : &srcvals.val[..],
-      d_dstkey_arg : &mut dstkeys.val[..],
-      d_dstval_arg : &mut dstvals.val[..]
+      d_srckey_arg : srckeys.into(),
+      d_srcval_arg : srcvals.into(),
+      d_dstkey_arg : dstkeys.into(),
+      d_dstval_arg : dstvals.into()
     };
 
   // Invoke kernel
-  nocl_run_kernel_verbose(&dims, &mut params);
+  let params = nocl_run_kernel_verbose(dims, params);
 
   // Check result
   let mut ok = true;
   for b in 0..BATCH {
     for i in 0 .. N-1 {
-      ok = ok && dstkeys.val[b*N+i] <= dstkeys.val[b*N+i+1]
+      ok = ok && params.d_dstkey_arg[b*N+i] <= params.d_dstkey_arg[b*N+i+1]
     }
   }
 

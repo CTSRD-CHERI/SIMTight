@@ -25,7 +25,7 @@ APPS=(
 TestSim=
 TestFPGA=
 NoPgm=
-LogSim=
+LogSim=yup
 EmitStats=
 
 while :
@@ -37,7 +37,7 @@ do
       echo "  --fpga-d      run on FPGA (de10-pro revD)"
       echo "  --fpga-e      run on FPGA (de10-pro revE)"
       echo "  --no-pgm      don't reprogram FPGA"
-      echo "  --log-sim     log simulator output to sim-log.txt"
+      echo "  --no-log-sim  don't log simulator output"
       echo "  --stats       emit performance stats"
       exit
       ;;
@@ -53,8 +53,8 @@ do
     --no-pgm)
       NoPgm=yup
       ;;
-    --log-sim)
-      LogSim=yup
+    --no-log-sim)
+      LogSim=
       ;;
     --stats)
       EmitStats=yup
@@ -81,7 +81,7 @@ fi
 
 # Prepare simulator
 SIM_PID=
-SIM_LOG_FILE=sim-log.txt
+SIM_LOG_FILE=$PWD/sim-log.txt
 if [ "$TestSim" != "" ]; then
   prepare_sim
 fi

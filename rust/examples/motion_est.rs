@@ -12,16 +12,21 @@ use nocl::*;
 use nocl::rand::*;
 use nocl::prims::*;
 
+extern crate alloc;
+use alloc::vec;
+use alloc::vec::*;
+use alloc::boxed::*;
+
 // Benchmark
 // =========
 
 const RADIUS: usize = 4;
 
-struct MotionEst<'t> {
+struct MotionEst {
   frame_width   : usize,
   frame_height  : usize,
-  prev_frame    : &'t [i32],
-  current_frame : &'t [i32],
+  prev_frame    : Box<[i32]>,
+  current_frame : Box<[i32]>,
 
    // Origin and dimensions of region being processed
   region_origin_x   : usize,
@@ -30,13 +35,13 @@ struct MotionEst<'t> {
   region_log_height : usize,
 
   // Output SAD per motion vector per pixel block
-  sads : &'t mut [i32]
+  sads : Box<[i32]>
 }
 
-impl Code for MotionEst<'_> {
+impl Code for MotionEst {
 
 #[inline(always)]
-fn run<'t> (my : &My, shared : &mut Mem, params: &mut MotionEst<'t>) {
+fn run (my : &My, shared : &mut Scratch, params: &mut MotionEst) {
   let region_width = 1 << params.region_log_width;
   let region_height = 1 << params.region_log_height;
   let mut current = alloc::<i32>(shared, region_width * region_height);
@@ -126,6 +131,8 @@ fn run<'t> (my : &My, shared : &mut Mem, params: &mut MotionEst<'t>) {
 
 #[entry]
 fn main() -> ! {
+  nocl_init();
+
   // Matrix size for benchmarking
   #[cfg(not(feature = "large_data_set"))]
   const LOG_WIDTH : usize = 3;
@@ -144,19 +151,16 @@ fn main() -> ! {
   const NUM_OUTPUTS : usize = (WIDTH/4)*(HEIGHT/4)*(2*RADIUS+1)*(2*RADIUS+1);
 
   // Input frames and output SADs
-  let mut current_frame : NoCLAligned<[i32; WIDTH*HEIGHT]> =
-        nocl_aligned([0; WIDTH*HEIGHT]);
-  let mut prev_frame : NoCLAligned<[i32; WIDTH*HEIGHT]> =
-        nocl_aligned([0; WIDTH*HEIGHT]);
-  let mut sads : NoCLAligned<[i32; NUM_OUTPUTS]> =
-        nocl_aligned([0; NUM_OUTPUTS]);
+  let mut current_frame : Vec<i32> = vec![0; WIDTH*HEIGHT];
+  let mut prev_frame : Vec<i32> = vec![0; WIDTH*HEIGHT];
+  let mut sads : Vec<i32> = vec![0; NUM_OUTPUTS];
 
   // Prepare inputs
   let mut seed : u32 = 1;
   for y in 0..HEIGHT {
     for x in 0..WIDTH {
-      current_frame.val[y*WIDTH + x] = (rand15(&mut seed) & 0xff) as i32;
-      prev_frame.val[y*WIDTH + x] = (rand15(&mut seed) & 0xff) as i32
+      current_frame[y*WIDTH + x] = (rand15(&mut seed) & 0xff) as i32;
+      prev_frame[y*WIDTH + x] = (rand15(&mut seed) & 0xff) as i32
     }
   }
 
@@ -177,12 +181,12 @@ fn main() -> ! {
                 region_origin_y   : 0,
                 region_log_width  : LOG_WIDTH,
                 region_log_height : LOG_HEIGHT,
-                current_frame     : &current_frame.val[..],
-                prev_frame        : &prev_frame.val[..],
-                sads              : &mut sads.val[..] };
+                current_frame     : current_frame.into(),
+                prev_frame        : prev_frame.into(),
+                sads              : sads.into() };
 
   // Invoke kernel
-  nocl_run_kernel_verbose(&dims, &mut params);
+  let params = nocl_run_kernel_verbose(dims, params);
 
   // Check result
   let mut ok = true;
@@ -196,17 +200,17 @@ fn main() -> ! {
           let mut sad = 0;
           for y in 0..4 {
             for x in 0..4 {
-              let mut diff = current_frame.val[(cy+y) * WIDTH + cx + x];
+              let mut diff = params.current_frame[(cy+y) * WIDTH + cx + x];
               if (py + (y as i32) >= 0 && py + (y as i32) < (HEIGHT as i32) &&
                   px + (x as i32) >= 0 && px + (x as i32) < (WIDTH as i32)) {
-                diff = diff - prev_frame.val[((py as usize) + y) *
+                diff = diff - params.prev_frame[((py as usize) + y) *
                          WIDTH + (px as usize) + x];
               }
               if diff < 0 { diff = -diff };
               sad += diff
             }
           }
-          ok = ok && sads.val[out_count] == sad;
+          ok = ok && params.sads[out_count] == sad;
           out_count += 1
         }
       }

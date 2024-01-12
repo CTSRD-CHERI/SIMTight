@@ -12,6 +12,11 @@ use nocl::*;
 use nocl::rand::*;
 use nocl::prims::*;
 
+extern crate alloc;
+use alloc::vec;
+use alloc::vec::*;
+use alloc::boxed::*;
+
 // Benchmark
 // =========
 
@@ -34,16 +39,16 @@ fn gcd(x_arg : u32, y_arg : u32) -> u32 {
   return x;
 }
 
-struct VecGCD<'t> {
+struct VecGCD {
   len    : usize,
-  a      : &'t [u32],
-  b      : &'t [u32],
-  result : &'t mut[u32]
+  a      : Box<[u32]>,
+  b      : Box<[u32]>,
+  result : Box<[u32]>
 }
 
-impl Code for VecGCD<'_> {
+impl Code for VecGCD {
   #[inline(always)]
-  fn run<'t> (my : &My, shared : &mut Mem, params: &mut VecGCD<'t>) {
+  fn run (my : &My, shared : &mut Scratch, params: &mut VecGCD) {
     for i in (my.thread_idx.x .. params.len).step_by(my.block_dim.x) {
       params.result[i] = gcd(params.a[i], params.b[i])
     }
@@ -52,6 +57,8 @@ impl Code for VecGCD<'_> {
 
 #[entry]
 fn main() -> ! {
+  nocl_init();
+
   // Vector size for benchmarking
   #[cfg(not(feature = "large_data_set"))]
   const N : usize = 100;
@@ -59,15 +66,15 @@ fn main() -> ! {
   const N : usize = 100000;
 
   // Input and output vectors
-  let mut a : NoCLAligned<[u32; N]> = nocl_aligned([0; N]);
-  let mut b : NoCLAligned<[u32; N]> = nocl_aligned([0; N]);
-  let mut result : NoCLAligned<[u32; N]> = nocl_aligned([0; N]);
+  let mut a : Vec<u32> = vec![0; N];
+  let mut b : Vec<u32> = vec![0; N];
+  let mut result : Vec<u32> = vec![0; N];
 
   // Initialise inputs
   let mut seed : u32 = 100;
   for i in 0..N {
-    a.val[i] = 1 + (rand15(&mut seed) & 0xff);
-    b.val[i] = 1 + (rand15(&mut seed) & 0xff);
+    a[i] = 1 + (rand15(&mut seed) & 0xff);
+    b[i] = 1 + (rand15(&mut seed) & 0xff);
   }
 
   // Use a single block of threads
@@ -82,17 +89,17 @@ fn main() -> ! {
   // Kernel parameters
   let mut params =
     VecGCD { len    : N,
-             a      : &a.val[..],
-             b      : &b.val[..],
-             result : &mut result.val[..] };
+             a      : a.into(),
+             b      : b.into(),
+             result : result.into() };
 
   // Invoke kernel
-  nocl_run_kernel_verbose(&dims, &mut params);
+  let params = nocl_run_kernel_verbose(dims, params);
 
   // Check result
   let mut ok = true;
   for i in 0 .. N {
-    ok = ok && result.val[i] == gcd(a.val[i], b.val[i])
+    ok = ok && params.result[i] == gcd(params.a[i], params.b[i])
   }
 
   // Display result

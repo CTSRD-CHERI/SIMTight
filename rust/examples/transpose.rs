@@ -12,22 +12,27 @@ use nocl::*;
 use nocl::rand::*;
 use nocl::prims::*;
 
+extern crate alloc;
+use alloc::vec;
+use alloc::vec::*;
+use alloc::boxed::*;
+
 // Benchmark
 // =========
 
 const SQUARE_SIZE: usize = prims::config::SIMT_LANES as usize;
 
-struct Transpose<'t> {
+struct Transpose {
   width  : usize,
   height : usize,
-  input  : &'t [i32],
-  output : &'t mut [i32]
+  input  : Box<[i32]>,
+  output : Box<[i32]>
 }
 
-impl Code for Transpose<'_> {
+impl Code for Transpose {
 
 #[inline(always)]
-fn run<'t> (my : &My, shared : &mut Mem, params: &mut Transpose<'t>) {
+fn run (my : &My, shared : &mut Scratch, params: &mut Transpose) {
   let mut square = alloc::<i32>(shared, (SQUARE_SIZE+1) * SQUARE_SIZE);
 
   // Origin of square within matrix
@@ -53,6 +58,8 @@ fn run<'t> (my : &My, shared : &mut Mem, params: &mut Transpose<'t>) {
 
 #[entry]
 fn main() -> ! {
+  nocl_init();
+
   // Matrix size for benchmarking
   #[cfg(not(feature = "large_data_set"))]
   const WIDTH : usize = 256;
@@ -64,16 +71,14 @@ fn main() -> ! {
   const HEIGHT : usize = 512;
 
   // Input and output matrix data
-  let mut mat_in : NoCLAligned<[i32; WIDTH*HEIGHT]> =
-        nocl_aligned([0; WIDTH*HEIGHT]);
-  let mut mat_out : NoCLAligned<[i32; WIDTH*HEIGHT]> =
-        nocl_aligned([0; WIDTH*HEIGHT]);
+  let mut mat_in : Vec<i32> = vec![0; WIDTH*HEIGHT];
+  let mut mat_out : Vec<i32> = vec![0; WIDTH*HEIGHT];
 
   // Initialise inputs
   let mut seed : u32 = 1;
   for i in 0..HEIGHT {
     for j in 0..WIDTH {
-      mat_in.val[i*WIDTH + j] = rand15(&mut seed) as i32
+      mat_in[i*WIDTH + j] = rand15(&mut seed) as i32
     }
   }
 
@@ -94,17 +99,18 @@ fn main() -> ! {
   let mut params =
     Transpose { width  : WIDTH,
                 height : HEIGHT,
-                input  : &mat_in.val[..],
-                output : &mut mat_out.val[..] };
+                input  : mat_in.into(),
+                output : mat_out.into() };
 
   // Invoke kernel
-  nocl_run_kernel_verbose(&dims, &mut params);
+  let params = nocl_run_kernel_verbose(dims, params);
 
   // Check result
   let mut ok = true;
   for i in 0 .. HEIGHT {
     for j in 0 .. WIDTH {
-      ok = ok && mat_out.val[j*HEIGHT + i] == mat_in.val[i*WIDTH + j];
+      ok = ok && params.output[j*HEIGHT + i] ==
+                 params.input[i*WIDTH + j];
     }
   }
 

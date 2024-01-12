@@ -40,23 +40,28 @@ use nocl::*;
 use nocl::rand::*;
 use nocl::prims::*;
 
+extern crate alloc;
+use alloc::vec;
+use alloc::vec::*;
+use alloc::boxed::*;
+
 // Benchmark
 // =========
 
 const BLOCK_SIZE: usize = prims::config::SIMT_LANES as usize;
 
-struct MatMul<'t> {
+struct MatMul {
   a_width : usize,
   b_width : usize,
-  a       : &'t [i32],
-  b       : &'t [i32],
-  c       : &'t mut [i32]
+  a       : Box<[i32]>,
+  b       : Box<[i32]>,
+  c       : Box<[i32]>
 }
 
-impl Code for MatMul<'_> {
+impl Code for MatMul {
 
 #[inline(always)]
-fn run<'t> (my : &My, shared : &mut Mem, params: &mut MatMul<'t>) {
+fn run (my : &My, shared : &mut Scratch, params: &mut MatMul) {
   // Declaration of the shared memory array As used to
   // store the sub-matrix of A
   let mut a_sub = alloc::<i32>(shared, BLOCK_SIZE * BLOCK_SIZE);
@@ -132,6 +137,8 @@ fn run<'t> (my : &My, shared : &mut Mem, params: &mut MatMul<'t>) {
 
 #[entry]
 fn main() -> ! {
+  nocl_init();
+
   // Matrix size for benchmarking
   #[cfg(not(feature = "large_data_set"))]
   const SIZE : usize = 64;
@@ -139,21 +146,17 @@ fn main() -> ! {
   const SIZE : usize = 256;
 
   // Input and output matrix data
-  let mut mat_a : NoCLAligned<[i32; SIZE*SIZE]> =
-        nocl_aligned([0; SIZE*SIZE]);
-  let mut mat_b : NoCLAligned<[i32; SIZE*SIZE]> =
-        nocl_aligned([0; SIZE*SIZE]);
-  let mut mat_c : NoCLAligned<[i32; SIZE*SIZE]> =
-        nocl_aligned([0; SIZE*SIZE]);
-  let mut mat_check : NoCLAligned<[i32; SIZE*SIZE]> =
-        nocl_aligned([0; SIZE*SIZE]);
+  let mut mat_a : Vec<i32> = vec![0; SIZE*SIZE];
+  let mut mat_b : Vec<i32> = vec![0; SIZE*SIZE];
+  let mut mat_c : Vec<i32> = vec![0; SIZE*SIZE];
+  let mut mat_check : Vec<i32> = vec![0; SIZE*SIZE];
 
   // Initialise inputs
   let mut seed : u32 = 1;
   for i in 0..SIZE {
     for j in 0..SIZE {
-      mat_a.val[i*SIZE+j] = (rand15(&mut seed) & 0xff) as i32;
-      mat_b.val[i*SIZE+j] = (rand15(&mut seed) & 0xff) as i32
+      mat_a[i*SIZE+j] = (rand15(&mut seed) & 0xff) as i32;
+      mat_b[i*SIZE+j] = (rand15(&mut seed) & 0xff) as i32
     }
   }
 
@@ -170,25 +173,25 @@ fn main() -> ! {
   let mut params =
     MatMul { a_width : SIZE,
              b_width : SIZE,
-             a       : &mat_a.val[..],
-             b       : &mat_b.val[..],
-             c       : &mut mat_c.val[..] };
+             a       : mat_a.into(),
+             b       : mat_b.into(),
+             c       : mat_c.into() };
 
   // Invoke kernel
-  nocl_run_kernel_verbose(&dims, &mut params);
+  let params = nocl_run_kernel_verbose(dims, params);
 
   // Check result
   let mut ok = true;
   for i in 0 .. SIZE {
     for j in 0 .. SIZE {
       for k in 0 .. SIZE {
-        mat_check.val[i*SIZE+j] += mat_a.val[i*SIZE+k] * mat_b.val[k*SIZE+j]
+        mat_check[i*SIZE+j] += params.a[i*SIZE+k] * params.b[k*SIZE+j]
       }
     }
   }
   for i in 0 .. SIZE {
     for j in 0 .. SIZE {
-      ok = ok && mat_check.val[i*SIZE+j] == mat_c.val[i*SIZE+j]
+      ok = ok && mat_check[i*SIZE+j] == params.c[i*SIZE+j]
     }
   }
 

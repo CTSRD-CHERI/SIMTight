@@ -94,14 +94,12 @@ if [ "$TestSim" == "" ] && [ "$TestFPGA" == "" ]; then
   TestSim=yup
 fi
 
-WorkingDir=`pwd`
-
 # Preparation
 # ===========
 
 # Prepare simulator
 SIM_PID=
-SIM_LOG_FILE=sim-log.txt
+SIM_LOG_FILE=`pwd`/sim-log.txt
 if [ "$TestSim" != "" ]; then
   prepare_sim
 fi

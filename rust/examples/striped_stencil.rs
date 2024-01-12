@@ -12,20 +12,25 @@ use nocl::*;
 use nocl::rand::*;
 use nocl::prims::*;
 
+extern crate alloc;
+use alloc::vec;
+use alloc::vec::*;
+use alloc::boxed::*;
+
 // Benchmark
 // =========
 
-struct SimpleStencil<'t> {
+struct SimpleStencil {
   x_size  : usize,
   y_size  : usize,
-  in_buf  : &'t [i32],
-  out_buf : &'t mut [i32]
+  in_buf  : Box<[i32]>,
+  out_buf : Box<[i32]>
 }
 
-impl Code for SimpleStencil<'_> {
+impl Code for SimpleStencil {
 
 #[inline(always)]
-fn run<'t> (my : &My, shared : &mut Mem, params: &mut SimpleStencil<'t>) {
+fn run (my : &My, shared : &mut Scratch, params: &mut SimpleStencil) {
   let window_size = 3 * my.block_dim.x;
 
   // Data blocks to the left, middle, and right of current output
@@ -99,6 +104,8 @@ fn run<'t> (my : &My, shared : &mut Mem, params: &mut SimpleStencil<'t>) {
 
 #[entry]
 fn main() -> ! {
+  nocl_init();
+
   // Vector size for benchmarking
   #[cfg(not(feature = "large_data_set"))]
   const BUF_SIZE_X : usize = 64;
@@ -112,16 +119,15 @@ fn main() -> ! {
   const BUF_SIZE : usize = BUF_SIZE_X*BUF_SIZE_Y;
 
   // Input and output vectors
-  let mut in_buf : NoCLAligned<[i32; BUF_SIZE]> = nocl_aligned([0; BUF_SIZE]);
-  let mut out_buf : NoCLAligned<[i32; BUF_SIZE]> = nocl_aligned([0; BUF_SIZE]);
-  let mut golden_out : NoCLAligned<[i32; BUF_SIZE]> =
-    nocl_aligned([0; BUF_SIZE]);
+  let mut in_buf : Vec<i32> = vec![0; BUF_SIZE];
+  let mut out_buf : Vec<i32> = vec![0; BUF_SIZE];
+  let mut golden_out : Vec<i32> = vec![0; BUF_SIZE];
 
   // Initialise inputs
   let mut seed : u32 = 1;
   for y in 0..BUF_SIZE_Y {
     for x in 0 .. BUF_SIZE_X {
-      in_buf.val[y * BUF_SIZE_X + x] = rand15(&mut seed) as i32
+      in_buf[y * BUF_SIZE_X + x] = rand15(&mut seed) as i32
     }
   }
 
@@ -139,30 +145,30 @@ fn main() -> ! {
     SimpleStencil {
       x_size  : BUF_SIZE_X,
       y_size  : BUF_SIZE_Y,
-      in_buf  : &in_buf.val[..],
-      out_buf : &mut out_buf.val[..]
+      in_buf  : in_buf.into(),
+      out_buf : out_buf.into()
     };
 
   // Invoke kernel
-  nocl_run_kernel_verbose(&dims, &mut params);
+  let params = nocl_run_kernel_verbose(dims, params);
 
   // Golden output
   for y in 0..BUF_SIZE_Y {
     for x in 0..BUF_SIZE_X {
       let ind = y * BUF_SIZE_X + x;
-      let mut result = in_buf.val[ind];
-      if x < BUF_SIZE_X - 1 { result += in_buf.val[y * BUF_SIZE_X + x + 1] }
-      if x > 0              { result += in_buf.val[y * BUF_SIZE_X + x - 1] }
-      if y < BUF_SIZE_Y - 1 { result += in_buf.val[(y + 1) * BUF_SIZE_X + x] }
-      if y > 0              { result += in_buf.val[(y - 1) * BUF_SIZE_X + x] }
-      golden_out.val[ind] = result;
+      let mut result = params.in_buf[ind];
+      if x < BUF_SIZE_X - 1 { result += params.in_buf[y * BUF_SIZE_X + x + 1] }
+      if x > 0              { result += params.in_buf[y * BUF_SIZE_X + x - 1] }
+      if y < BUF_SIZE_Y - 1 { result += params.in_buf[(y + 1)*BUF_SIZE_X + x] }
+      if y > 0              { result += params.in_buf[(y - 1)*BUF_SIZE_X + x] }
+      golden_out[ind] = result;
     }
   }
 
   // Check result
   let mut ok = true;
   for i in 0..BUF_SIZE {
-    ok = ok && out_buf.val[i] == golden_out.val[i]
+    ok = ok && params.out_buf[i] == golden_out[i]
   }
 
   // Display result
