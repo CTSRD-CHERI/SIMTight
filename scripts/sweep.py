@@ -50,6 +50,7 @@ config["DynRegSpill2043"] = config["RegFileScalarisation"] + [
     ("SIMTRegFileSize", "2043")
   , ("SIMTCapRegFileSize", "2043")
   , ("SIMTUseSharedVecScratchpad", "1")
+  , ("SIMTUseLRUSpill", "1")
   ]
 config["StaticHalfRF"] = [
     ("UseRV32E", "1")
@@ -61,22 +62,21 @@ config["CapInitValOpt"] = [
 
 # Combinations of configs that are of interest
 configCombos = [
-     ["Clang"] 
-   , ["Clang", "StoreBuffer"]
-   , ["Clang", "StoreBuffer", "ScalarUnit"]
-   , ["CHERI"] 
-   , ["CHERI", "StoreBuffer"] 
-   , ["CHERI", "StoreBuffer", "CapInitValOpt"]
-   , ["CHERI", "StoreBuffer", "DynRegSpill512", "CapInitValOpt"]
-   , ["CHERI", "StoreBuffer", "DynRegSpill2043", "CapInitValOpt"]
+    ["GCC"]
+  , ["GCC", "StoreBuffer", "DynRegSpill2043"]
+  , ["GCC", "StoreBuffer", "DynRegSpill2043", "ScalarUnit"]
+  , ["CHERI"]
+  , ["CHERI", "StoreBuffer", "DynRegSpill2043", "CapInitValOpt"]
   ]
 
 # Config combos of interest when benchmarking only
 benchCombos = [
-    ["GCC", "StoreBuffer"]
-  , ["GCC", "StoreBuffer", "DynRegSpill1024"]
-  , ["GCC", "StoreBuffer", "StaticHalfRF"]
-  ]
+    ["GCC", "RegFileScalarisation", "DynRegSpill1024"]
+  , ["GCC", "RegFileScalarisation", "DynRegSpill512"]
+  , ["GCC", "RegFileScalarisation", "DynRegSpill256"]
+  , ["GCC", "StaticHalfRF"]
+  , ["Clang"]
+]
 
 # Get directory containing script
 scriptDir = os.path.dirname(os.path.realpath(__file__))
