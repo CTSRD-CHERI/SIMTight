@@ -17,7 +17,6 @@ clean:
 	make -C de10-pro-e clean
 	make -C sim clean
 	make -C pebbles clean
-	make -C rust clean
 
 .PHONY: mrproper
 mrproper: clean
