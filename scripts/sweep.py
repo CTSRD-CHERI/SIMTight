@@ -34,6 +34,12 @@ config["ScalarUnit"] = config["RegFileScalarisation"] + [
 config["StoreBuffer"] = config["RegFileScalarisation"] + [
     ("SIMTEnableSVStoreBuffer", "1")
   ]
+config["DynRegSpill256"] = config["RegFileScalarisation"] + [
+    ("SIMTRegFileSize", "256")
+  , ("SIMTCapRegFileSize", "256")
+  , ("SIMTUseSharedVecScratchpad", "1")
+  , ("SIMTUseLRUSpill", "1")
+  ]
 config["DynRegSpill512"] = config["RegFileScalarisation"] + [
     ("SIMTRegFileSize", "512")
   , ("SIMTCapRegFileSize", "512")
