@@ -45,10 +45,10 @@ fn two_sort(keys : &mut [u32], vals : &mut [u32],
 struct BitonicSortLocal {
   length       : usize,
   sort_dir     : bool,
-  d_srckey_arg : Box<[u32]>,
-  d_srcval_arg : Box<[u32]>,
-  d_dstkey_arg : Box<[u32]>,
-  d_dstval_arg : Box<[u32]>
+  d_srckey_arg : Buffer<u32>,
+  d_srcval_arg : Buffer<u32>,
+  d_dstkey_arg : Buffer<u32>,
+  d_dstval_arg : Buffer<u32>
 }
 
 impl Code for BitonicSortLocal {

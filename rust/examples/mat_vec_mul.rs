@@ -25,9 +25,9 @@ const BLOCK_SIZE: usize = prims::config::SIMT_LANES as usize;
 struct MatVecMul {
   width   : usize,
   height  : usize,
-  mat     : Box<[i32]>,
-  vec_in  : Box<[i32]>,
-  vec_out : Box<[i32]>
+  mat     : Buffer<i32>,
+  vec_in  : Buffer<i32>,
+  vec_out : Buffer<i32>
 }
 
 impl Code for MatVecMul {

@@ -12,3 +12,4 @@ debug = true
 
 [features]
 large_data_set = []
+disable_bounds_checks = []

@@ -43,10 +43,10 @@ fn two_sort(keys : &mut [u32], vals : &mut [u32],
 }
 
 struct BitonicSortLocal {
-  d_srckey_arg : Box<[u32]>,
-  d_srcval_arg : Box<[u32]>,
-  d_dstkey_arg : Box<[u32]>,
-  d_dstval_arg : Box<[u32]>
+  d_srckey_arg : Buffer<u32>,
+  d_srcval_arg : Buffer<u32>,
+  d_dstkey_arg : Buffer<u32>,
+  d_dstval_arg : Buffer<u32>
 }
 
 // Bottom-level bitonic sort
@@ -117,8 +117,8 @@ struct BitonicMergeGlobal {
   size     : usize,
   stride   : usize,
   sort_dir : bool,
-  d_key    : Box<[u32]>,
-  d_val    : Box<[u32]>
+  d_key    : Buffer<u32>,
+  d_val    : Buffer<u32>
 }
 
 impl Code for BitonicMergeGlobal {
@@ -158,8 +158,8 @@ struct BitonicMergeLocal {
   size         : usize,
   stride_arg   : usize,
   sort_dir     : bool,
-  d_key_arg    : Box<[u32]>,
-  d_val_arg    : Box<[u32]>
+  d_key_arg    : Buffer<u32>,
+  d_val_arg    : Buffer<u32>
 }
 
 //Combined bitonic merge steps for
@@ -236,8 +236,8 @@ fn main() -> ! {
     };
 
   // Launch BitonicSortLocal
-  let mut dstkeys : Box<[u32]> = dstkeys.into();
-  let mut dstvals : Box<[u32]> = dstvals.into();
+  let mut dstkeys : Buffer<u32> = dstkeys.into();
+  let mut dstvals : Buffer<u32> = dstvals.into();
   let mut bsl_params =
     BitonicSortLocal {
       d_srckey_arg : srckeys.into(),

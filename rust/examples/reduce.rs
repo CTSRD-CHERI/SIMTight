@@ -24,7 +24,7 @@ const BLOCK_SIZE: usize = (prims::config::SIMT_WARPS *
                            prims::config::SIMT_LANES) as usize;
 
 struct Reduce {
-  input  : Box<[i32]>,
+  input  : Buffer<i32>,
   sum    : Box<i32>
 }
 

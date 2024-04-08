@@ -41,9 +41,9 @@ fn gcd(x_arg : u32, y_arg : u32) -> u32 {
 
 struct VecGCD {
   len    : usize,
-  a      : Box<[u32]>,
-  b      : Box<[u32]>,
-  result : Box<[u32]>
+  a      : Buffer<u32>,
+  b      : Buffer<u32>,
+  result : Buffer<u32>
 }
 
 impl Code for VecGCD {

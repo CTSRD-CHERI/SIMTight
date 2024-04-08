@@ -83,7 +83,11 @@ pub fn nocl_aligned<T>(a: T) -> NoCLAligned<T> {
 // Buffers
 // =======
 
+#[cfg(not(feature = "disable_bounds_checks"))]
 pub type Buffer<T> = Box<[T]>;
+
+#[cfg(feature = "disable_bounds_checks")]
+pub type Buffer<T> = UncheckedBuffer<T>;
 
 // Utility functions
 // =================
@@ -139,6 +143,57 @@ pub fn array_2d<'t, T>(es : &'t mut [T], w : usize, _h : usize)
   Array2D { width : w, elems: es }
 }
 
+// Unchecked slices
+// ================
+
+pub struct UncheckedSlice<'t, T> {
+  pub elems : &'t mut [T]
+}
+
+impl<T> Index<usize> for UncheckedSlice<'_, T> {
+  type Output = T;
+  #[inline(always)]
+  fn index<'a>(&'a self, i: usize) -> &'a T {
+    unsafe { self.elems.get_unchecked(i) }
+  }
+}
+
+impl<T> IndexMut<usize> for UncheckedSlice<'_, T> {
+  #[inline(always)]
+  fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut T {
+    unsafe { self.elems.get_unchecked_mut(i) }
+  }
+}
+
+// Unchecked buffers
+// =================
+
+pub struct UncheckedBuffer<T> {
+  pub elems : Box<[T]>
+}
+
+impl<T> Index<usize> for UncheckedBuffer<T> {
+  type Output = T;
+  #[inline(always)]
+  fn index<'a>(&'a self, i: usize) -> &T {
+    unsafe { self.elems.get_unchecked(i) }
+  }
+}
+
+impl<T> IndexMut<usize> for UncheckedBuffer<T> {
+  #[inline(always)]
+  fn index_mut<'a>(&'a mut self, i: usize) -> & mut T {
+    unsafe { self.elems.get_unchecked_mut(i) }
+  }
+}
+
+impl<T> From<alloc::vec::Vec<T>> for UncheckedBuffer<T> {
+  #[inline(always)]
+  fn from(v: alloc::vec::Vec<T>) -> Self {
+    UncheckedBuffer { elems: alloc::vec::Vec::<T>::into(v) }
+  }
+}
+
 // Data types
 // ==========
 
@@ -171,7 +226,7 @@ pub type Scratch = Mem;
 
 // Allocate `n` elements of type `T`.
 #[inline(always)]
-pub fn alloc<'t0, 't1, T>(mem : &'t0 mut Mem, n : usize) -> &'t1 mut[T] {
+pub fn alloc_slice<'t0, 't1, T>(mem : &'t0 mut Mem, n : usize) -> &'t1 mut[T] {
   unsafe {
     let num_bytes = n * mem::size_of::<T>();
     let num_bytes_with_padding =
@@ -183,6 +238,21 @@ pub fn alloc<'t0, 't1, T>(mem : &'t0 mut Mem, n : usize) -> &'t1 mut[T] {
     mem.next = mem.next.offset(num_bytes_with_padding as isize);
     slice
   }
+}
+
+// Allocate `n` elements of type `T`.
+#[cfg(not(feature = "disable_bounds_checks"))]
+#[inline(always)]
+pub fn alloc<'t0, 't1, T>(mem : &'t0 mut Mem, n : usize) -> &'t1 mut[T] {
+  alloc_slice(mem, n)
+}
+
+// Allocate `n` elements of type `T`.
+#[cfg(feature = "disable_bounds_checks")]
+#[inline(always)]
+pub fn alloc<'t0, 't1, T>(mem : &'t0 mut Mem, n : usize) ->
+         UncheckedSlice<'t1, T> {
+  UncheckedSlice { elems: alloc_slice(mem, n) }
 }
 
 // Mapping between SIMT threads and CUDA thread/block indices

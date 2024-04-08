@@ -53,9 +53,9 @@ const BLOCK_SIZE: usize = prims::config::SIMT_LANES as usize;
 struct MatMul {
   a_width : usize,
   b_width : usize,
-  a       : Box<[i32]>,
-  b       : Box<[i32]>,
-  c       : Box<[i32]>
+  a       : Buffer<i32>,
+  b       : Buffer<i32>,
+  c       : Buffer<i32>
 }
 
 impl Code for MatMul {

@@ -21,8 +21,8 @@ use alloc::boxed::*;
 // =========
 
 struct Histogram {
-  input : Box<[u8]>,
-  bins  : Box<[i32]>
+  input : Buffer<u8>,
+  bins  : Buffer<i32>
 }
 
 impl Code for Histogram {
