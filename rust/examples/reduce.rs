@@ -24,6 +24,7 @@ const BLOCK_SIZE: usize = (prims::config::SIMT_WARPS *
                            prims::config::SIMT_LANES) as usize;
 
 struct Reduce {
+  len    : usize,
   input  : Buffer<i32>,
   sum    : Box<i32>
 }
@@ -36,7 +37,7 @@ fn run (my : &My, shared : &mut Mem, params: &mut Reduce) {
 
   // Sum global memory
   block[my.thread_idx.x] = 0;
-  for i in (my.thread_idx.x .. params.input.len()).step_by(my.block_dim.x) {
+  for i in (my.thread_idx.x .. params.len).step_by(my.block_dim.x) {
     block[my.thread_idx.x] += params.input[i]
   }
 
@@ -91,7 +92,8 @@ fn main() -> ! {
  
   // Kernel parameters
   let mut params =
-    Reduce { input : input.into(),
+    Reduce { len   : N,
+             input : input.into(),
              sum   : sum.into() };
 
   // Invoke kernel

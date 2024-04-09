@@ -32,16 +32,6 @@ use alloc::boxed::*;
 
 const LOCAL_SIZE_LIMIT: usize = 1024 as usize;
 
-#[inline(always)]
-fn two_sort(keys : &mut [u32], vals : &mut [u32],
-            a_idx : usize, b_idx : usize, dir : bool) {
-  if (keys[a_idx] > keys[b_idx]) == dir {
-    keys.swap(a_idx, b_idx);
-    vals.swap(a_idx, b_idx);
-  }
-  nocl_converge()
-}
-
 struct BitonicSortLocal {
   length       : usize,
   sort_dir     : bool,
@@ -78,7 +68,12 @@ fn run (my : &My, shared : &mut Scratch, params: &mut BitonicSortLocal) {
     while stride > 0 {
       syncthreads();
       let pos = 2 * my.thread_idx.x - (my.thread_idx.x & (stride - 1));
-      two_sort(l_key, l_val, pos + 0, pos + stride, dir);
+      let pos_plus = pos+stride;
+      if (l_key[pos] > l_key[pos_plus]) == dir {
+        l_key.swap(pos, pos_plus);
+        l_val.swap(pos, pos_plus);
+      }
+      nocl_converge();
       stride = stride >> 1
     }
     size = size << 1
@@ -90,7 +85,12 @@ fn run (my : &My, shared : &mut Scratch, params: &mut BitonicSortLocal) {
     while stride > 0 {
       syncthreads();
       let pos = 2 * my.thread_idx.x - (my.thread_idx.x & (stride - 1));
-      two_sort(l_key, l_val, pos + 0, pos + stride, params.sort_dir);
+      let pos_plus = pos + stride;
+      if (l_key[pos] > l_key[pos_plus]) == params.sort_dir {
+        l_key.swap(pos, pos_plus);
+        l_val.swap(pos, pos_plus);
+      }
+      nocl_converge();
       stride = stride >> 1
     }
   }

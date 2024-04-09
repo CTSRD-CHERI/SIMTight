@@ -136,11 +136,11 @@ if [ "$TestFPGA" != "" ] ; then
   tmpDir=$(mktemp -d -t simtight-test-XXXX)
   for APP in ${APPS[@]}; do
     echo -n "$APP (build): "
-    make EXAMPLE=$APP FEATURES=large_data_set -s 2> /dev/null
+    make EXAMPLE=$APP FEATURES="large_data_set" -s 2> /dev/null
     assert $?
     echo -n "$APP (run): "
     tmpLog=$tmpDir/$APP.log
-    make EXAMPLE=$APP FEATURES=large_data_set -s run > $tmpLog 2> /dev/null
+    make EXAMPLE=$APP FEATURES="large_data_set" -s run > $tmpLog 2> /dev/null
     getStats $tmpLog
   done
 fi

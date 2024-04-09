@@ -165,6 +165,17 @@ impl<T> IndexMut<usize> for UncheckedSlice<'_, T> {
   }
 }
 
+use core::ptr;
+
+impl<T> UncheckedSlice<'_, T> {
+  pub fn swap(&mut self, a : usize, b : usize) {
+    unsafe {
+      let ptr = self.elems.as_mut_ptr();
+      ptr::swap(ptr.add(a), ptr.add(b))
+    }
+  }
+}
+
 // Unchecked buffers
 // =================
 

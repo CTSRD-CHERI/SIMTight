@@ -9,6 +9,7 @@ linked_list_allocator = "0.10.5"
 
 [profile.release]
 debug = true
+opt-level = 3
 
 [features]
 large_data_set = []
