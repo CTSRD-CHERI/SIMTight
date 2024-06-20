@@ -159,7 +159,7 @@ makeScalarCore config inputs = mdo
                   then do
                     executeIxCHERI Nothing (Just csrUnit)
                                            (Just capMemReqSink) s
-                    executeSetBounds s
+                    executeBounds s
                   else executeI Nothing (Just csrUnit) (Just memReqSink) s
             }
         , trapCSRs = trapRegs

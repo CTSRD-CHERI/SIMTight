@@ -158,12 +158,12 @@ We musn't forget to `make clean` in the root of the SIMTight repo any
 time [inc/Config.h](inc/Config.h) is changed.  At this point, all of
 the standard build instructions should work as before.
 
-CHERI instructions for setting bounds on capabilities are quite
-expensive in terms of logic area, and do not usually appear in
-performance-critical loops.  Therefore, it can be useful to share
-bounds setting logic between vector lanes:
+CHERI instructions for getting and setting bounds on capabilities are quite
+expensive in terms of logic area and typically not performance critical.
+Therefore, it can be useful to share bounds getting/setting logic between
+vector lanes:
 
-  * `#define SIMTNumSetBoundsUnits 2`
+  * `#define SIMTNumBoundsUnits 2`
 
 ## Enabling scalarisation
 

@@ -106,9 +106,9 @@ makeSIMTExecuteStage enCHERI =
             then do
               executeIxCHERI (Just ins.execMulReqs) (Just csrUnit)
                              (Just ins.execCapMemReqs) s
-              if SIMTNumSetBoundsUnits < SIMTLanes
+              if SIMTNumBoundsUnits < SIMTLanes
                 then executeBoundsUnit ins.execBoundsReqs s
-                else executeSetBounds s
+                else executeBounds s
             else do
               executeI (Just ins.execMulReqs) (Just csrUnit)
                        (Just ins.execMemReqs) s
@@ -205,10 +205,10 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
   -- ====================
 
   vecBoundsUnit <-
-    if SIMTNumSetBoundsUnits < SIMTLanes
+    if SIMTNumBoundsUnits < SIMTLanes
       then do
         boundsUnits <- makeVecBoundsUnit
-        makeSharedUnits @SIMTNumSetBoundsUnits boundsUnits
+        makeSharedUnits @SIMTNumBoundsUnits boundsUnits
       else return nullServer
 
   boundsSinks <- makeSinkVectoriser
@@ -260,7 +260,7 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
 
   -- Merge resume requests
   let resumeReqStream =
-        (if SIMTNumSetBoundsUnits < SIMTLanes then 
+        (if SIMTNumBoundsUnits < SIMTLanes then 
            memResumeReqs `mergeTwo` vecBoundsUnit.resps else memResumeReqs)
           `mergeTwo` (vecMulUnit.resps `mergeTwo` vecDivUnit.resps)
 
@@ -365,7 +365,7 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
                     then do
                       executeIxCHERI (Just scalarMulSink)
                                      Nothing Nothing s
-                      executeSetBounds s
+                      executeBounds s
                     else executeI (Just scalarMulSink)
                                   Nothing Nothing s
                   executeM scalarMulSink scalarDivSink s
