@@ -74,7 +74,7 @@ data SIMTExecuteIns =
     -- ^ Sink for multiplier requests
   , execDivReqs :: Sink DivReq
     -- ^ Sink for divider requests
-  , execBoundsReqs :: Sink BoundsReq
+  , execBoundsReqs :: Sink (BoundsReq CapMem)
     -- ^ Sink for capability bounds-setting requests
   } deriving (Generic, Interface)
 
