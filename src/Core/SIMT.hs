@@ -39,7 +39,6 @@ import Pebbles.Instructions.RV32_M
 import Pebbles.Instructions.RV32_A
 import Pebbles.Instructions.Mnemonics
 import Pebbles.Instructions.RV32_IxCHERI
-import Pebbles.Instructions.RV32_IxCHERI.CapMem
 import Pebbles.Instructions.Units.SFU
 import Pebbles.Instructions.Units.MulUnit
 import Pebbles.Instructions.Units.DivUnit
@@ -110,13 +109,12 @@ makeSIMTExecuteStage enCHERI =
             then do
               if SIMTUseSharedBoundsUnit == 1
                 then do
-                  executeIxCHERI_CapMem (Just ins.execMulReqs) (Just csrUnit)
-                                        (Just ins.execCapMemReqs) s
-                  executeBoundsUnit ins.execSFUReqs s
+                  executeIxCHERIWithSharedBoundsUnit
+                    (Just ins.execMulReqs) (Just csrUnit)
+                    (Just ins.execCapMemReqs) ins.execSFUReqs s
                 else do
                   executeIxCHERI (Just ins.execMulReqs) (Just csrUnit)
                                  (Just ins.execCapMemReqs) s
-                  executeBounds s
             else do
               executeI (Just ins.execMulReqs) (Just csrUnit)
                        (Just ins.execMemReqs) s
@@ -380,10 +378,8 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
               ExecuteStage {
                 execute = do
                   if config.simtCoreEnableCHERI
-                    then do
-                      executeIxCHERI (Just scalarMulSink)
-                                     Nothing Nothing s
-                      executeBounds s
+                    then executeIxCHERI (Just scalarMulSink)
+                                        Nothing Nothing s
                     else executeI (Just scalarMulSink)
                                   Nothing Nothing s
                   executeM scalarMulSink scalarDivSink Nothing s
