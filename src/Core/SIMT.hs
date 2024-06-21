@@ -39,6 +39,7 @@ import Pebbles.Instructions.RV32_M
 import Pebbles.Instructions.RV32_A
 import Pebbles.Instructions.Mnemonics
 import Pebbles.Instructions.RV32_IxCHERI
+import Pebbles.Instructions.RV32_IxCHERI.CapMem
 import Pebbles.Instructions.Units.SFU
 import Pebbles.Instructions.Units.MulUnit
 import Pebbles.Instructions.Units.DivUnit
@@ -107,11 +108,15 @@ makeSIMTExecuteStage enCHERI =
           executeM ins.execMulReqs ins.execDivReqs sfuReqs s
           if enCHERI
             then do
-              executeIxCHERI (Just ins.execMulReqs) (Just csrUnit)
-                             (Just ins.execCapMemReqs) s
               if SIMTUseSharedBoundsUnit == 1
-                then executeBoundsUnit ins.execSFUReqs s
-                else executeBounds s
+                then do
+                  executeIxCHERI_CapMem (Just ins.execMulReqs) (Just csrUnit)
+                                        (Just ins.execCapMemReqs) s
+                  executeBoundsUnit ins.execSFUReqs s
+                else do
+                  executeIxCHERI (Just ins.execMulReqs) (Just csrUnit)
+                                 (Just ins.execCapMemReqs) s
+                  executeBounds s
             else do
               executeI (Just ins.execMulReqs) (Just csrUnit)
                        (Just ins.execMemReqs) s
