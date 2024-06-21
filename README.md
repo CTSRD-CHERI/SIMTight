@@ -5,20 +5,16 @@ Instruction Multiple Threads (SIMT)_ model, featuring:
 
   * RISC-V instruction set (RV32IMAxCHERI) 
   * Low-area design with high IPC on classic GPGPU workloads
-  * Strong [CHERI](http://cheri-cpu.org) memory safety and isolation
   * Dynamic scalarisation (automatic detection of scalar
-    behaviour in hardware)
+    behaviour in hardware without needing ISA/compiler mods)
   * Parallel scalar/vector pipelines, exploiting scalarisation for
     increased throughput
   * Register file and cache compression, exploiting scalarisation for
     reduced on-chip storage and energy
-  * Significantly reduces register size and spill overhead of CHERI
+  * Strong [CHERI](http://cheri-cpu.org) memory safety and isolation
   * Runs [CUDA-like C++ library](doc/NoCL.md) and [benchmark suite](apps/)
-    (in pure capability mode)
+    (in pure capability mode when CHERI enabled)
   * Runs [CUDA-like Rust library](rust/) and [benchmark suite](rust/examples/)
-  * Implemented in Haskell using the
-    [Blarney](https://github.com/blarney-lang/blarney)
-    hardware description library
 
 SIMTight is being developed on the [CAPcelerate
 project](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/V000381/1),
@@ -49,10 +45,14 @@ $ sudo apt install libgmp-dev
 ```
 
 For GHC 9.2.1 or later, [ghcup](https://www.haskell.org/ghcup/) can be
-used. If you're having difficulty meeting the dependencies, please
+used.
+
+If you're having difficulty meeting the dependencies, please
 use our [docker container](docker/).
 
-Now, we recursively clone the repo:
+## Getting started
+
+Recursively clone the repo:
 
 ```sh
 $ git clone --recursive https://github.com/CTSRD-CHERI/SIMTight
@@ -130,7 +130,6 @@ To enable CHERI, some additional preparation is required.  First, edit
   * `#define EnableTaggedMem 1`
   * `#define UseClang 1`
 
-
 Second, install the CHERI-Clang compiler using our
 [script](cheri-tools/build-cheri.sh).  Assuming
 all of [cheribuild's
@@ -163,11 +162,24 @@ expensive in terms of logic area and typically not performance critical.
 Therefore, it can be useful to share bounds getting/setting logic between
 vector lanes:
 
-  * `#define SIMTNumBoundsUnits 2`
+  * `#define SIMTUseSharedBoundsUnit 1`
+
+Various optimisations are enabled by this setting. It leads to a large
+reduction in area overhead, at almost no performance cost accross the
+benchmark suite.
+
+Another option that reduces the area overhead of CHERI is:
+
+  * `#define SIMTUseFixedPCC 1`
+
+But beware, this setting removes some CHERI functionality. Specifically, it
+tells the SIMT core to ignore changes to the bounds and permissions of the PCC.
+Once the bounds and permissions of the PCC for each warp are set at kernel
+startup, they can never be changed.
 
 ## Enabling scalarisation
 
-Scalarisation is an optimastion that spots _uniform_ and _affine_
+Scalarisation is an optimastion that detects _uniform_ and _affine_
 vectors and processes them more efficiently as scalars, reducing
 on-chip storage and increasing performance density.  An _affine_
 vector is one in which there is a constant stride between each

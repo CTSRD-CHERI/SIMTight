@@ -39,6 +39,7 @@ import Pebbles.Instructions.RV32_M
 import Pebbles.Instructions.RV32_A
 import Pebbles.Instructions.Mnemonics
 import Pebbles.Instructions.RV32_IxCHERI
+import Pebbles.Instructions.Units.SFU
 import Pebbles.Instructions.Units.MulUnit
 import Pebbles.Instructions.Units.DivUnit
 import Pebbles.Instructions.Units.BoundsUnit
@@ -74,7 +75,7 @@ data SIMTExecuteIns =
     -- ^ Sink for multiplier requests
   , execDivReqs :: Sink DivReq
     -- ^ Sink for divider requests
-  , execBoundsReqs :: Sink (BoundsReq CapMem)
+  , execSFUReqs :: Sink SFUReq
     -- ^ Sink for capability bounds-setting requests
   } deriving (Generic, Interface)
 
@@ -101,13 +102,15 @@ makeSIMTExecuteStage enCHERI =
     return
       ExecuteStage {
         execute = do
-          executeM ins.execMulReqs ins.execDivReqs s
+          let sfuReqs = if SIMTUseSharedDivUnit == 1
+                then Just ins.execSFUReqs else Nothing
+          executeM ins.execMulReqs ins.execDivReqs sfuReqs s
           if enCHERI
             then do
               executeIxCHERI (Just ins.execMulReqs) (Just csrUnit)
                              (Just ins.execCapMemReqs) s
-              if SIMTNumBoundsUnits < SIMTLanes
-                then executeBoundsUnit ins.execBoundsReqs s
+              if SIMTUseSharedBoundsUnit == 1
+                then executeBoundsUnit ins.execSFUReqs s
                 else executeBounds s
             else do
               executeI (Just ins.execMulReqs) (Just csrUnit)
@@ -181,9 +184,11 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
 
   -- Vector division unit
   vecDivUnit <-
-    case config.simtCoreUseFullDivider of
-      Nothing -> makeSeqVecDivUnit
-      Just latency -> makeFullVecDivUnit latency
+    if SIMTUseSharedDivUnit == 1
+      then return nullServer
+      else case config.simtCoreUseFullDivider of
+             Nothing -> makeSeqVecDivUnit
+             Just latency -> makeFullVecDivUnit latency
 
   -- Per lane divider request sinks
   divSinks <- makeSinkVectoriser
@@ -204,15 +209,23 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
   -- Bounds unit requests
   -- ====================
 
-  vecBoundsUnit <-
-    if SIMTNumBoundsUnits < SIMTLanes
+  let useSFU = SIMTUseSharedDivUnit == 1 ||
+                 (config.simtCoreEnableCHERI && SIMTUseSharedBoundsUnit == 1)
+  sfu <-
+    if useSFU
       then do
-        boundsUnits <- makeVecBoundsUnit
-        makeSharedUnits @SIMTNumBoundsUnits boundsUnits
+        sfus <- makeVecSFU
+          SFUConfig {
+            enDivUnit = SIMTUseSharedDivUnit == 1
+          , divLatency = SIMTFullDividerLatency
+          , enBoundsUnit = config.simtCoreEnableCHERI &&
+                             SIMTUseSharedBoundsUnit == 1
+          }
+        makeSharedUnits @1 sfus
       else return nullServer
 
-  boundsSinks <- makeSinkVectoriser
-    (\vec -> (pipelineOuts.simtInstrInfo, vec)) vecBoundsUnit.reqs
+  sfuSinks <- makeSinkVectoriser
+    (\vec -> (pipelineOuts.simtInstrInfo, vec)) sfu.reqs
 
   -- Memory requests
   -- ===============
@@ -260,8 +273,8 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
 
   -- Merge resume requests
   let resumeReqStream =
-        (if SIMTNumBoundsUnits < SIMTLanes then 
-           memResumeReqs `mergeTwo` vecBoundsUnit.resps else memResumeReqs)
+        (if useSFU then 
+           memResumeReqs `mergeTwo` sfu.resps else memResumeReqs)
           `mergeTwo` (vecMulUnit.resps `mergeTwo` vecDivUnit.resps)
 
   -- Resume queue
@@ -291,7 +304,7 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
         , enableStatCounters = SIMTEnableStatCounters == 1
         , checkPCCFunc =
             if config.simtCoreEnableCHERI then Just checkPCC else Nothing
-        , useSharedPCC = SIMTUseSharedPCC == 1
+        , useSharedPCC = SIMTUseFixedPCC == 1
         , decodeStage = concat
             [ if config.simtCoreEnableCHERI
                 then decodeIxCHERI ++ decodeAxCHERI
@@ -311,12 +324,12 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
                 , execCapMemReqs = capMemSink
                 , execMulReqs = mulSink
                 , execDivReqs = divSink
-                , execBoundsReqs = boundsSink
+                , execSFUReqs = sfuSink
                 }
-            | (memSink, capMemSink, mulSink, divSink, boundsSink, i) <-
+            | (memSink, capMemSink, mulSink, divSink, sfuSink, i) <-
                 zip6 memReqSinks capMemReqSinks
                      (toList mulSinks) (toList divSinks)
-                     (toList boundsSinks) [0..] ]
+                     (toList sfuSinks) [0..] ]
         , simtPushTag = SIMT_PUSH
         , simtPopTag = SIMT_POP
         , useRegFileScalarisation = SIMTEnableRegFileScalarisation == 1
@@ -368,7 +381,7 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
                       executeBounds s
                     else executeI (Just scalarMulSink)
                                   Nothing Nothing s
-                  executeM scalarMulSink scalarDivSink s
+                  executeM scalarMulSink scalarDivSink Nothing s
               }
         , regSpillBaseAddr = let a << b = a * 2^b in REG_SPILL_BASE
         , useLRUSpill = SIMTUseLRUSpill == 1

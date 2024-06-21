@@ -153,7 +153,7 @@ makeScalarCore config inputs = mdo
         , executeStage = \s -> return
             ExecuteStage {
               execute = do
-                executeM mulReqs divReqs s
+                executeM mulReqs divReqs Nothing s
                 executeCacheMgmt memReqSink s
                 if config.scalarCoreEnableCHERI
                   then do

@@ -54,6 +54,9 @@ NOTE("Use full-throughput divider (rather than sequential divider)?")
 NOTE("Latency of full-throughput divider (more latency = higher Fmax)")
 #define SIMTFullDividerLatency 12
 
+NOTE("Use shared full-throughput divider")
+#define SIMTUseSharedDivUnit 0
+
 NOTE("Use scalarising register file?")
 #define SIMTEnableRegFileScalarisation 0
 
@@ -145,11 +148,11 @@ NOTE("This is a simple form of partial scalarisation")
 NOTE("The number of registers that hold partial scalars")
 #define SIMTCapRFLogNumPartialMasks 0
 
-NOTE("Use shared immutable PCC meta-data for all threads in kernel?")
-#define SIMTUseSharedPCC 0
+NOTE("Use fixed immutable PCC meta-data for all threads in a warp?")
+#define SIMTUseFixedPCC 0
 
-NOTE("Number of bounds-setting units")
-#define SIMTNumSetBoundsUnits 1
+NOTE("Use shared bounds unit")
+#define SIMTUseSharedBoundsUnit 0
 
 NOTE("Use shared vector scratchpad between int and cap reg files?")
 #define SIMTUseSharedVecScratchpad 0
