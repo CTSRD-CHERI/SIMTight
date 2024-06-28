@@ -37,8 +37,10 @@ import Pebbles.Memory.DRAM.Interface
 import Pebbles.Instructions.RV32_I
 import Pebbles.Instructions.RV32_M
 import Pebbles.Instructions.RV32_A
+import Pebbles.Instructions.RV32_F
 import Pebbles.Instructions.Mnemonics
 import Pebbles.Instructions.RV32_IxCHERI
+import Pebbles.Instructions.Units.FPU
 import Pebbles.Instructions.Units.SFU
 import Pebbles.Instructions.Units.MulUnit
 import Pebbles.Instructions.Units.DivUnit
@@ -77,6 +79,8 @@ data SIMTExecuteIns =
     -- ^ Sink for divider requests
   , execSFUReqs :: Sink SFUReq
     -- ^ Sink for capability bounds-setting requests
+  , execFPUReqs :: Sink FPUReq
+    -- ^ Sink for FPU requests
   } deriving (Generic, Interface)
 
 -- | Execute stage for a SIMT lane (synthesis boundary)
@@ -119,6 +123,7 @@ makeSIMTExecuteStage enCHERI =
               executeI (Just ins.execMulReqs) (Just csrUnit)
                        (Just ins.execMemReqs) s
               executeA ins.execMemReqs s
+          when (EnableFP == 1) do executeF ins.execFPUReqs s
       }
 
 -- Core
@@ -140,6 +145,10 @@ data SIMTCoreConfig =
   , simtCoreUseFullDivider :: Maybe Int
     -- ^ Use full throughput divider?
     -- (If so, what latency? If not, slow seq divider used)
+  , simtCoreEnableFP :: Bool
+    -- ^ Enable floating-point (Zfinx) extension
+  , simtCoreEnableHardFPMul :: Bool
+    -- ^ Enable hard floating-point multiplier
   }
 
 -- | 32-bit SIMT core
@@ -230,6 +239,20 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
   sfuSinks <- makeSinkVectoriser
     (\vec -> (pipelineOuts.simtInstrInfo, vec)) sfu.reqs
 
+  -- FPU requests
+  -- ============
+
+  -- Vector FPU
+  vecFPU <-
+    if config.simtCoreEnableFP
+      then makeVecFPU config.simtCoreEnableHardFPMul
+      else return nullServer
+
+  -- Per lane divider request sinks
+  fpuSinks <- makeSinkVectoriser
+    (\vec -> (pipelineOuts.simtInstrInfo,
+                toFPUOpcode pipelineOuts.simtOpcode, vec)) vecFPU.reqs
+
   -- Memory requests
   -- ===============
 
@@ -275,10 +298,12 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
                      config.simtCoreEnableCHERI memResps
 
   -- Merge resume requests
-  let resumeReqStream =
-        (if useSFU then 
-           memResumeReqs `mergeTwo` sfu.resps else memResumeReqs)
-          `mergeTwo` (vecMulUnit.resps `mergeTwo` vecDivUnit.resps)
+  let resumeReqStream = mergeTree $
+           [ vecMulUnit.resps ]
+        ++ [ vecDivUnit.resps ]
+        ++ [ sfu.resps | useSFU ]
+        ++ [ memResumeReqs ]
+        ++ [ vecFPU.resps | config.simtCoreEnableFP ] 
 
   -- Resume queue
   resumeQueue <- makePipelineQueue 1
@@ -308,13 +333,14 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
         , checkPCCFunc =
             if config.simtCoreEnableCHERI then Just checkPCC else Nothing
         , useSharedPCC = SIMTUseFixedPCC == 1
-        , decodeStage = concat
+        , decodeStage = concat $
             [ if config.simtCoreEnableCHERI
                 then decodeIxCHERI ++ decodeAxCHERI
                 else decodeI ++ decodeA
             , decodeM
             , decodeSIMT
-            ]
+            ] ++
+            [ decodeF | config.simtCoreEnableFP ]
         , executeStage =
             [ makeSIMTExecuteStage
                 (config.simtCoreEnableCHERI)
@@ -328,11 +354,12 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
                 , execMulReqs = mulSink
                 , execDivReqs = divSink
                 , execSFUReqs = sfuSink
+                , execFPUReqs = fpuSink
                 }
-            | (memSink, capMemSink, mulSink, divSink, sfuSink, i) <-
-                zip6 memReqSinks capMemReqSinks
+            | (memSink, capMemSink, mulSink, divSink, sfuSink, fpuSink, i) <-
+                zip7 memReqSinks capMemReqSinks
                      (toList mulSinks) (toList divSinks)
-                     (toList sfuSinks) [0..] ]
+                     (toList sfuSinks) (toList fpuSinks) [0..] ]
         , simtPushTag = SIMT_PUSH
         , simtPopTag = SIMT_POP
         , useRegFileScalarisation = SIMTEnableRegFileScalarisation == 1

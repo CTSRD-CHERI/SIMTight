@@ -7,16 +7,29 @@ CHERI_EN ?= $(shell echo -n EnableCHERI \
               | cpp -P -imacros $(CONFIG_H) - | xargs)
 CHERI_EN_COND = $(findstring 1, $(CHERI_EN))
 
+# Is floating-point enabled?
+FP_EN ?= $(shell echo -n EnableFP \
+           | cpp -P -imacros $(CONFIG_H) - | xargs)
+FP_EN_COND = $(findstring 1, $(FP_EN))
+
 # Use Clang or GCC
 USE_CLANG ?= $(shell echo -n UseClang \
               | cpp -P -imacros $(CONFIG_H) - | xargs)
 
 # RISC-V subset
 ifeq ($(CHERI_EN), 1)
-  RV_ARCH = rv32imaxcheri
+  ifeq ($(FP_EN), 1)
+    RV_ARCH = rv32ima_xcheri_zfinx
+  else
+    RV_ARCH = rv32ima_xcheri
+  endif
   RV_ABI = il32pc64
 else
-  RV_ARCH = rv32ima
+  ifeq ($(FP_EN), 1)
+    RV_ARCH = rv32ima_zfinx
+  else
+    RV_ARCH = rv32ima
+  endif
   RV_ABI = ilp32
 endif
 
@@ -55,8 +68,10 @@ v-files-for = $(patsubst %.S,%.$(1).code.v,$(wildcard $(2)/*.S)) \
 .PHONY: v-files
 v-files: $(call v-files-for,cpu,I) \
          $(call v-files-for,cpu,M) \
+         $(call v-files-for,cpu,F) \
          $(call v-files-for,simt,I) \
          $(call v-files-for,simt,M) \
+         $(call v-files-for,simt,F) \
          $(if $(CHERI_EN_COND), , $(call v-files-for,cpu,I/NoCap)) \
          $(if $(CHERI_EN_COND), , $(call v-files-for,simt,I/NoCap)) \
          $(if $(CHERI_EN_COND), , $(call v-files-for,simt,A)) \
@@ -123,10 +138,12 @@ TestSIMTSim: TestSIMT.cpp
 CPU_TESTS = $(if $(CHERI_EN_COND), \
   I/*.S M/*.S CHERI/*.S, \
   I/*.S I/NoCap/*.S M/*.S)
+CPU_TESTS += $(if $(FP_EN_COND), F/*.S, )
 
 SIMT_TESTS = $(if $(CHERI_EN_COND), \
   I/*.S M/*.S CHERI/*.S CHERI/A/*.S, \
   I/*.S I/NoCap/*.S M/*.S A/*.S)
+SIMT_TESTS += $(if $(FP_EN_COND), F/*.S, )
 
 .PHONY: test-cpu
 test-cpu: v-files TestCPU
@@ -156,6 +173,7 @@ clean:
     I/NoCap/*.o I/NoCap/*.elf I/NoCap/*.v \
     M/*.o M/*.elf M/*.v \
     A/*.o A/*.elf A/*.v \
+    F/*.o F/*.elf F/*.v \
     CHERI/*.o CHERI/*.elf CHERI/*.v \
     CHERI/A/*.o CHERI/A/*.elf CHERI/A/*.v \
     TestCPU TestCPUSim TestSIMT TestSIMTSim

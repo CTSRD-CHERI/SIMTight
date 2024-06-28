@@ -13,7 +13,7 @@ USE_CLANG ?= $(shell echo -n UseClang \
 
 # RISC-V subset
 ifeq ($(CHERI_EN), 1)
-  RV_ARCH = rv32imaxcheri
+  RV_ARCH = rv32ima_xcheri
   RV_ABI = il32pc64
 else
   RV_ARCH = rv32ima

@@ -471,6 +471,25 @@ test_ ## testnum: \
   .result; \
   .popsection
 
+#define TEST_FP_OP_S_INTERNAL_ZFINX( testnum, result, val1, val2, val3, code... ) \
+test_ ## testnum: \
+  li  TESTNUM, testnum; \
+  la  a0, test_ ## testnum ## _data ;\
+  lw  a1, 0(a0); \
+  lw  a2, 4(a0); \
+  lw  a3, 8(a0); \
+  lw  a4, 12(a0); \
+  code; \
+  bne a0, a4, fail; \
+  .pushsection .data; \
+  .align 2; \
+  test_ ## testnum ## _data: \
+  .float val1; \
+  .float val2; \
+  .float val3; \
+  .result; \
+  .popsection
+
 #define TEST_FP_OP_D_INTERNAL( testnum, flags, result, val1, val2, val3, code... ) \
 test_ ## testnum: \
   li  TESTNUM, testnum; \
@@ -505,6 +524,10 @@ test_ ## testnum: \
   TEST_FP_OP_S_INTERNAL( testnum, flags, float result, val1, 0.0, 0.0, \
                     inst f3, f0; fmv.x.s a0, f3)
 
+#define TEST_FP_OP1_S_ZFINX( testnum, inst, flags, result, val1 ) \
+  TEST_FP_OP_S_INTERNAL_ZFINX( testnum, float result, val1, 0.0, 0.0, \
+                    inst a0, a1)
+
 #define TEST_FP_OP1_D( testnum, inst, flags, result, val1 ) \
   TEST_FP_OP_D_INTERNAL( testnum, flags, double result, val1, 0.0, 0.0, \
                     inst f3, f0; fmv.x.d a0, f3)
@@ -520,6 +543,10 @@ test_ ## testnum: \
 #define TEST_FP_OP2_S( testnum, inst, flags, result, val1, val2 ) \
   TEST_FP_OP_S_INTERNAL( testnum, flags, float result, val1, val2, 0.0, \
                     inst f3, f0, f1; fmv.x.s a0, f3)
+
+#define TEST_FP_OP2_S_ZFINX( testnum, inst, result, val1, val2 ) \
+  TEST_FP_OP_S_INTERNAL_ZFINX( testnum, float result, val1, val2, 0.0, \
+                    inst a0, a1, a2)
 
 #define TEST_FP_OP2_D( testnum, inst, flags, result, val1, val2 ) \
   TEST_FP_OP_D_INTERNAL( testnum, flags, double result, val1, val2, 0.0, \
@@ -537,13 +564,21 @@ test_ ## testnum: \
   TEST_FP_OP_S_INTERNAL( testnum, flags, word result, val1, 0.0, 0.0, \
                     inst a0, f0, rm)
 
+#define TEST_FP_INT_OP_S_ZFINX( testnum, inst, flags, result, val1, rm ) \
+  TEST_FP_OP_S_INTERNAL_ZFINX( testnum, word result, val1, 0.0, 0.0, \
+                    inst a0, a1, rm)
+
 #define TEST_FP_INT_OP_D( testnum, inst, flags, result, val1, rm ) \
   TEST_FP_OP_D_INTERNAL( testnum, flags, dword result, val1, 0.0, 0.0, \
                     inst a0, f0, rm)
 
-#define TEST_FP_CMP_OP_S( testnum, inst, result, val1, val2 ) \
-  TEST_FP_OP_S_INTERNAL( testnum, 0, word result, val1, val2, 0.0, \
-                    inst a0, f0, f1)
+#define TEST_FP_CMP_OP_S( testnum, inst, flags, result, val1, val2 ) \
+  TEST_FP_OP_S_INTERNAL( testnum, flags, word result, val1, val2, 0.0, \
+                    inst a0, f10, f11)
+
+#define TEST_FP_CMP_OP_S_ZFINX( testnum, inst, flags, result, val1, val2 ) \
+  TEST_FP_OP_S_INTERNAL_ZFINX( testnum, word result, val1, val2, 0.0, \
+                    inst a0, a1, a2)
 
 #define TEST_FP_CMP_OP_D( testnum, inst, result, val1, val2 ) \
   TEST_FP_OP_D_INTERNAL( testnum, 0, dword result, val1, val2, 0.0, \
@@ -566,6 +601,20 @@ test_ ## testnum: \
   inst f0, a0; \
   fsflags x0; \
   fmv.x.s a0, f0; \
+  bne a0, a3, fail; \
+  .pushsection .data; \
+  .align 2; \
+  test_ ## testnum ## _data: \
+  .float result; \
+  .popsection
+
+#define TEST_INT_FP_OP_S_ZFINX( testnum, inst, result, val1 ) \
+test_ ## testnum: \
+  li  TESTNUM, testnum; \
+  la  a0, test_ ## testnum ## _data ;\
+  lw  a3, 0(a0); \
+  li  a0, val1; \
+  inst a0, a0; \
   bne a0, a3, fail; \
   .pushsection .data; \
   .align 2; \

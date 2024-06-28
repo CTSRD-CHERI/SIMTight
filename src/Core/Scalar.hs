@@ -22,7 +22,9 @@ import Pebbles.Pipeline.Interface
 import Pebbles.Pipeline.SIMT.Management
 import Pebbles.Instructions.RV32_I
 import Pebbles.Instructions.RV32_M
+import Pebbles.Instructions.RV32_F
 import Pebbles.Instructions.RV32_IxCHERI
+import Pebbles.Instructions.Units.FPU
 import Pebbles.Instructions.Units.MulUnit
 import Pebbles.Instructions.Units.DivUnit
 import Pebbles.Instructions.Custom.SIMT
@@ -52,6 +54,10 @@ data ScalarCoreConfig =
     -- ^ Enable CHERI extensions
   , scalarCoreCapRegInitFile :: Maybe String
     -- ^ File containing initial capability register file (meta-data only)
+  , scalarCoreEnableFP :: Bool
+    -- ^ Enable floating-point (Zfinx) extension
+  , scalarCoreEnableHardFPMul :: Bool
+    -- ^ Enable hard floating-point multiplier
   }
 
 -- | Scalar core inputs
@@ -115,11 +121,17 @@ makeScalarCore config inputs = mdo
   -- Divider
   divUnit <- makeSeqDivUnit
  
+  -- FPU
+  fpu <- if config.scalarCoreEnableFP
+           then makeFPU config.scalarCoreEnableHardFPMul
+           else return nullServer
+
   -- Insert request ids
   let insertReqId :: t_req -> (ScalarPipelineInstrInfo, t_req)
       insertReqId req = (pipelineOuts.instrInfo, req)
   let mulReqs = mapSink insertReqId mulUnit.reqs
   let divReqs = mapSink insertReqId divUnit.reqs
+  let fpuReqs = mapSink insertReqId fpu.reqs
 
   -- Memory requests from core
   (memReqSink, capMemReqSink) <-
@@ -144,12 +156,13 @@ makeScalarCore config inputs = mdo
         , enableRegForwarding = config.scalarCoreEnableRegForwarding
         , initialPC = config.scalarCoreInitialPC
         , capRegInitFile = config.scalarCoreCapRegInitFile
-        , decodeStage = concat
+        , decodeStage = concat $
             [ if config.scalarCoreEnableCHERI then decodeIxCHERI else decodeI
             , decodeM
             , decodeCacheMgmt
             , decodeSIMT
-            ]
+            ] ++
+            [ decodeF | config.scalarCoreEnableFP ]
         , executeStage = \s -> return
             ExecuteStage {
               execute = do
@@ -160,6 +173,7 @@ makeScalarCore config inputs = mdo
                     executeIxCHERI Nothing (Just csrUnit)
                                            (Just capMemReqSink) s
                   else executeI Nothing (Just csrUnit) (Just memReqSink) s
+                when config.scalarCoreEnableFP do executeF fpuReqs s
             }
         , trapCSRs = trapRegs
         , checkPCCFunc =
@@ -167,11 +181,12 @@ makeScalarCore config inputs = mdo
         }
   let pipelineIns =
         ScalarPipelineIns {
-          resumeReqs = mergeTree
+          resumeReqs = mergeTree $
             [ memResumeReqs
             , mulUnit.resps
             , divUnit.resps
-            ]
+            ] ++
+            [ fpu.resps | config.scalarCoreEnableFP ]
         }
   pipelineOuts <- makeScalarPipeline pipelineConfig pipelineIns
 

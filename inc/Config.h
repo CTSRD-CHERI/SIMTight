@@ -90,6 +90,12 @@ NOTE("Prevent scalar detection in scalarising reg file")
 NOTE("Total vector count sample rate")
 #define SIMTTotalVecCountSampleRate 2048
 
+NOTE("Enable floating-point (Zfinx) extension in both CPU and SIMT cores")
+#define EnableFP 0
+
+NOTE("Enable hard floating-point multiplier")
+#define EnableHardFPMul 1
+
 NOTE("CPU configuration")
 NOTE("=================")
 
