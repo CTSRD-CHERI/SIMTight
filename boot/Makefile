@@ -33,6 +33,11 @@ CFLAGS     =
 RV_CC      = riscv64-unknown-elf-gcc
 RV_LD      = riscv64-unknown-elf-ld
 RV_OBJCOPY = riscv64-unknown-elf-objcopy
+GCC_VER    = $(shell $(RV_CC) --version | head -n1 \
+                 | sed 's/.* //g' | cut -d'.' -f1)
+ifeq ($(shell expr $(GCC_VER) \>= 13), 1)
+  RV_ARCH := $(RV_ARCH)_Zicsr
+endif
 endif
 
 # Compiler and linker flags for code running on the SoC
