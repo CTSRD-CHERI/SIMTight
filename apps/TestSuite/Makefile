@@ -68,10 +68,10 @@ v-files-for = $(patsubst %.S,%.$(1).code.v,$(wildcard $(2)/*.S)) \
 .PHONY: v-files
 v-files: $(call v-files-for,cpu,I) \
          $(call v-files-for,cpu,M) \
-         $(call v-files-for,cpu,F) \
          $(call v-files-for,simt,I) \
          $(call v-files-for,simt,M) \
-         $(call v-files-for,simt,F) \
+         $(if $(FP_EN_COND), $(call v-files-for,cpu,F), ) \
+         $(if $(FP_EN_COND), $(call v-files-for,simt,F), ) \
          $(if $(CHERI_EN_COND), , $(call v-files-for,cpu,I/NoCap)) \
          $(if $(CHERI_EN_COND), , $(call v-files-for,simt,I/NoCap)) \
          $(if $(CHERI_EN_COND), , $(call v-files-for,simt,A)) \
