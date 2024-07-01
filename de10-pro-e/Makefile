@@ -46,6 +46,8 @@ clean:
 	rm -f DE10_Pro.qws *.rpt *.csv *.mif
 	ls ip/DE10_Pro_QSYS/ | grep -v -E '\.ip$$' \
     | xargs -i rm -rf ip/DE10_Pro_QSYS/{}
+	ls ../pebbles/src/FloatingPoint/Stratix10/ | grep -v -E '\.ip$$' \
+    | xargs -i rm -rf ../pebbles/src/FloatingPoint/Stratix10/{}
 
 # Raise error if QUARTUS_ROOTDIR not set
 .PHONY: checkenv
