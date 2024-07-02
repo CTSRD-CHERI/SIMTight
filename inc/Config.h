@@ -94,7 +94,7 @@ NOTE("Enable floating-point (Zfinx) extension in both CPU and SIMT cores")
 #define EnableFP 0
 
 NOTE("Enable hard floating-point multiplier")
-#define EnableHardFPMul 1
+#define EnableHardFPMul 0
 
 NOTE("CPU configuration")
 NOTE("=================")
