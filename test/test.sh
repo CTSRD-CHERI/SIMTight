@@ -2,6 +2,11 @@
 
 source test-lib.sh
 
+# Get config file options
+SIMTIGHT_ROOT=`realpath ../`
+CONFIG_H="$SIMTIGHT_ROOT/inc/Config.h"
+FP_EN=`echo -n EnableFP | cpp -P -imacros $CONFIG_H - | xargs`
+
 APPS=(
   Samples/VecAdd
   Samples/Histogram
@@ -18,6 +23,11 @@ APPS=(
   InHouse/VecGCD
   InHouse/MotionEst
 )
+
+if [ "$FP_EN" == "1" ]; then
+  APPS+=(Samples/BitonicSortLarge_Float)
+  APPS+=(Samples/MatMul_Float)
+fi
 
 # Options
 # =======

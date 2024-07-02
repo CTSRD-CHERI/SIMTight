@@ -10,6 +10,8 @@ clean:
 	make -C Scan clean
 	make -C MatVecMul clean
 	make -C MatMul clean
+	make -C MatMul_Float clean
 	make -C BitonicSortSmall clean
 	make -C BitonicSortLarge clean
+	make -C BitonicSortLarge_Float clean
 	make -C SparseMatVecMul clean

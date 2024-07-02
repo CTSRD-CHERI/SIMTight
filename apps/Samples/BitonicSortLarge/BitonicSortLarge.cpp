@@ -14,13 +14,19 @@
 // Size of arrays being sorted
 #define LOCAL_SIZE_LIMIT 4096
 
+// Type of values being sorted
+#ifdef FLOAT
+typedef float T;
+#else
+typedef unsigned T;
+#endif
+
 // Sort two key/value pairs
-inline void twoSort(unsigned *keyA, unsigned* valA,
-                    unsigned *keyB, unsigned* valB, unsigned dir)
+inline void twoSort(T*keyA, T* valA,
+                    T*keyB, T* valB, unsigned dir)
 {
   if ((*keyA > *keyB) == dir) {
-    unsigned t;
-    t = *keyA; *keyA = *keyB; *keyB = t;
+    T t; t = *keyA; *keyA = *keyB; *keyB = t;
     t = *valA; *valA = *valB; *valB = t;
   }
   noclConverge();
@@ -30,23 +36,23 @@ inline void twoSort(unsigned *keyA, unsigned* valA,
 // Even / odd subarrays (of LOCAL_SIZE_LIMIT points) are
 // sorted in opposite directions
 struct BitonicSortLocal : Kernel {
-  unsigned *d_DstKey_arg;
-  unsigned *d_DstVal_arg;
-  unsigned *d_SrcKey_arg;
-  unsigned *d_SrcVal_arg;
+  T *d_DstKey_arg;
+  T *d_DstVal_arg;
+  T *d_SrcKey_arg;
+  T *d_SrcVal_arg;
 
   void kernel() {
-    unsigned* l_key = shared.array<unsigned, LOCAL_SIZE_LIMIT>();
-    unsigned* l_val = shared.array<unsigned, LOCAL_SIZE_LIMIT>();
+    T* l_key = shared.array<T, LOCAL_SIZE_LIMIT>();
+    T* l_val = shared.array<T, LOCAL_SIZE_LIMIT>();
 
     // Offset to the beginning of subbatch and load data
-    unsigned* d_SrcKey =
+    T* d_SrcKey =
       d_SrcKey_arg + blockIdx.x * LOCAL_SIZE_LIMIT + threadIdx.x;
-    unsigned* d_SrcVal =
+    T* d_SrcVal =
       d_SrcVal_arg + blockIdx.x * LOCAL_SIZE_LIMIT + threadIdx.x;
-    unsigned* d_DstKey =
+    T* d_DstKey =
       d_DstKey_arg + blockIdx.x * LOCAL_SIZE_LIMIT + threadIdx.x;
-    unsigned* d_DstVal =
+    T* d_DstVal =
       d_DstVal_arg + blockIdx.x * LOCAL_SIZE_LIMIT + threadIdx.x;
     l_key[threadIdx.x + 0] = d_SrcKey[0];
     l_val[threadIdx.x + 0] = d_SrcVal[0];
@@ -95,10 +101,10 @@ struct BitonicSortLocal : Kernel {
 
 // Bitonic merge iteration for 'stride' >= LOCAL_SIZE_LIMIT
 struct BitonicMergeGlobal : Kernel {
-  unsigned* d_DstKey;
-  unsigned* d_DstVal;
-  unsigned* d_SrcKey;
-  unsigned* d_SrcVal;
+  T* d_DstKey;
+  T* d_DstVal;
+  T* d_SrcKey;
+  T* d_SrcVal;
   unsigned arrayLength;
   unsigned size;
   unsigned stride;
@@ -114,10 +120,10 @@ struct BitonicMergeGlobal : Kernel {
     unsigned pos =
       2 * global_comparatorI - (global_comparatorI & (stride - 1));
 
-    unsigned keyA = d_SrcKey[pos + 0];
-    unsigned valA = d_SrcVal[pos + 0];
-    unsigned keyB = d_SrcKey[pos + stride];
-    unsigned valB = d_SrcVal[pos + stride];
+    T keyA = d_SrcKey[pos + 0];
+    T valA = d_SrcVal[pos + 0];
+    T keyB = d_SrcKey[pos + stride];
+    T valB = d_SrcVal[pos + stride];
 
     twoSort(&keyA, &valA, &keyB, &valB, dir);
 
@@ -131,26 +137,26 @@ struct BitonicMergeGlobal : Kernel {
 //Combined bitonic merge steps for
 //'size' > LOCAL_SIZE_LIMIT and 'stride' = [1 .. LOCAL_SIZE_LIMIT / 2]
 struct BitonicMergeLocal : Kernel {
-  unsigned* d_DstKey_arg;
-  unsigned* d_DstVal_arg;
-  unsigned* d_SrcKey_arg;
-  unsigned* d_SrcVal_arg;
+  T* d_DstKey_arg;
+  T* d_DstVal_arg;
+  T* d_SrcKey_arg;
+  T* d_SrcVal_arg;
   unsigned arrayLength;
   unsigned stride_arg;
   unsigned size;
   unsigned sortDir;
 
   void kernel() {
-    unsigned* l_key = shared.array<unsigned, LOCAL_SIZE_LIMIT>();
-    unsigned* l_val = shared.array<unsigned, LOCAL_SIZE_LIMIT>();
+    T* l_key = shared.array<T, LOCAL_SIZE_LIMIT>();
+    T* l_val = shared.array<T, LOCAL_SIZE_LIMIT>();
 
-    unsigned* d_SrcKey =
+    T* d_SrcKey =
       d_SrcKey_arg + blockIdx.x * LOCAL_SIZE_LIMIT + threadIdx.x;
-    unsigned* d_SrcVal =
+    T* d_SrcVal =
       d_SrcVal_arg + blockIdx.x * LOCAL_SIZE_LIMIT + threadIdx.x;
-    unsigned* d_DstKey =
+    T* d_DstKey =
       d_DstKey_arg + blockIdx.x * LOCAL_SIZE_LIMIT + threadIdx.x;
-    unsigned* d_DstVal =
+    T* d_DstVal =
       d_DstVal_arg + blockIdx.x * LOCAL_SIZE_LIMIT + threadIdx.x;
     l_key[threadIdx.x + 0] = d_SrcKey[0];
     l_val[threadIdx.x + 0] = d_SrcVal[0];
@@ -191,14 +197,16 @@ int main()
   int N = 1 << (isSim ? 13 : 18);
 
   // Input and output vectors
-  simt_aligned unsigned srcKeys[N], srcVals[N];
-  simt_aligned unsigned dstKeys[N], dstVals[N];
+  simt_aligned T srcKeys[N];
+  simt_aligned T srcVals[N];
+  simt_aligned T dstKeys[N];
+  simt_aligned T dstVals[N];
 
   // Initialise inputs
   uint32_t seed = 1;
   for (int i = 0; i < N; i++) {
-    srcKeys[i] = rand15(&seed);
-    srcVals[i] = rand15(&seed);
+    srcKeys[i] = (T) rand15(&seed);
+    srcVals[i] = (T) rand15(&seed);
   }
 
   // Instantiate kernels

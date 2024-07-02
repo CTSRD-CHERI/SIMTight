@@ -12,6 +12,11 @@ CHERI_EN_COND = $(findstring 1, $(CHERI_EN))
 USE_CLANG ?= $(shell echo -n UseClang \
               | cpp -P -imacros $(CONFIG_H) - | xargs)
 
+# Is floating-point enabled?
+FP_EN ?= $(shell echo -n EnableFP \
+           | cpp -P -imacros $(CONFIG_H) - | xargs)
+FP_EN_COND = $(findstring 1, $(FP_EN))
+
 # Use RV32E
 USE_RV32E ?= $(shell echo -n UseRV32E \
               | cpp -P -imacros $(CONFIG_H) - | xargs)
@@ -40,16 +45,26 @@ CFLAGS     =
 RV_CC      = riscv64-unknown-elf-gcc
 RV_LD      = riscv64-unknown-elf-ld
 RV_OBJCOPY = riscv64-unknown-elf-objcopy
+GCC_VER    = $(shell $(RV_CC) --version | head -n1 \
+                 | sed 's/.* //g' | cut -d'.' -f1)
+ifeq ($(shell expr $(GCC_VER) \>= 13), 1)
+  RV_ARCH := $(RV_ARCH)_zicsr
+endif
+endif
+
+ifeq ($(FP_EN), 1)
+  RV_ARCH := $(RV_ARCH)_zfinx
 endif
 
 # Compiler and linker flags for code running on the SoC
-CFLAGS := $(CFLAGS) -mabi=$(RV_ABI) -march=$(RV_ARCH) -O2 \
-         -I $(PEBBLES_ROOT)/inc \
-         -I $(SIMTIGHT_ROOT)/inc \
-         -static -mcmodel=medany \
-         -fvisibility=hidden -nostdlib \
-         -fno-builtin-printf -ffp-contract=off \
-         -fno-builtin -ffreestanding -ffunction-sections
+CFLAGS += -mabi=$(RV_ABI) -march=$(RV_ARCH) -O2 \
+          -I $(PEBBLES_ROOT)/inc \
+          -I $(SIMTIGHT_ROOT)/inc \
+          -static -mcmodel=medany \
+          -fvisibility=hidden -nostdlib \
+          -fno-builtin-printf -ffp-contract=off \
+          -fno-builtin -ffreestanding -ffunction-sections \
+          $(DEFINES)
 
 CFILES = $(SIMTIGHT_APPS_ROOT)/Common/Start.cpp \
          $(APP_CPP) \

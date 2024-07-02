@@ -18,28 +18,12 @@ USE_CLANG ?= $(shell echo -n UseClang \
 
 # RISC-V subset
 ifeq ($(CHERI_EN), 1)
-  ifeq ($(FP_EN), 1)
-    RV_ARCH = rv32ima_xcheri_zfinx
-  else
-    RV_ARCH = rv32ima_xcheri
-  endif
+  RV_ARCH = rv32ima_xcheri
   RV_ABI = il32pc64
 else
-  ifeq ($(FP_EN), 1)
-    RV_ARCH = rv32ima_zfinx
-  else
-    RV_ARCH = rv32ima
-  endif
+  RV_ARCH = rv32ima
   RV_ABI = ilp32
 endif
-
-# Compiler and linker flags
-CFLAGS  = -mabi=$(RV_ABI) -march=$(RV_ARCH) -O2 -I./inc \
-          -I$(SIMTIGHT_ROOT)/inc \
-          -I$(PEBBLES_ROOT)/inc \
-          -nostdlib -ffp-contract=off \
-          -fno-builtin -ffreestanding
-LDFLAGS = -melf32lriscv -G 0
 
 ifeq ($(USE_CLANG), 1)
 CFLAGS    += --target=riscv64-unknown -mno-relax
@@ -50,7 +34,24 @@ else
 RV_CC      = riscv64-unknown-elf-g++
 RV_LD      = riscv64-unknown-elf-ld
 RV_OBJCOPY = riscv64-unknown-elf-objcopy
+GCC_VER    = $(shell $(RV_CC) --version | head -n1 \
+                 | sed 's/.* //g' | cut -d'.' -f1)
+ifeq ($(shell expr $(GCC_VER) \>= 13), 1)
+  RV_ARCH := $(RV_ARCH)_zicsr
 endif
+endif
+
+ifeq ($(FP_EN), 1)
+  RV_ARCH := $(RV_ARCH)_zfinx
+endif
+
+# Compiler and linker flags
+CFLAGS  = -mabi=$(RV_ABI) -march=$(RV_ARCH) -O2 -I./inc \
+          -I$(SIMTIGHT_ROOT)/inc \
+          -I$(PEBBLES_ROOT)/inc \
+          -nostdlib -ffp-contract=off \
+          -fno-builtin -ffreestanding
+LDFLAGS = -melf32lriscv -G 0
 
 .PHONY: help
 help:

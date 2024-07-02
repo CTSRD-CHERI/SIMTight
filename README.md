@@ -3,7 +3,7 @@
 SIMTight is a fully synthesisable GPGPU implementing the _Single
 Instruction Multiple Threads (SIMT)_ model, featuring:
 
-  * RISC-V instruction set (`rv32ima_Zfinx_Xcheri`)
+  * RISC-V instruction set (`rv32ima_zfinx_xcheri`)
   * Low-area design with high IPC on classic GPGPU workloads
   * Dynamic scalarisation (automatic detection of scalar
     behaviour in hardware without needing ISA/compiler mods)
@@ -43,9 +43,6 @@ $ sudo apt install verilator
 $ sudo apt install gcc-riscv64-unknown-elf
 $ sudo apt install libgmp-dev
 ```
-
-Floating-point support (`Zfinx`) is disabled by default.
-When enabled, GCC 13 or later is required.
 
 For GHC 9.2.1 or later, [ghcup](https://www.haskell.org/ghcup/) can be
 used.

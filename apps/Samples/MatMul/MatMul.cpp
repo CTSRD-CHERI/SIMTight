@@ -29,20 +29,27 @@
 #include <NoCL.h>
 #include <Rand.h>
 
+// Type of values in matrices
+#ifdef FLOAT
+typedef float T;
+#else
+typedef int T;
+#endif
+
 // Matrix multiplication C = A * B
 // (wA is A's width and wB is B's width)
 template <int BlockSize> struct MatMul : Kernel {
-  int *A, *B, *C;
+  T *A, *B, *C;
   int wA, wB;
 
   void kernel() {
     // Declaration of the shared memory array As used to
     // store the sub-matrix of A
-    auto As = shared.array<int, BlockSize, BlockSize>();
+    auto As = shared.array<T, BlockSize, BlockSize>();
   
     // Declaration of the shared memory array Bs used to
     // store the sub-matrix of B
-    auto Bs = shared.array<int, BlockSize, BlockSize>();
+    auto Bs = shared.array<T, BlockSize, BlockSize>();
 
     // Block index
     int bx = blockIdx.x;
@@ -116,15 +123,15 @@ int main()
   int size = isSim ? 64 : 256;
 
   // Input and outputs
-  simt_aligned int matA[size*size], matB[size*size],
-                   matC[size*size], matCheck[size*size];
+  simt_aligned T matA[size*size], matB[size*size],
+                 matC[size*size], matCheck[size*size];
 
   // Initialise matrices
   uint32_t seed = 1;
   for (int i = 0; i < size; i++)
     for (int j = 0; j < size; j++) {
-      matA[i*size+j] = rand15(&seed) & 0xff;
-      matB[i*size+j] = rand15(&seed) & 0xff;
+      matA[i*size+j] = (T) (rand15(&seed) & 0xff);
+      matB[i*size+j] = (T) (rand15(&seed) & 0xff);
       matCheck[i*size+j] = 0;
     }
 

@@ -36,7 +36,6 @@ RV_OBJCOPY = riscv64-unknown-elf-objcopy
 GCC_VER    = $(shell $(RV_CC) --version | head -n1 \
                  | sed 's/.* //g' | cut -d'.' -f1)
 ifeq ($(shell expr $(GCC_VER) \>= 13), 1)
-  $(info $(GCC_VER))
   RV_ARCH := $(RV_ARCH)_zicsr
 endif
 endif
