@@ -56,8 +56,6 @@ data ScalarCoreConfig =
     -- ^ File containing initial capability register file (meta-data only)
   , scalarCoreEnableFP :: Bool
     -- ^ Enable floating-point (Zfinx) extension
-  , scalarCoreEnableHardFPMul :: Bool
-    -- ^ Enable hard floating-point multiplier
   }
 
 -- | Scalar core inputs
@@ -123,7 +121,7 @@ makeScalarCore config inputs = mdo
  
   -- FPU
   fpu <- if config.scalarCoreEnableFP
-           then makeFPU config.scalarCoreEnableHardFPMul
+           then makeFPU
            else return nullServer
 
   -- Insert request ids

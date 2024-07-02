@@ -163,7 +163,6 @@ makeCPUCore = makeBoundary "CPUCore" (makeScalarCore config)
             then Just (scalarCapRegInitFile ++ ".mif")
             else Nothing
       , scalarCoreEnableFP = EnableFP == 1
-      , scalarCoreEnableHardFPMul = EnableHardFPMul == 1
       }
 
 -- CPU data cache (synthesis boundary)
@@ -229,7 +228,6 @@ makeSIMTAccelerator = makeBoundary "SIMTAccelerator" (makeSIMTCore config)
             then Just SIMTFullDividerLatency
             else Nothing
       , simtCoreEnableFP = EnableFP == 1
-      , simtCoreEnableHardFPMul = EnableHardFPMul == 1
       }
 
 -- SIMT memory subsystem

@@ -147,8 +147,6 @@ data SIMTCoreConfig =
     -- (If so, what latency? If not, slow seq divider used)
   , simtCoreEnableFP :: Bool
     -- ^ Enable floating-point (Zfinx) extension
-  , simtCoreEnableHardFPMul :: Bool
-    -- ^ Enable hard floating-point multiplier
   }
 
 -- | 32-bit SIMT core
@@ -245,7 +243,7 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
   -- Vector FPU
   vecFPU <-
     if config.simtCoreEnableFP
-      then makeVecFPU config.simtCoreEnableHardFPMul
+      then makeVecFPU
       else return nullServer
 
   -- Per lane divider request sinks

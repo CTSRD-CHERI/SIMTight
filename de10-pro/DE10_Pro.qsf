@@ -1739,7 +1739,6 @@ set_global_assignment -name IP_FILE ../pebbles/src/FloatingPoint/Stratix10/FPCom
 set_global_assignment -name IP_FILE ../pebbles/src/FloatingPoint/Stratix10/FPFromInt33.ip
 set_global_assignment -name IP_FILE ../pebbles/src/FloatingPoint/Stratix10/FPFromInt.ip
 set_global_assignment -name IP_FILE ../pebbles/src/FloatingPoint/Stratix10/FPFromUInt.ip
-set_global_assignment -name IP_FILE ../pebbles/src/FloatingPoint/Stratix10/FPHardMul.ip
 set_global_assignment -name IP_FILE ../pebbles/src/FloatingPoint/Stratix10/FPMax.ip
 set_global_assignment -name IP_FILE ../pebbles/src/FloatingPoint/Stratix10/FPMin.ip
 set_global_assignment -name IP_FILE ../pebbles/src/FloatingPoint/Stratix10/FPToInt33.ip
