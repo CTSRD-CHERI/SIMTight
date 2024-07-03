@@ -24,16 +24,15 @@ many: checkenv ip
 ip: checkenv
 	make -C $(SIMTIGHT_ROOT)/src
 	make -C $(SIMTIGHT_ROOT)/boot
-	if [ "$(DISABLE_DSP)" == "1" ]; then \
-    echo "set_global_assignment -name AUTO_DSP_RECOGNITION OFF" \
-         >> DE10_Pro.qsf \
-	  ../pebbles/src/FloatingPoint/Stratix10/rmdsp-pre-ipgenerate.sh \
-  fi
+ifeq ($(DISABLE_DSP),1)
+	echo "set_global_assignment -name AUTO_DSP_RECOGNITION OFF" >> DE10_Pro.qsf
+	../pebbles/src/FloatingPoint/Stratix10/rmdsp-pre-ipgenerate.sh
+endif
 	quartus_ipgenerate DE10_Pro.qpf
 	../pebbles/blarney/blarney-vendor-ip/IntelFPGA/AvalonStreamClockCrosser/post-ipgenerate.sh
-	if [ "$(DISABLE_DSP)" == "1" ]; then \
-	  ../pebbles/src/FloatingPoint/Stratix10/rmdsp-post-ipgenerate.sh \
-  fi
+ifeq ($(DISABLE_DSP),1)
+	../pebbles/src/FloatingPoint/Stratix10/rmdsp-post-ipgenerate.sh
+endif
 
 .PHONY: report
 report: checkenv

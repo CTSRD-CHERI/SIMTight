@@ -56,6 +56,8 @@ data ScalarCoreConfig =
     -- ^ File containing initial capability register file (meta-data only)
   , scalarCoreEnableFP :: Bool
     -- ^ Enable floating-point (Zfinx) extension
+  , scalarCoreDisableHardDSPBlocks :: Bool
+    -- ^ Disable DSP blocks
   }
 
 -- | Scalar core inputs
@@ -121,7 +123,7 @@ makeScalarCore config inputs = mdo
  
   -- FPU
   fpu <- if config.scalarCoreEnableFP
-           then makeFPU
+           then makeFPU config.scalarCoreDisableHardDSPBlocks
            else return nullServer
 
   -- Insert request ids
