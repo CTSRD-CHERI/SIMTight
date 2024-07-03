@@ -47,6 +47,8 @@ clean:
 	ls ip/DE10_Pro_QSYS/ | grep -v -E '\.ip$$' \
     | xargs -i rm -rf ip/DE10_Pro_QSYS/{}
 	ls ../pebbles/src/FloatingPoint/Stratix10/ | grep -v -E '\.ip$$' \
+    | grep -v -E '\.sh$$' \
+    | grep -v -E '\.py$$' \
     | xargs -i rm -rf ../pebbles/src/FloatingPoint/Stratix10/{}
 
 # Raise error if QUARTUS_ROOTDIR not set

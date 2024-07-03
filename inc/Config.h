@@ -93,6 +93,9 @@ NOTE("Total vector count sample rate")
 NOTE("Enable floating-point (Zfinx) extension in both CPU and SIMT cores")
 #define EnableFP 0
 
+NOTE("Disable use of hard DSP blocks")
+#define DisableHardDSPBlocks 0
+
 NOTE("CPU configuration")
 NOTE("=================")
 

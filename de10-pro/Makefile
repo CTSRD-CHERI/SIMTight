@@ -1,6 +1,11 @@
 SIMTIGHT_ROOT ?= $(realpath ..)
 NUM_SEEDS ?= 8
 QPF = DE10_Pro.qpf
+CONFIG_H = $(SIMTIGHT_ROOT)/inc/Config.h
+
+# Are DSP hard block disabled?
+DISABLE_DSP = $(shell echo -n DisableHardDSPBlocks \
+               | cpp -P -imacros $(CONFIG_H) - | xargs)
 
 .PHONY: one
 one: checkenv ip
@@ -19,8 +24,16 @@ many: checkenv ip
 ip: checkenv
 	make -C $(SIMTIGHT_ROOT)/src
 	make -C $(SIMTIGHT_ROOT)/boot
+	if [ "$(DISABLE_DSP)" == "1" ]; then \
+    echo "set_global_assignment -name AUTO_DSP_RECOGNITION OFF" \
+         >> DE10_Pro.qsf \
+	  ../pebbles/src/FloatingPoint/Stratix10/rmdsp-pre-ipgenerate.sh \
+  fi
 	quartus_ipgenerate DE10_Pro.qpf
 	../pebbles/blarney/blarney-vendor-ip/IntelFPGA/AvalonStreamClockCrosser/post-ipgenerate.sh
+	if [ "$(DISABLE_DSP)" == "1" ]; then \
+	  ../pebbles/src/FloatingPoint/Stratix10/rmdsp-post-ipgenerate.sh \
+  fi
 
 .PHONY: report
 report: checkenv
@@ -45,6 +58,8 @@ clean:
 	ls ip/DE10_Pro_QSYS/ | grep -v -E '\.ip$$' \
     | xargs -i rm -rf ip/DE10_Pro_QSYS/{}
 	ls ../pebbles/src/FloatingPoint/Stratix10/ | grep -v -E '\.ip$$' \
+    | grep -v -E '\.sh$$' \
+    | grep -v -E '\.py$$' \
     | xargs -i rm -rf ../pebbles/src/FloatingPoint/Stratix10/{}
 
 # Raise error if QUARTUS_ROOTDIR not set
