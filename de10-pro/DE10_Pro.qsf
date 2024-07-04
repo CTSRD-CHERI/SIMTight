@@ -1744,22 +1744,9 @@ set_global_assignment -name IP_FILE ../pebbles/src/FloatingPoint/Stratix10/FPMin
 set_global_assignment -name IP_FILE ../pebbles/src/FloatingPoint/Stratix10/FPToInt33.ip
 set_global_assignment -name IP_FILE ../pebbles/src/FloatingPoint/Stratix10/FPToInt.ip
 set_global_assignment -name IP_FILE ../pebbles/src/FloatingPoint/Stratix10/FPToUInt.ip
-# Comment these when using FloPoCo versions
 set_global_assignment -name IP_FILE ../pebbles/src/FloatingPoint/Stratix10/FPMul.ip
 set_global_assignment -name IP_FILE ../pebbles/src/FloatingPoint/Stratix10/FPSqrt.ip
 set_global_assignment -name IP_FILE ../pebbles/src/FloatingPoint/Stratix10/FPDiv.ip
-# Uncomment these when using FloPoCo versions without DSP blocks
-# Also need to set enable_hard_fp to false in FPAddSub.ip
-#set_global_assignment -name AUTO_DSP_RECOGNITION OFF
-#set_global_assignment -name VERILOG_FILE ../pebbles/src/FloatingPoint/FloPoCo/FPMul.v
-#set_global_assignment -name VERILOG_FILE ../pebbles/src/FloatingPoint/FloPoCo/FPDiv.v
-#set_global_assignment -name VERILOG_FILE ../pebbles/src/FloatingPoint/FloPoCo/FPSqrt.v
-#set_global_assignment -name VHDL_FILE ../pebbles/src/FloatingPoint/FloPoCo/FToIEEE.vhd
-#set_global_assignment -name VHDL_FILE ../pebbles/src/FloatingPoint/FloPoCo/FFromIEEE.vhd
-#set_global_assignment -name VHDL_FILE ../pebbles/src/FloatingPoint/FloPoCo/FFPMult.vhd
-#set_global_assignment -name VHDL_FILE ../pebbles/src/FloatingPoint/FloPoCo/FFPDiv.vhd
-#set_global_assignment -name VHDL_FILE ../pebbles/src/FloatingPoint/FloPoCo/FFPSqrt.vhd
-#
 set_global_assignment -name SEARCH_PATH ../src
 set_global_assignment -name SEARCH_PATH ../pebbles/blarney/Verilog/Altera/
 set_global_assignment -name SEARCH_PATH ../pebbles/src/CHERI/Verilog/
