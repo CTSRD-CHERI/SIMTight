@@ -14,7 +14,7 @@ sim: Main.cpp ../src/SIMTight.v boot.hex
     -y $(PEBBLES_ROOT)/src/FloatingPoint/Wrappers \
     -y $(PEBBLES_ROOT)/src/FloatingPoint/Sim \
     -y $(PEBBLES_ROOT)/blarney/blarney-vendor-ip/Sim/ \
-    --x-assign unique --x-initial unique \
+    --x-assign unique --x-initial unique -D_SIM_ \
     -CFLAGS "$(SIM_CFLAGS)"
 	make -C obj_dir -j -f VSIMTight.mk sim
 	cp obj_dir/sim .
