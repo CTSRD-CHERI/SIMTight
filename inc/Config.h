@@ -166,6 +166,9 @@ NOTE("Use shared vector scratchpad between int and cap reg files?")
 NOTE("When using shared vector spad, this is the spill threshold for caps")
 #define SIMTSharedVecSpadCapThreshold 192
 
+NOTE("Share an SRF port for reading cap meta-data, reducing storage")
+#define SIMTShareCapSRFPort 0
+
 NOTE("Compiler")
 NOTE("========")
 
