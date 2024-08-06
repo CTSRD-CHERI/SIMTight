@@ -29,11 +29,11 @@ RUN apt-get update -y \
                           libexpat1-dev libgmp-dev
 
 # Install SystemVerilog formatter
-RUN mkdir -p /srcPkgs \
-    && cd /srcPkgs \
-    && wget https://github.com/chipsalliance/verible/releases/download/v0.0-2776-gbaf0efe9/verible-v0.0-2776-gbaf0efe9-Ubuntu-22.04-jammy-x86_64.tar.gz \
-    && mkdir -p verible \
-    && tar xzvf verible-*-x86_64.tar.gz -C verible --strip-components 1
+#RUN mkdir -p /srcPkgs \
+#    && cd /srcPkgs \
+#    && wget https://github.com/chipsalliance/verible/releases/download/v0.0-2776-gbaf0efe9/verible-v0.0-2776-gbaf0efe9-Ubuntu-22.04-jammy-x86_64.tar.gz \
+#    && mkdir -p verible \
+#    && tar xzvf verible-*-x86_64.tar.gz -C verible --strip-components 1
 
 # Append any packages you need here
 # RUN apt-get update -y \
@@ -83,8 +83,6 @@ RUN printf "\
 \nautocmd BufWritePost *.py  silent! set tabstop=4 shiftwidth=4 expandtab \
 \nautocmd BufWritePost *.py  silent! !python3 -m black <afile> \
 \nautocmd BufWritePost *.py  silent! !isort <afile> \
-\nautocmd BufWritePost *.sv  silent! !verible-verilog-format --inplace <afile> \
-\nautocmd BufWritePost *.v  silent! !verible-verilog-format --inplace <afile> \
 \nautocmd BufWritePost * redraw! \
 \n" >> /home/dev-user/.vimrc
 

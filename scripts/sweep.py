@@ -52,9 +52,9 @@ config["DynRegSpill1024"] = config["RegFileScalarisation"] + [
   , ("SIMTUseSharedVecScratchpad", "1")
   , ("SIMTUseLRUSpill", "1")
   ]
-config["DynRegSpill2043"] = config["RegFileScalarisation"] + [
-    ("SIMTRegFileSize", "2043")
-  , ("SIMTCapRegFileSize", "2043")
+config["DynRegSpill2047"] = config["RegFileScalarisation"] + [
+    ("SIMTRegFileSize", "2047")
+  , ("SIMTCapRegFileSize", "2047")
   , ("SIMTUseSharedVecScratchpad", "1")
   , ("SIMTUseLRUSpill", "1")
   ]
@@ -69,10 +69,8 @@ config["CapInitValOpt"] = [
 # Combinations of configs that are of interest
 configCombos = [
     ["GCC"]
-  , ["GCC", "StoreBuffer", "DynRegSpill2043"]
-  , ["GCC", "StoreBuffer", "DynRegSpill2043", "ScalarUnit"]
-  , ["CHERI"]
-  , ["CHERI", "StoreBuffer", "DynRegSpill2043", "CapInitValOpt"]
+  , ["GCC", "StoreBuffer", "DynRegSpill2047"]
+  , ["GCC", "StoreBuffer", "DynRegSpill2047", "ScalarUnit"]
   ]
 
 # Config combos of interest when benchmarking only
@@ -81,7 +79,6 @@ benchCombos = [
   , ["GCC", "RegFileScalarisation", "DynRegSpill512"]
   , ["GCC", "RegFileScalarisation", "DynRegSpill256"]
   , ["GCC", "StaticHalfRF"]
-  , ["Clang"]
 ]
 
 # Get directory containing script

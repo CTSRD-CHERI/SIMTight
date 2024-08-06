@@ -23,7 +23,7 @@ USE_RV32E ?= $(shell echo -n UseRV32E \
 
 # RISC-V subset
 ifeq ($(CHERI_EN), 1)
-  RV_ARCH = rv32imaxcheri
+  RV_ARCH = rv32imax_cheri
   RV_ABI = il32pc64
 else
   ifeq ($(USE_RV32E), 1)
@@ -47,7 +47,7 @@ RV_LD      = riscv64-unknown-elf-ld
 RV_OBJCOPY = riscv64-unknown-elf-objcopy
 GCC_VER    = $(shell $(RV_CC) --version | head -n1 \
                  | sed 's/.* //g' | cut -d'.' -f1)
-ifeq ($(shell expr $(GCC_VER) \>= 13), 1)
+ifeq ($(shell expr $(GCC_VER) \>= 12), 1)
   RV_ARCH := $(RV_ARCH)_zicsr
 endif
 endif

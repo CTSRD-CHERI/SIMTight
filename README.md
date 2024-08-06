@@ -11,10 +11,9 @@ Instruction Multiple Threads (SIMT)_ model, featuring:
     increased throughput
   * Register file and cache compression, exploiting scalarisation for
     reduced on-chip storage and energy
-  * Strong [CHERI](http://cheri-cpu.org) memory safety and isolation
   * Runs [CUDA-like C++ library](doc/NoCL.md) and [benchmark suite](apps/)
     (in pure capability mode when CHERI enabled)
-  * Runs [CUDA-like Rust library](rust/) and [benchmark suite](rust/examples/)
+  * Strong [CHERI](http://cheri-cpu.org) memory safety and isolation
 
 SIMTight is being developed on the [CAPcelerate
 project](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/V000381/1),
