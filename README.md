@@ -6,14 +6,19 @@ Instruction Multiple Threads (SIMT)_ model, featuring:
   * RISC-V instruction set (`rv32ima_zfinx_xcheri`)
   * Low-area design with high IPC on classic GPGPU workloads
   * Dynamic scalarisation (automatic detection of scalar
-    behaviour in hardware without needing ISA/compiler mods)
+    behaviour in hardware without ISA/compiler mods)
   * Parallel scalar/vector pipelines, exploiting scalarisation for
     increased throughput
   * Register file and cache compression, exploiting scalarisation for
     reduced on-chip storage and energy
+  * Strong [CHERI](http://cheri-cpu.org) memory safety and isolation
   * Runs [CUDA-like C++ library](doc/NoCL.md) and [benchmark suite](apps/)
     (in pure capability mode when CHERI enabled)
-  * Strong [CHERI](http://cheri-cpu.org) memory safety and isolation
+
+Further details about SIMTight can be found in the following publications.
+
+  * *Advanced Dynamic Scalarisation for RISC-V GPGPUs*, ICCD 2024
+    ([paper](https://www.repository.cam.ac.uk/handle/1810/373257))
 
 SIMTight is being developed on the [CAPcelerate
 project](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/V000381/1),
