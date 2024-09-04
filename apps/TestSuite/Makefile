@@ -26,7 +26,8 @@ else
 endif
 
 ifeq ($(USE_CLANG), 1)
-CFLAGS    += --target=riscv64-unknown -mno-relax
+CFLAGS    += -mno-relax
+LDFLAGS   += -mno-relax
 RV_CC      = riscv64-unknown-freebsd-clang++
 RV_LD      = riscv64-unknown-freebsd-ld.lld
 RV_OBJCOPY = riscv64-unknown-elf-objcopy
@@ -46,12 +47,12 @@ ifeq ($(FP_EN), 1)
 endif
 
 # Compiler and linker flags
-CFLAGS  = -mabi=$(RV_ABI) -march=$(RV_ARCH) -O2 -I./inc \
-          -I$(SIMTIGHT_ROOT)/inc \
-          -I$(PEBBLES_ROOT)/inc \
-          -nostdlib -ffp-contract=off \
-          -fno-builtin -ffreestanding
-LDFLAGS = -melf32lriscv -G 0
+CFLAGS  += -mabi=$(RV_ABI) -march=$(RV_ARCH) -O2 -I./inc \
+           -I$(SIMTIGHT_ROOT)/inc \
+           -I$(PEBBLES_ROOT)/inc \
+           -nostdlib -ffp-contract=off \
+           -fno-builtin -ffreestanding
+LDFLAGS += -melf32lriscv -G 0
 
 .PHONY: help
 help:
