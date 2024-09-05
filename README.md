@@ -1,6 +1,6 @@
 # SIMTight
 
-SIMTight is a fully synthesisable GPGPU implementing the _Single
+SIMTight is a fully synthesisable GPGPU core implementing the _Single
 Instruction Multiple Threads (SIMT)_ model, featuring:
 
   * RISC-V instruction set (`rv32ima_zfinx_xcheri`)
@@ -21,7 +21,7 @@ Further details about SIMTight can be found in the following publications.
     ([paper](https://www.repository.cam.ac.uk/handle/1810/373257))
 
 SIMTight is being developed on the [CAPcelerate
-project](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/V000381/1),
+project](https://ctsrd-cheri.github.io/capcelerate-website/),
 part of the UKRI's Digital Security by Design programme.
 
 ## Default SoC
