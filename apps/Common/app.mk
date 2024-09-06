@@ -23,7 +23,7 @@ USE_RV32E ?= $(shell echo -n UseRV32E \
 
 # RISC-V subset
 ifeq ($(CHERI_EN), 1)
-  RV_ARCH = rv32imax_cheri
+  RV_ARCH = rv32ima_xcheri
   RV_ABI = il32pc64
 else
   ifeq ($(USE_RV32E), 1)
