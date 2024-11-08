@@ -149,6 +149,8 @@ data SIMTCoreConfig =
     -- ^ Enable floating-point (Zfinx) extension
   , simtCoreDisableHardDSPBlocks :: Bool
     -- ^ Disable DSP blocks
+  , simtCoreEnableSqrt :: Bool
+    -- ^ Enable FP square root
   }
 
 -- | 32-bit SIMT core
@@ -246,6 +248,7 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
   vecFPU <-
     if config.simtCoreEnableFP
       then makeVecFPU config.simtCoreDisableHardDSPBlocks
+                      config.simtCoreEnableSqrt
       else return nullServer
 
   -- Per lane divider request sinks

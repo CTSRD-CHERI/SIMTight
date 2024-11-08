@@ -58,6 +58,8 @@ data ScalarCoreConfig =
     -- ^ Enable floating-point (Zfinx) extension
   , scalarCoreDisableHardDSPBlocks :: Bool
     -- ^ Disable DSP blocks
+  , scalarCoreEnableSqrt :: Bool
+    -- ^ Enable FP square root
   }
 
 -- | Scalar core inputs
@@ -124,6 +126,7 @@ makeScalarCore config inputs = mdo
   -- FPU
   fpu <- if config.scalarCoreEnableFP
            then makeFPU config.scalarCoreDisableHardDSPBlocks
+                        config.scalarCoreEnableSqrt
            else return nullServer
 
   -- Insert request ids
