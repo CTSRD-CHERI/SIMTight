@@ -85,7 +85,7 @@ config["CHERIBaselineProfile"] = (
     ]
   )
 config["CHERIProfile"] = (
-    config["CHERIBaselineProfile"] +
+    config["CHERIBaselineProfile"]
   + [ ("SIMTEnableCapRegFileScalarisation", "1")
     , ("SIMTCapRegFileSize", "768")
     , ("SIMTUseSharedVecScratchpad", "1")
