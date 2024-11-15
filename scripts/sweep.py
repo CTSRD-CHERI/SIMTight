@@ -67,27 +67,31 @@ config["DynRegSpill2047"] = config["RegFileScalarisation"] + [
 config["StaticHalfRF"] = [
     ("UseRV32E", "1")
   ]
-config["CapInitValOpt"] = [
-    ("SIMTCapRFUseInitValOpt", "1")
-  , ("SIMTCapRFLogNumPartialMasks", "8")
-  ]
 config["BaselineProfile"] = (
     config["Clang"]
   + config["DynRegSpill768"]
   + [ ("SIMTUseSharedDivUnit", "1")
+    , ("SIMTUseSharedFPDivSqrtUnit", "1")
     ]
   )
 config["CHERIBaselineProfile"] = (
     config["CHERI"]
-  + config["DynRegSpill768"]
-  + config["CapInitValOpt"]
   + [ ("SIMTUseSharedDivUnit", "1")
-    , ("SIMTUseSharedVecScratchpad", "1")
-    , ("SIMTShareCapSRFPort", "1")
+    , ("SIMTUseSharedFPDivSqrtUnit", "1")
+    , ("SIMTEnableRegFileScalarisation", "1")
+    , ("SIMTEnableAffineScalarisation", "1")
+    , ("SIMTRegFileSize", "768")
+    , ("SIMTUseLRUSpill", "1")
     ]
   )
-config["CHERIProfile"] = (config["CHERIBaselineProfile"] +
-    [ ("SIMTUseFixedPCC", "1")
+config["CHERIProfile"] = (
+    config["CHERIBaselineProfile"] +
+  + [ ("SIMTEnableCapRegFileScalarisation", "1")
+    , ("SIMTCapRegFileSize", "768")
+    , ("SIMTUseSharedVecScratchpad", "1")
+    , ("SIMTCapRFUseInitValOpt", "1")
+    , ("SIMTShareCapSRFPort", "1")
+    , ("SIMTUseFixedPCC", "1")
     , ("SIMTUseSharedBoundsUnit", "1")
     ]
   )

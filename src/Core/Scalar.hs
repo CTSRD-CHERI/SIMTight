@@ -58,8 +58,6 @@ data ScalarCoreConfig =
     -- ^ Enable floating-point (Zfinx) extension
   , scalarCoreDisableHardDSPBlocks :: Bool
     -- ^ Disable DSP blocks
-  , scalarCoreEnableSqrt :: Bool
-    -- ^ Enable FP square root
   }
 
 -- | Scalar core inputs
@@ -125,8 +123,7 @@ makeScalarCore config inputs = mdo
  
   -- FPU
   fpu <- if config.scalarCoreEnableFP
-           then makeFPU config.scalarCoreDisableHardDSPBlocks
-                        config.scalarCoreEnableSqrt
+           then makeFPU config.scalarCoreDisableHardDSPBlocks True False
            else return nullServer
 
   -- Insert request ids
@@ -176,7 +173,7 @@ makeScalarCore config inputs = mdo
                     executeIxCHERI Nothing (Just csrUnit)
                                            (Just capMemReqSink) s
                   else executeI Nothing (Just csrUnit) (Just memReqSink) s
-                when config.scalarCoreEnableFP do executeF fpuReqs s
+                when config.scalarCoreEnableFP do executeF fpuReqs Nothing s
             }
         , trapCSRs = trapRegs
         , checkPCCFunc =

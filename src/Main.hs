@@ -164,7 +164,6 @@ makeCPUCore = makeBoundary "CPUCore" (makeScalarCore config)
             else Nothing
       , scalarCoreEnableFP = EnableFP == 1
       , scalarCoreDisableHardDSPBlocks = DisableHardDSPBlocks == 1
-      , scalarCoreEnableSqrt = EnableSqrt == 1
       }
 
 -- CPU data cache (synthesis boundary)
@@ -231,7 +230,7 @@ makeSIMTAccelerator = makeBoundary "SIMTAccelerator" (makeSIMTCore config)
             else Nothing
       , simtCoreEnableFP = EnableFP == 1
       , simtCoreDisableHardDSPBlocks = DisableHardDSPBlocks == 1
-      , simtCoreEnableSqrt = EnableSqrt == 1
+      , simtCoreUseSharedFPDivSqrt = SIMTUseSharedFPDivSqrtUnit == 1
       }
 
 -- SIMT memory subsystem
