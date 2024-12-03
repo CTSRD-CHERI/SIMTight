@@ -71,13 +71,15 @@ config["BaselineProfile"] = (
     config["Clang"]
   + config["DynRegSpill768"]
   + [ ("SIMTUseSharedDivUnit", "1")
-    , ("SIMTUseSharedFPDivSqrtUnit", "1")
+    , ("SIMTUseFullDivider", "1")
+    , ("SIMTUseSharedFPSqrtUnit", "1")
     ]
   )
 config["CHERIBaselineProfile"] = (
     config["CHERI"]
   + [ ("SIMTUseSharedDivUnit", "1")
-    , ("SIMTUseSharedFPDivSqrtUnit", "1")
+    , ("SIMTUseFullDivider", "1")
+    , ("SIMTUseSharedFPSqrtUnit", "1")
     , ("SIMTEnableRegFileScalarisation", "1")
     , ("SIMTEnableAffineScalarisation", "1")
     , ("SIMTRegFileSize", "768")
@@ -107,9 +109,9 @@ configCombos = [
 #  ["CHERIProfile"],
 #  ["BaselineProfile", "StackCache"],
 #  ["CHERIProfile", "StackCache"],
-   ["BaselineProfile", "StackCache", "RawFP"],
-   ["CHERIBaselineProfile", "StackCache", "RawFP"],
    ["CHERIProfile", "StackCache", "RawFP"],
+   ["CHERIBaselineProfile", "StackCache", "RawFP"],
+   ["BaselineProfile", "StackCache", "RawFP"],
 ]
 
 # Config combos of interest when benchmarking only
