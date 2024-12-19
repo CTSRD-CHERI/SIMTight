@@ -18,7 +18,7 @@ Instruction Multiple Threads (SIMT)_ model, featuring:
 Further details about SIMTight can be found in the following publications.
 
   * *Advanced Dynamic Scalarisation for RISC-V GPGPUs*, ICCD 2024
-    ([paper](https://www.repository.cam.ac.uk/handle/1810/373257))
+    ([paper](https://www.repository.cam.ac.uk/handle/1810/373257), [slides](doc/iccd2024-slides.pdf))
 
 SIMTight is being developed on the [CAPcelerate
 project](https://ctsrd-cheri.github.io/capcelerate-website/),

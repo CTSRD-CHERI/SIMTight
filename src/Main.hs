@@ -230,6 +230,7 @@ makeSIMTAccelerator = makeBoundary "SIMTAccelerator" (makeSIMTCore config)
             else Nothing
       , simtCoreEnableFP = EnableFP == 1
       , simtCoreDisableHardDSPBlocks = DisableHardDSPBlocks == 1
+      , simtCoreUseSharedFPDivSqrt = SIMTUseSharedFPDivSqrtUnit == 1
       }
 
 -- SIMT memory subsystem

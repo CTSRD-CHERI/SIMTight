@@ -57,6 +57,9 @@ NOTE("Latency of full-throughput divider (more latency = higher Fmax)")
 NOTE("Use shared full-throughput divider")
 #define SIMTUseSharedDivUnit 0
 
+NOTE("Use shared floating-point divider and square root")
+#define SIMTUseSharedFPDivSqrtUnit 0
+
 NOTE("Use scalarising register file?")
 #define SIMTEnableRegFileScalarisation 0
 

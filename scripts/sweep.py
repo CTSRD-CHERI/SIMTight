@@ -46,6 +46,12 @@ config["DynRegSpill512"] = config["RegFileScalarisation"] + [
   , ("SIMTUseSharedVecScratchpad", "1")
   , ("SIMTUseLRUSpill", "1")
   ]
+config["DynRegSpill768"] = config["RegFileScalarisation"] + [
+    ("SIMTRegFileSize", "768")
+  , ("SIMTCapRegFileSize", "768")
+  , ("SIMTUseSharedVecScratchpad", "1")
+  , ("SIMTUseLRUSpill", "1")
+  ]
 config["DynRegSpill1024"] = config["RegFileScalarisation"] + [
     ("SIMTRegFileSize", "1024")
   , ("SIMTCapRegFileSize", "1024")
@@ -61,24 +67,55 @@ config["DynRegSpill2047"] = config["RegFileScalarisation"] + [
 config["StaticHalfRF"] = [
     ("UseRV32E", "1")
   ]
-config["CapInitValOpt"] = [
-    ("SIMTCapRFUseInitValOpt", "1")
-  , ("SIMTCapRFLogNumPartialMasks", "8")
-  ]
+config["BaselineProfile"] = (
+    config["Clang"]
+  + config["DynRegSpill768"]
+  + [ ("SIMTUseSharedFPDivSqrtUnit", "1")
+    ]
+  )
+config["CHERIBaselineProfile"] = (
+    config["CHERI"]
+  + [ ("SIMTUseSharedFPDivSqrtUnit", "1")
+    , ("SIMTEnableRegFileScalarisation", "1")
+    , ("SIMTEnableAffineScalarisation", "1")
+    , ("SIMTRegFileSize", "768")
+    , ("SIMTUseLRUSpill", "1")
+    ]
+  )
+config["CHERIProfile"] = (
+    config["CHERIBaselineProfile"]
+  + [ ("SIMTEnableCapRegFileScalarisation", "1")
+    , ("SIMTCapRegFileSize", "768")
+    , ("SIMTUseSharedVecScratchpad", "1")
+    , ("SIMTCapRFUseInitValOpt", "1")
+    , ("SIMTShareCapSRFPort", "1")
+    , ("SIMTUseFixedPCC", "1")
+    , ("SIMTUseSharedBoundsUnit", "1")
+    ]
+  )
+config["StackCache"] = [("SIMTEnableSVStoreBuffer", "1")]
+config["RawFP"] = [("EnableFP", "1"), ("DisableHardDSPBlocks", "1")]
 
 # Combinations of configs that are of interest
 configCombos = [
-    ["GCC"]
-  , ["GCC", "StoreBuffer", "DynRegSpill2047"]
-  , ["GCC", "StoreBuffer", "DynRegSpill2047", "ScalarUnit"]
-  ]
+#  ["GCC"],
+#  ["GCC", "StoreBuffer", "DynRegSpill2047"],
+#  ["GCC", "StoreBuffer", "DynRegSpill2047", "ScalarUnit"],
+#  ["BaselineProfile"],
+#  ["CHERIProfile"],
+#  ["BaselineProfile", "StackCache"],
+#  ["CHERIProfile", "StackCache"],
+   ["CHERIProfile", "StackCache", "RawFP"],
+   ["CHERIBaselineProfile", "StackCache", "RawFP"],
+   ["BaselineProfile", "StackCache", "RawFP"],
+]
 
 # Config combos of interest when benchmarking only
 benchCombos = [
-    ["GCC", "RegFileScalarisation", "DynRegSpill1024"]
-  , ["GCC", "RegFileScalarisation", "DynRegSpill512"]
-  , ["GCC", "RegFileScalarisation", "DynRegSpill256"]
-  , ["GCC", "StaticHalfRF"]
+#  ["GCC", "RegFileScalarisation", "DynRegSpill1024"],
+#  ["GCC", "RegFileScalarisation", "DynRegSpill512"],
+#  ["GCC", "RegFileScalarisation", "DynRegSpill256"],
+#  ["GCC", "StaticHalfRF"]
 ]
 
 # Get directory containing script
