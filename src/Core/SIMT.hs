@@ -108,8 +108,8 @@ makeSIMTExecuteStage enCHERI =
         execute = do
           let sfuDivReqs = if SIMTUseSharedDivUnit == 1
                              then Just ins.execSFUReqs else Nothing
-          let sfuFPSqrtReqs = if SIMTUseSharedFPSqrtUnit == 1
-                                then Just ins.execSFUReqs else Nothing
+          let sfuFPDivSqrtReqs = if SIMTUseSharedFPDivSqrtUnit == 1
+                                   then Just ins.execSFUReqs else Nothing
           executeM ins.execMulReqs ins.execDivReqs sfuDivReqs s
           if enCHERI
             then do
@@ -125,7 +125,7 @@ makeSIMTExecuteStage enCHERI =
               executeI (Just ins.execMulReqs) (Just csrUnit)
                        (Just ins.execMemReqs) s
               executeA ins.execMemReqs s
-          when (EnableFP == 1) do executeF ins.execFPUReqs sfuFPSqrtReqs s
+          when (EnableFP == 1) do executeF ins.execFPUReqs sfuFPDivSqrtReqs s
       }
 
 -- Core
@@ -151,7 +151,7 @@ data SIMTCoreConfig =
     -- ^ Enable floating-point (Zfinx) extension
   , simtCoreDisableHardDSPBlocks :: Bool
     -- ^ Disable DSP blocks
-  , simtCoreUseSharedFPSqrt :: Bool
+  , simtCoreUseSharedFPDivSqrt :: Bool
     -- ^ Enable shared FP divider and square root
   }
 
@@ -226,7 +226,7 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
   -- ====================
 
   let useSFU = SIMTUseSharedDivUnit == 1 ||
-                 SIMTUseSharedFPSqrtUnit == 1 ||
+                 SIMTUseSharedFPDivSqrtUnit == 1 ||
                    (config.simtCoreEnableCHERI && SIMTUseSharedBoundsUnit == 1)
   sfu <-
     if useSFU
@@ -237,7 +237,7 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
           , divLatency = SIMTFullDividerLatency
           , enBoundsUnit = config.simtCoreEnableCHERI &&
                              SIMTUseSharedBoundsUnit == 1
-          , enFPUnit = SIMTUseSharedFPSqrtUnit == 1
+          , enFPUnit = SIMTUseSharedFPDivSqrtUnit == 1
           , disableHardFPBlocks = config.simtCoreDisableHardDSPBlocks
           }
         makeSharedUnits @1 sfus
@@ -253,7 +253,7 @@ makeSIMTCore config mgmtReqs memReqs memResps dramStatSigs coalStats = mdo
   vecFPU <-
     if config.simtCoreEnableFP
       then makeVecFPU config.simtCoreDisableHardDSPBlocks
-                      (not config.simtCoreUseSharedFPSqrt) False
+                      (not config.simtCoreUseSharedFPDivSqrt) False
       else return nullServer
 
   -- Per lane divider request sinks

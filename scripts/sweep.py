@@ -70,12 +70,12 @@ config["StaticHalfRF"] = [
 config["BaselineProfile"] = (
     config["Clang"]
   + config["DynRegSpill768"]
-  + [ ("SIMTUseSharedFPSqrtUnit", "1")
+  + [ ("SIMTUseSharedFPDivSqrtUnit", "1")
     ]
   )
 config["CHERIBaselineProfile"] = (
     config["CHERI"]
-  + [ ("SIMTUseSharedFPSqrtUnit", "1")
+  + [ ("SIMTUseSharedFPDivSqrtUnit", "1")
     , ("SIMTEnableRegFileScalarisation", "1")
     , ("SIMTEnableAffineScalarisation", "1")
     , ("SIMTRegFileSize", "768")
