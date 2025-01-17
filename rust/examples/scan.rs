@@ -25,8 +25,8 @@ const BLOCK_SIZE: usize = (prims::config::SIMT_WARPS *
 
 struct Scan {
   len    : usize,
-  input  : Box<[i32]>,
-  output : Box<[i32]>
+  input  : Buffer<i32>,
+  output : Buffer<i32>
 }
 
 impl Code for Scan {

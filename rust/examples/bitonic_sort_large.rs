@@ -32,21 +32,11 @@ use alloc::boxed::*;
 
 const LOCAL_SIZE_LIMIT: usize = 4096 as usize;
 
-#[inline(always)]
-fn two_sort(keys : &mut [u32], vals : &mut [u32],
-            a_idx : usize, b_idx : usize, dir : bool) {
-  if (keys[a_idx] > keys[b_idx]) == dir {
-    keys.swap(a_idx, b_idx);
-    vals.swap(a_idx, b_idx);
-  }
-  nocl_converge()
-}
-
 struct BitonicSortLocal {
-  d_srckey_arg : Box<[u32]>,
-  d_srcval_arg : Box<[u32]>,
-  d_dstkey_arg : Box<[u32]>,
-  d_dstval_arg : Box<[u32]>
+  d_srckey_arg : Buffer<u32>,
+  d_srcval_arg : Buffer<u32>,
+  d_dstkey_arg : Buffer<u32>,
+  d_dstval_arg : Buffer<u32>
 }
 
 // Bottom-level bitonic sort
@@ -82,7 +72,12 @@ fn run (my : &My, shared : &mut Scratch, params: &mut BitonicSortLocal) {
     while stride > 0 {
       syncthreads();
       let pos = 2 * my.thread_idx.x - (my.thread_idx.x & (stride - 1));
-      two_sort(l_key, l_val, pos + 0, pos + stride, dir);
+      let pos_plus = pos + stride;
+      if (l_key[pos] > l_key[pos_plus]) == dir {
+        l_key.swap(pos, pos_plus);
+        l_val.swap(pos, pos_plus);
+      }
+      nocl_converge();
       stride = stride >> 1
     }
     size = size << 1
@@ -96,7 +91,12 @@ fn run (my : &My, shared : &mut Scratch, params: &mut BitonicSortLocal) {
     while stride > 0 {
       syncthreads();
       let pos = 2 * my.thread_idx.x - (my.thread_idx.x & (stride - 1));
-      two_sort(l_key, l_val, pos + 0, pos + stride, dir);
+      let pos_plus = pos + stride;
+      if (l_key[pos] > l_key[pos_plus]) == dir {
+        l_key.swap(pos, pos_plus);
+        l_val.swap(pos, pos_plus);
+      }
+      nocl_converge();
       stride = stride >> 1
     }
   }
@@ -117,8 +117,8 @@ struct BitonicMergeGlobal {
   size     : usize,
   stride   : usize,
   sort_dir : bool,
-  d_key    : Box<[u32]>,
-  d_val    : Box<[u32]>
+  d_key    : Buffer<u32>,
+  d_val    : Buffer<u32>
 }
 
 impl Code for BitonicMergeGlobal {
@@ -158,8 +158,8 @@ struct BitonicMergeLocal {
   size         : usize,
   stride_arg   : usize,
   sort_dir     : bool,
-  d_key_arg    : Box<[u32]>,
-  d_val_arg    : Box<[u32]>
+  d_key_arg    : Buffer<u32>,
+  d_val_arg    : Buffer<u32>
 }
 
 //Combined bitonic merge steps for
@@ -189,7 +189,12 @@ fn run (my : &My, shared : &mut Scratch, params: &mut BitonicMergeLocal) {
   while stride > 0 {
     syncthreads();
     let pos = 2 * my.thread_idx.x - (my.thread_idx.x & (stride - 1));
-    two_sort(l_key, l_val, pos + 0, pos + stride, dir);
+    let pos_plus = pos + stride;
+    if (l_key[pos] > l_key[pos_plus]) == dir {
+      l_key.swap(pos, pos_plus);
+      l_val.swap(pos, pos_plus);
+    }
+    nocl_converge();
     stride = stride >> 1
   }
 
@@ -236,8 +241,8 @@ fn main() -> ! {
     };
 
   // Launch BitonicSortLocal
-  let mut dstkeys : Box<[u32]> = dstkeys.into();
-  let mut dstvals : Box<[u32]> = dstvals.into();
+  let mut dstkeys : Buffer<u32> = dstkeys.into();
+  let mut dstvals : Buffer<u32> = dstvals.into();
   let mut bsl_params =
     BitonicSortLocal {
       d_srckey_arg : srckeys.into(),

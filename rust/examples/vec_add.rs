@@ -21,15 +21,16 @@ use alloc::boxed::*;
 // =========
 
 struct VecAdd {
-  a      : Box<[u32]>,
-  b      : Box<[u32]>,
-  result : Box<[u32]>
+  len    : usize,
+  a      : Buffer<u32>,
+  b      : Buffer<u32>,
+  result : Buffer<u32>
 }
 
 impl Code for VecAdd {
   #[inline(always)]
   fn run (my : &My, shared : &mut Scratch, params: &mut VecAdd) {
-    for i in (my.thread_idx.x .. params.result.len()).step_by(my.block_dim.x) {
+    for i in (my.thread_idx.x .. params.len).step_by(my.block_dim.x) {
       params.result[i] = params.a[i] + params.b[i]
     }
   }
@@ -69,6 +70,7 @@ fn main() -> ! {
   // Kernel parameters
   let mut params =
     VecAdd {
+      len    : N,
       a      : a.into(),
       b      : b.into(),
       result : result.into()

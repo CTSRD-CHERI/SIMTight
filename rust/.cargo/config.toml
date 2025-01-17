@@ -8,4 +8,4 @@ rustflags = [
 build-std = ["core", "alloc"]
 
 [build]
-target = "riscv32ima-unknown-none-elf.json"
+target = "riscv32ima-unknown-none-elf"

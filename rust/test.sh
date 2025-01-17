@@ -19,6 +19,7 @@ APPS=(
   motion_est
 )
 
+
 # Options
 # =======
 
@@ -27,6 +28,7 @@ TestFPGA=
 NoPgm=
 LogSim=yup
 EmitStats=
+FeatureList=""
 
 while :
 do
@@ -39,6 +41,7 @@ do
       echo "  --no-pgm      don't reprogram FPGA"
       echo "  --no-log-sim  don't log simulator output"
       echo "  --stats       emit performance stats"
+      echo "  --disable-bc  disable bounds checking"
       exit
       ;;
     --sim)
@@ -58,6 +61,9 @@ do
       ;;
     --stats)
       EmitStats=yup
+      ;;
+    --disable-bc)
+      FeatureList="disable_bounds_checks,$FeatureList"
       ;;
     -?*)
       printf 'Ignoring unknown flag: %s\n' "$1" >&2
@@ -118,11 +124,11 @@ if [ "$TestSim" != "" ]; then
   tmpDir=$(mktemp -d -t simtight-test-XXXX)
   for APP in ${APPS[@]}; do
     echo -n "$APP (build): "
-    make EXAMPLE=$APP -s 2> /dev/null
+    make EXAMPLE=$APP FEATURES="$FeatureList" -s 2> /dev/null
     assert $?
     echo -n "$APP (run): "
     tmpLog=$tmpDir/$APP.log
-    make EXAMPLE=$APP -s run-sim > $tmpLog 2> /dev/null
+    make EXAMPLE=$APP FEATURES="$FeatureList" -s run-sim > $tmpLog 2> /dev/null
     getStats $tmpLog
   done
 fi
@@ -136,11 +142,12 @@ if [ "$TestFPGA" != "" ] ; then
   tmpDir=$(mktemp -d -t simtight-test-XXXX)
   for APP in ${APPS[@]}; do
     echo -n "$APP (build): "
-    make EXAMPLE=$APP FEATURES=large_data_set -s 2> /dev/null
+    make EXAMPLE=$APP FEATURES="$FeatureList,large_data_set" -s 2> /dev/null
     assert $?
     echo -n "$APP (run): "
     tmpLog=$tmpDir/$APP.log
-    make EXAMPLE=$APP FEATURES=large_data_set -s run > $tmpLog 2> /dev/null
+    make EXAMPLE=$APP FEATURES="$FeatureList,large_data_set" -s run > \
+      $tmpLog 2> /dev/null
     getStats $tmpLog
   done
 fi

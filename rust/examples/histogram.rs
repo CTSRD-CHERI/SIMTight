@@ -21,8 +21,9 @@ use alloc::boxed::*;
 // =========
 
 struct Histogram {
-  input : Box<[u8]>,
-  bins  : Box<[i32]>
+  len   : usize,
+  input : Buffer<u8>,
+  bins  : Buffer<i32>
 }
 
 impl Code for Histogram {
@@ -33,20 +34,20 @@ fn run (my : &My, shared : &mut Scratch, params: &mut Histogram) {
   let mut histo = alloc::<i32>(shared, 256);
 
   // Initialise bins
-  for i in (my.thread_idx.x .. histo.len()).step_by(my.block_dim.x) {
+  for i in (my.thread_idx.x .. 256).step_by(my.block_dim.x) {
     histo[i] = 0
   }
 
   syncthreads();
 
-  for i in (my.thread_idx.x .. params.input.len()).step_by(my.block_dim.x) {
+  for i in (my.thread_idx.x .. params.len).step_by(my.block_dim.x) {
     atomic_add(&mut histo[params.input[i] as usize], 1);
   }
 
   syncthreads();
 
   // Write bins to global memory
-  for i in (my.thread_idx.x .. histo.len()).step_by(my.block_dim.x) {
+  for i in (my.thread_idx.x .. 256).step_by(my.block_dim.x) {
     params.bins[i] = histo[i]
   }
 }
@@ -84,7 +85,8 @@ fn main() -> ! {
  
   // Kernel parameters
   let mut params =
-    Histogram { input : input.into(),
+    Histogram { len   : N,
+                input : input.into(),
                 bins  : bins.into() };
 
   // Invoke kernel

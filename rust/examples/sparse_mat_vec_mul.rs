@@ -24,10 +24,10 @@ struct SparseMatVecMul {
   num_rows         : usize,
   num_cols         : usize,
   num_cols_per_row : usize,
-  indices          : Box<[usize]>,
-  data             : Box<[i32]>,
-  x                : Box<[i32]>,
-  y                : Box<[i32]>
+  indices          : Buffer<usize>,
+  data             : Buffer<i32>,
+  x                : Buffer<i32>,
+  y                : Buffer<i32>
 }
 
 impl Code for SparseMatVecMul {

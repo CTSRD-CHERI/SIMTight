@@ -25,8 +25,8 @@ const SQUARE_SIZE: usize = prims::config::SIMT_LANES as usize;
 struct Transpose {
   width  : usize,
   height : usize,
-  input  : Box<[i32]>,
-  output : Box<[i32]>
+  input  : Buffer<i32>,
+  output : Buffer<i32>
 }
 
 impl Code for Transpose {

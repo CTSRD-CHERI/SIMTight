@@ -23,8 +23,8 @@ use alloc::boxed::*;
 struct SimpleStencil {
   x_size  : usize,
   y_size  : usize,
-  in_buf  : Box<[i32]>,
-  out_buf : Box<[i32]>
+  in_buf  : Buffer<i32>,
+  out_buf : Buffer<i32>
 }
 
 impl Code for SimpleStencil {

@@ -25,8 +25,8 @@ const RADIUS: usize = 4;
 struct MotionEst {
   frame_width   : usize,
   frame_height  : usize,
-  prev_frame    : Box<[i32]>,
-  current_frame : Box<[i32]>,
+  prev_frame    : Buffer<i32>,
+  current_frame : Buffer<i32>,
 
    // Origin and dimensions of region being processed
   region_origin_x   : usize,
@@ -35,7 +35,7 @@ struct MotionEst {
   region_log_height : usize,
 
   // Output SAD per motion vector per pixel block
-  sads : Box<[i32]>
+  sads : Buffer<i32>
 }
 
 impl Code for MotionEst {
