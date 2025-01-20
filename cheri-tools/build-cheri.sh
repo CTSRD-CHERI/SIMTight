@@ -32,17 +32,18 @@ llvm_commithash="19d402e23fcaa197e1d40547da403dc17e13c7ae"
 cd $SCRIPT_DIR/
 
 # Cheribuild
-git clone --recursive git@github.com:CTSRD-CHERI/cheribuild.git
+git clone --recursive https://github.com/CTSRD-CHERI/cheribuild.git
 cd cheribuild
 git fetch --depth=1 origin $cheribuild_commithash
 git checkout $cheribuild_commithash -b $branch
 cd ..
 
 # LLVM
-git clone --recursive git@github.com:CTSRD-CHERI/llvm-project.git
+git clone --recursive https://github.com/CTSRD-CHERI/llvm-project.git
 cd llvm-project
 git fetch --depth=1 origin $llvm_commithash
 git checkout $llvm_commithash -b $branch
+git apply $SCRIPT_DIR/disable-ptr-scev.diff
 cd ..
 
 # --------------------------------------------------------------------
