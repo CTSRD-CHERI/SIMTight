@@ -150,12 +150,9 @@ NOTE("Use scalarising register file for capability meta-data?")
 NOTE("Size of scalarising capability register file (number of vectors)")
 #define SIMTCapRegFileSize 2048
 
-NOTE("Use initial value optimisation in cap reg file?")
+NOTE("Use initial/null value optimisation in cap reg file?")
 NOTE("This is a simple form of partial scalarisation")
 #define SIMTCapRFUseInitValOpt 0
-
-NOTE("The number of registers that hold partial scalars")
-#define SIMTCapRFLogNumPartialMasks 0
 
 NOTE("Use fixed immutable PCC meta-data for all threads in a warp?")
 #define SIMTUseFixedPCC 0

@@ -1,5 +1,4 @@
 SIMTIGHT_ROOT ?= $(realpath ..)
-NUM_SEEDS ?= 8
 QPF = DE10_Pro.qpf
 CONFIG_H = $(SIMTIGHT_ROOT)/inc/Config.h
 
@@ -14,8 +13,8 @@ one: checkenv ip
 .PHONY: many
 many: checkenv ip
 	quartus_dse $(QPF)             \
-    --num-seeds $$(($(NUM_SEEDS) - 1)) \
-    --launcher local                   \
+    --seeds 200-216              \
+    --launcher local             \
     --num-concurrent 4
 	quartus_dse $(QPF) --report utilization
 	quartus_dse $(QPF) --report fmax_summary

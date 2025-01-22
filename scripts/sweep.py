@@ -105,9 +105,12 @@ configCombos = [
 #  ["CHERIProfile"],
 #  ["BaselineProfile", "StackCache"],
 #  ["CHERIProfile", "StackCache"],
-   ["CHERIProfile", "StackCache", "RawFP"],
-   ["CHERIBaselineProfile", "StackCache", "RawFP"],
-   ["BaselineProfile", "StackCache", "RawFP"],
+   ["CHERIProfile", "StackCache"] +
+     (["RawFP"] if sys.argv[1] == "synth" else []),
+   ["CHERIBaselineProfile", "StackCache"] +
+     (["RawFP"] if sys.argv[1] == "synth" else []),
+   ["BaselineProfile", "StackCache"] +
+     (["RawFP"] if sys.argv[1] == "synth" else []),
 ]
 
 # Config combos of interest when benchmarking only

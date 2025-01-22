@@ -234,10 +234,10 @@ In this case, both register file sizes must be defined the same.  This
 option causes a one cycle pipeline bubble when loading a capability
 meta-data vector from the register file.
 
-SIMTight also supports an experimental _scalarised vector store
-buffer_ to reduce the cost of compiler-inserted register spills (as
-opposed to hardware-inserted dynamic spills), at low hardware cost,
-which can be enabled as follows.
+SIMTight also supports an experimental _scalarised vector store buffer_ (also
+referred to as the compressed stack cache) to reduce the cost of
+compiler-inserted register spills (as opposed to hardware-inserted dynamic
+spills), at low hardware cost, which can be enabled as follows.
 
   * `#define SIMTEnableSVStoreBuffer 1`
 
@@ -250,24 +250,14 @@ workloads, this increases perforance density significantly.
 
   * `#define SIMTEnableScalarUnit 1`
 
-To enable the intial value optimisation (IVO) in the capability
-meta-data register file:
+To enable the intial value optimisation (also referred to as the null value optimisation) in the capability meta-data register file:
 
   * `#define SIMTCapRFUseInitValOpt 1`
-  * `#define SIMTCapRFLogNumPartialMasks 8`
 
 This a simple form of partial scalarisation allowing compact storage
 of vectors that can be partioned into an arbitrary scalar value and
 the initial value (null capability meta-data in this case) using a bit
-mask.  These bit masks need to be stored alongside their associated
-scalar values but are allocated dynamically on demand so that the cost
-is not paid for every scalar register.  The parameter
-`SIMTCapRFLogNumPartialMasks` determines the max number of masks that
-can be stored.  If the limit is reached then the optimisation simply
-becomes unavailable.
-
-In future, we are interested in looking at general partial
-scalarisation, as well as inter-warp scalarisation.
+mask.
 
 <div style="text-align: center;" align="center">
 <br>
