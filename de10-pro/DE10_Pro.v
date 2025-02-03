@@ -55,6 +55,11 @@ module DE10_Pro(
   inout DDR4B_SDA,
   input DDR4B_RZQ,
 
+  inout FAN_I2C_SCL,
+  inout FAN_I2C_SDA,
+  inout TEMP_I2C_SCL,
+  inout TEMP_I2C_SDA,
+
   input EXP_EN,
 
   inout UFL_CLKIN_p,
@@ -62,6 +67,7 @@ module DE10_Pro(
 );
 
 wire reset_n;
+wire fan_reset_n;
 wire ddr4_local_reset_req;
 
 wire ddr4_b_local_reset_done;
@@ -107,6 +113,15 @@ DE10_Pro_QSYS DE10_Pro_QSYS_inst (
         .emif_s10_ddr4_b_status_local_cal_fail(ddr4_b_status_local_cal_fail),   
         .iopll_0_locked_export()
     );
+
+mkDE10FanControl fan_inst(
+    .CLK(CLK_50_B2C),
+    .RST_N(reset_n),
+    .FAN_I2C_SDA(FAN_I2C_SDA),
+    .FAN_I2C_SCL(FAN_I2C_SCL),
+    .TEMP_I2C_SDA(TEMP_I2C_SDA),
+    .TEMP_I2C_SCL(TEMP_I2C_SCL)
+);
 
 assign SI5340A0_RST_n = 1'b1;
 assign SI5340A1_RST_n = 1'b1;

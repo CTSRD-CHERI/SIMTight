@@ -1751,7 +1751,9 @@ set_global_assignment -name SEARCH_PATH ../src
 set_global_assignment -name SEARCH_PATH ../pebbles/blarney/Verilog/Altera/
 set_global_assignment -name SEARCH_PATH ../pebbles/src/CHERI/Verilog/
 set_global_assignment -name SEARCH_PATH ../pebbles/src/FloatingPoint/Wrappers
+set_global_assignment -name SEARCH_PATH /home/mn416/work/bsc/inst/lib/Verilog/
 set_global_assignment -name SEED 2
 set_global_assignment -name IP_FILE ../pebbles/blarney/blarney-vendor-ip/IntelFPGA/AvalonStreamClockCrosser/AvalonStreamClockCrosser.ip
 set_global_assignment -name VERILOG_FILE ../pebbles/blarney/blarney-vendor-ip/IntelFPGA/PipelinedDivider/PipelinedDivider.v
+set_global_assignment -name VERILOG_FILE ../BSVFan/mkDE10FanControl.v
 set_global_assignment -name OPTIMIZATION_MODE BALANCED
