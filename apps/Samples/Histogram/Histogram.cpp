@@ -3,29 +3,32 @@
 
 // Kernel for computing 256-bin histograms
 struct Histogram : Kernel {
-  int len;
-  unsigned char* input;
+  // Parameters
+  int len; unsigned char* in; int* out;
+
+  // Histogram bins in shared local memory
   int* bins;
 
-  void kernel() {
-    // Store histogram bins in shared local memory
-    int* histo = shared.array<int, 256>();
+  void init() {
+    declareShared(&bins, 256);
+  }
 
+  void kernel() {
     // Initialise bins
     for (int i = threadIdx.x; i < 256; i += blockDim.x)
-      histo[i] = 0;
+      bins[i] = 0;
 
     __syncthreads();
 
     // Update bins
     for (int i = threadIdx.x; i < len; i += blockDim.x)
-      atomicAdd(&histo[input[i]], 1);
+      atomicAdd(&bins[in[i]], 1);
 
     __syncthreads();
 
     // Write bins to global memory
     for (int i = threadIdx.x; i < 256; i += blockDim.x)
-      bins[i] = histo[i];
+      out[i] = bins[i];
   }
 };
 
@@ -40,7 +43,7 @@ int main()
 
   // Input and output vectors
   nocl_aligned unsigned char input[N];
-  nocl_aligned int bins[256];
+  nocl_aligned int output[256];
 
   // Initialise inputs
   uint32_t seed = 1;
@@ -55,8 +58,8 @@ int main()
 
   // Assign parameters
   k.len = N;
-  k.input = input;
-  k.bins = bins;
+  k.in = input;
+  k.out = output;
 
   // Invoke kernel
   noclRunKernelAndDumpStats(&k);
@@ -67,7 +70,7 @@ int main()
   for (int i = 0; i < 256; i++) goldenBins[i] = 0;
   for (int i = 0; i < N; i++) goldenBins[input[i]]++;
   for (int i = 0; i < 256; i++)
-    ok = ok && bins[i] == goldenBins[i];
+    ok = ok && output[i] == goldenBins[i];
 
   // Display result
   puts("Self test: ");

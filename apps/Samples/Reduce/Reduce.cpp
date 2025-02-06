@@ -5,10 +5,15 @@
 template <int BlockSize> struct Reduce : Kernel {
   int len;
   int *in, *sum;
-  
-  void kernel() {
-    int* block = shared.array<int, BlockSize>();
+ 
+  // Shared local memory
+  int* block;
 
+  void init() {
+    declareShared(&block, BlockSize);
+  }
+ 
+  void kernel() {
     // Sum global memory
     block[threadIdx.x] = 0;
     for (int i = threadIdx.x; i < len; i += blockDim.x)

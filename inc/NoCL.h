@@ -97,69 +97,6 @@ template <typename T> struct Array3D {
   }
 };
 
-// For shared local memory allocation
-// Memory is allocated/released using a stack
-// TODO: constraint bounds when CHERI enabled
-struct SharedLocalMem {
-  // This points to the top of the stack (which grows upwards)
-  char* top;
-
-  // Allocate memory on shared memory stack (static)
-  template <int numBytes> void* alloc() {
-    void* ptr = (void*) top;
-    constexpr int bytes =
-      (numBytes & 3) ? (numBytes & ~3) + 4 : numBytes;
-    top += bytes;
-    return ptr;
-  }
-
-  // Allocate memory on shared memory stack (dynamic)
-  INLINE void* alloc(int numBytes) {
-    void* ptr = (void*) top;
-    int bytes = (numBytes & 3) ? (numBytes & ~3) + 4 : numBytes;
-    top += bytes;
-    return ptr;
-  }
-
-  // Typed allocation
-  template <typename T> T* alloc(int n) {
-    return (T*) alloc(n * sizeof(T));
-  }
-
-  // Allocate 1D array with static size
-  template <typename T, int dim1> T* array() {
-    return (T*) alloc<dim1 * sizeof(T)>();
-  }
-
-  // Allocate 2D array with static size
-  template <typename T, int dim1, int dim2> auto array() {
-    return (T (*)[dim2]) alloc<dim1 * dim2 * sizeof(T)>();
-  }
-
-  // Allocate 3D array with static size
-  template <typename T, int dim1, int dim2, int dim3> auto array() {
-    return (T (*)[dim2][dim3]) alloc<dim1 * dim2 * dim3 * sizeof(T)>();
-  }
-
-  // Allocate 1D array with dynamic size
-  template <typename T> Array<T> array(int n) {
-    Array<T> a; a.base = (T*) alloc(n * sizeof(T));
-    a.size = n; return a;
-  }
-
-  // Allocate 2D array with dynamic size
-  template <typename T> Array2D<T> array(int n0, int n1) {
-    Array2D<T> a; a.base = (T*) alloc(n0 * n1 * sizeof(T));
-    a.size0 = n0; a.size1 = n1; return a;
-  }
-
-  template <typename T> Array3D<T>
-    array(int n0, int n1, int n2) {
-      Array3D<T> a; a.base = (T*) alloc(n0 * n1 * n2 * sizeof(T));
-      a.size0 = n0; a.size1 = n1; a.size2 = n2; return a;
-    }
-};
-
 // Mapping between SIMT threads and CUDA thread/block indices
 struct KernelMapping {
   // Use these to map SIMT thread id to thread X/Y coords within block
@@ -186,11 +123,47 @@ struct Kernel {
   // Block and thread indexes
   Dim3 blockIdx, threadIdx;
 
-  // Shared local memory
-  SharedLocalMem shared;
-
   // Mapping between SIMT threads and CUDA thread/block indices
   KernelMapping map;
+
+  // Shared local memory
+  // -------------------
+
+  // Pointer to top of shared memory stack (grows upwards)
+  char* sharedTop;
+
+  // Allocate memory on shared memory stack
+  INLINE void* allocShared(int numBytes) {
+    void* ptr = (void*) sharedTop;
+    #if EnableCHERI
+      ptr = cheri_bounds_set(ptr, numBytes);
+      numBytes = cheri_length_get(ptr);
+    #endif
+    int numBytesAligned = (numBytes & 3) ? (numBytes & ~3) + 4 : numBytes;
+    sharedTop += numBytesAligned;
+    return ptr;
+  }
+
+  // Typed allocation
+  template <typename T> void declareShared(T** ptr, int n) {
+    *ptr = (T*) allocShared(sizeof(T) * n);
+  }
+
+  // Allocate 1D array
+  template <typename T> void declareShared(Array<T>* ptr, int n) {
+    ptr->base = (T*) allocShared(sizeof(T) * n);
+    ptr->size = n;
+  }
+
+  // Allocate 2D array
+  template <typename T> void declareShared(Array2D<T>* ptr, int n0, int n1) {
+    ptr->base = (T*) allocShared(sizeof(T) * n0 * n1);
+    ptr->size0 = n0;
+    ptr->size1 = n1;
+  }
+
+  // Initialisation function
+  void init() {}
 };
 
 // Kernel invocation
@@ -226,19 +199,20 @@ template <typename K> __attribute__ ((noinline)) void _noclSIMTMain_() {
   k.blockIdx.x = blockXOffset;
   k.blockIdx.y = blockYOffset;
 
+  // Declare buffers in shared local memory
+  uint32_t localBase = LOCAL_MEM_BASE +
+             k.map.localBytesPerBlock * blockIdxWithinSM;
+  #if EnableCHERI
+    k.sharedTop = (char*) cheri_address_set(almighty, localBase);
+  #else
+    k.sharedTop = (char*) localBase;
+  #endif
+  k.init();
+
   // Invoke kernel
   pebblesSIMTConverge();
   while (k.blockIdx.y < k.gridDim.y) {
     while (k.blockIdx.x < k.gridDim.x) {
-      uint32_t localBase = LOCAL_MEM_BASE +
-                 k.map.localBytesPerBlock * blockIdxWithinSM;
-      #if EnableCHERI
-        // TODO: constrain bounds
-        void* almighty = cheri_ddc_get();
-        k.shared.top = (char*) cheri_address_set(almighty, localBase);
-      #else
-        k.shared.top = (char*) localBase;
-      #endif
       k.kernel();
       pebblesSIMTConverge();
       pebblesSIMTLocalBarrier();

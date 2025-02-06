@@ -54,13 +54,19 @@ struct SimpleStencil : Kernel {
   int x_size, y_size;
   int *out_buf, *in_buf;
 
+  // Shared local memory
+  Array2D<int> c;
+
+  void init() {
+    declareShared(&c, blockDim.y, blockDim.x);
+  }
+
   void kernel() {
     const int x = blockIdx.x * blockDim.x + threadIdx.x;
     const int y = blockIdx.y * blockDim.y + threadIdx.y;
     const int ind = y * x_size + x;
 
     // Load values into local memory
-    auto c = shared.array<int>(blockDim.y, blockDim.x);
     c[threadIdx.y][threadIdx.x] = in_buf[ind];
     __syncthreads();
 

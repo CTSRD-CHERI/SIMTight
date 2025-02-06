@@ -7,11 +7,16 @@ template <int BlockSize> struct Scan : Kernel {
   int len;
   int *in, *out;
 
-  void kernel() {
-    // Shared arrays
-    int* tempIn = shared.array<int, BlockSize>();
-    int* tempOut = shared.array<int, BlockSize>();
+  // Shared local memory
+  int* tempIn;
+  int* tempOut;
 
+  void init() {
+    declareShared(&tempIn, BlockSize);
+    declareShared(&tempOut, BlockSize);
+  }
+
+  void kernel() {
     // Shorthand for local thread id
     int t = threadIdx.x;
 

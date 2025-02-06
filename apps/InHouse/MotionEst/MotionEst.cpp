@@ -19,18 +19,25 @@ struct MotionEst : Kernel {
   // Output SAD per motion vector per pixel block
   unsigned int* sads;
 
+  // Shared local memory: current frame's region being processed
+  Array2D<unsigned> current;
+
+  // Shared local memory: preiovus frame's region being processed
+  Array2D<unsigned> prev;
+
+  INLINE void init() {
+    int regionWidth = 1 << regionLogWidth;
+    int regionHeight = 1 << regionLogHeight;
+    declareShared(&current, regionHeight, regionWidth);
+    declareShared(&prev, regionHeight + 2*RADIUS, regionWidth + 2*SIMTLanes);
+  }
+
   INLINE void kernel() {
     // Region dimensions
     int regionWidth = 1 << regionLogWidth;
     int regionHeight = 1 << regionLogHeight;
 
-    // Current frame's region being processed
-    auto current = shared.array<unsigned>(regionHeight, regionWidth);
-    // Previous frame's region being processed
-    auto prev = shared.array<unsigned>(regionHeight + 2*RADIUS,
-                                       regionWidth + 2*SIMTLanes);
-
-    // Load current frame's region
+      // Load current frame's region
     for (int y = 0; y < regionHeight; y++) {
       for (int x = threadIdx.x; x < regionWidth; x += blockDim.x) {
         int fy = regionOriginY + y;

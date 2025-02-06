@@ -41,10 +41,16 @@ struct BitonicSortLocal : Kernel {
   T *d_SrcKey_arg;
   T *d_SrcVal_arg;
 
-  void kernel() {
-    T* l_key = shared.array<T, LOCAL_SIZE_LIMIT>();
-    T* l_val = shared.array<T, LOCAL_SIZE_LIMIT>();
+  // Shared local memory
+  T* l_key;
+  T* l_val;
 
+  void init() {
+    declareShared(&l_key, LOCAL_SIZE_LIMIT);
+    declareShared(&l_val, LOCAL_SIZE_LIMIT);
+  }
+
+  void kernel() {
     // Offset to the beginning of subbatch and load data
     T* d_SrcKey =
       d_SrcKey_arg + blockIdx.x * LOCAL_SIZE_LIMIT + threadIdx.x;
@@ -146,10 +152,16 @@ struct BitonicMergeLocal : Kernel {
   unsigned size;
   unsigned sortDir;
 
-  void kernel() {
-    T* l_key = shared.array<T, LOCAL_SIZE_LIMIT>();
-    T* l_val = shared.array<T, LOCAL_SIZE_LIMIT>();
+  // Shared local memory
+  T* l_key;
+  T* l_val;
 
+  void init() {
+    declareShared(&l_key, LOCAL_SIZE_LIMIT);
+    declareShared(&l_val, LOCAL_SIZE_LIMIT);
+  }
+
+  void kernel() {
     T* d_SrcKey =
       d_SrcKey_arg + blockIdx.x * LOCAL_SIZE_LIMIT + threadIdx.x;
     T* d_SrcVal =

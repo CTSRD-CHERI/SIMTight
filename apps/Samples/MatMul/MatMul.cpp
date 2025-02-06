@@ -42,15 +42,20 @@ template <int BlockSize> struct MatMul : Kernel {
   T *A, *B, *C;
   int wA, wB;
 
-  void kernel() {
-    // Declaration of the shared memory array As used to
-    // store the sub-matrix of A
-    auto As = shared.array<T, BlockSize, BlockSize>();
-  
-    // Declaration of the shared memory array Bs used to
-    // store the sub-matrix of B
-    auto Bs = shared.array<T, BlockSize, BlockSize>();
+  // Declaration of the shared memory array As used to
+  // store the sub-matrix of A
+  Array2D<T> As;
 
+  // Declaration of the shared memory array Bs used to
+  // store the sub-matrix of B
+  Array2D<T> Bs;
+
+  inline void init() {
+    declareShared(&As, BlockSize, BlockSize);
+    declareShared(&Bs, BlockSize, BlockSize);
+  }
+
+  inline void kernel() {
     // Block index
     int bx = blockIdx.x;
     int by = blockIdx.y;

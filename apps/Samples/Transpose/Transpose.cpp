@@ -5,10 +5,15 @@
 // One sub-square at a time
 template <int SquareSize> struct Transpose : Kernel {
   Array2D<int> in, out;
-  
+
+  // Shared local memory
+  Array2D<int> square;
+
+  void init() {
+    declareShared(&square, SquareSize, SquareSize+1);
+  }
+ 
   void kernel() {
-    auto square = shared.array<int, SquareSize, SquareSize+1>();
-    
     // Origin of square within matrix
     int originX = blockIdx.x * blockDim.x;
     int originY = blockIdx.y * blockDim.x;
