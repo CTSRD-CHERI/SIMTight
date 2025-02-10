@@ -45,12 +45,12 @@ struct BitonicSortLocal : Kernel {
   T* l_key;
   T* l_val;
 
-  void init() {
+  INLINE void init() {
     declareShared(&l_key, LOCAL_SIZE_LIMIT);
     declareShared(&l_val, LOCAL_SIZE_LIMIT);
   }
 
-  void kernel() {
+  INLINE void kernel() {
     // Offset to the beginning of subbatch and load data
     T* d_SrcKey =
       d_SrcKey_arg + blockIdx.x * LOCAL_SIZE_LIMIT + threadIdx.x;
@@ -116,7 +116,7 @@ struct BitonicMergeGlobal : Kernel {
   unsigned stride;
   unsigned sortDir;
 
-  void kernel() {
+  INLINE void kernel() {
     unsigned global_id = blockDim.x * blockIdx.x + threadIdx.x;
     unsigned global_comparatorI = global_id;
     unsigned comparatorI = global_comparatorI & (arrayLength / 2 - 1);
@@ -156,12 +156,12 @@ struct BitonicMergeLocal : Kernel {
   T* l_key;
   T* l_val;
 
-  void init() {
+  INLINE void init() {
     declareShared(&l_key, LOCAL_SIZE_LIMIT);
     declareShared(&l_val, LOCAL_SIZE_LIMIT);
   }
 
-  void kernel() {
+  INLINE void kernel() {
     T* d_SrcKey =
       d_SrcKey_arg + blockIdx.x * LOCAL_SIZE_LIMIT + threadIdx.x;
     T* d_SrcVal =

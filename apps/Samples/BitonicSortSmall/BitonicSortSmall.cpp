@@ -39,12 +39,12 @@ struct BitonicSortLocal : Kernel {
   unsigned* l_key;
   unsigned* l_val;
 
-  void init() {
+  INLINE void init() {
     declareShared(&l_key, LOCAL_SIZE_LIMIT);
     declareShared(&l_val, LOCAL_SIZE_LIMIT);
   }
 
-  void kernel() {
+  INLINE void kernel() {
     // Offset to the beginning of subbatch and load data
     unsigned* d_SrcKey =
       d_SrcKey_arg + blockIdx.x * LOCAL_SIZE_LIMIT + threadIdx.x;

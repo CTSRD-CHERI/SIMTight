@@ -9,11 +9,11 @@ template <int BlockSize> struct Reduce : Kernel {
   // Shared local memory
   int* block;
 
-  void init() {
+  INLINE void init() {
     declareShared(&block, BlockSize);
   }
  
-  void kernel() {
+  INLINE void kernel() {
     // Sum global memory
     block[threadIdx.x] = 0;
     for (int i = threadIdx.x; i < len; i += blockDim.x)

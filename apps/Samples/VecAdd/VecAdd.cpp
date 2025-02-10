@@ -6,7 +6,7 @@ struct VecAdd : Kernel {
   int len;
   int *a, *b, *result;
 
-  void kernel() {
+  INLINE void kernel() {
     for (int i = threadIdx.x; i < len; i += blockDim.x)
       result[i] = a[i] + b[i];
   }

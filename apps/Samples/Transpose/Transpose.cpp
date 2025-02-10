@@ -9,11 +9,11 @@ template <int SquareSize> struct Transpose : Kernel {
   // Shared local memory
   Array2D<int> square;
 
-  void init() {
+  INLINE void init() {
     declareShared(&square, SquareSize, SquareSize+1);
   }
  
-  void kernel() {
+  INLINE void kernel() {
     // Origin of square within matrix
     int originX = blockIdx.x * blockDim.x;
     int originY = blockIdx.y * blockDim.x;

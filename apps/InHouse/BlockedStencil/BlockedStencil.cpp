@@ -57,11 +57,11 @@ struct SimpleStencil : Kernel {
   // Shared local memory
   Array2D<int> c;
 
-  void init() {
+  INLINE void init() {
     declareShared(&c, blockDim.y, blockDim.x);
   }
 
-  void kernel() {
+  INLINE void kernel() {
     const int x = blockIdx.x * blockDim.x + threadIdx.x;
     const int y = blockIdx.y * blockDim.y + threadIdx.y;
     const int ind = y * x_size + x;

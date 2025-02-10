@@ -9,11 +9,11 @@ template <int BlockSize> struct MatVecMul : Kernel {
   // Partial dot products stored in shared local memory
   int* partial;
 
-  void init() {
+  INLINE void init() {
     declareShared(&partial, BlockSize);
   }
  
-  void kernel() {
+  INLINE void kernel() {
     for (int y = blockIdx.x; y < height; y += gridDim.x) {
       // Row processed by this block
       int* row = mat + y * width;

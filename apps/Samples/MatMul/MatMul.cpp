@@ -50,12 +50,12 @@ template <int BlockSize> struct MatMul : Kernel {
   // store the sub-matrix of B
   Array2D<T> Bs;
 
-  inline void init() {
+  INLINE void init() {
     declareShared(&As, BlockSize, BlockSize);
     declareShared(&Bs, BlockSize, BlockSize);
   }
 
-  inline void kernel() {
+  INLINE void kernel() {
     // Block index
     int bx = blockIdx.x;
     int by = blockIdx.y;

@@ -213,6 +213,7 @@ template <typename K> __attribute__ ((noinline)) void _noclSIMTMain_() {
   pebblesSIMTConverge();
   while (k.blockIdx.y < k.gridDim.y) {
     while (k.blockIdx.x < k.gridDim.x) {
+      pebblesSIMTConverge();
       k.kernel();
       pebblesSIMTConverge();
       pebblesSIMTLocalBarrier();

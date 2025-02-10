@@ -68,11 +68,11 @@ struct SimpleStencil : Kernel {
   // right of current output
   Array2D<int> buffer;
 
-  void init() {
+  INLINE void init() {
     declareShared(&buffer, blockDim.y, 3 * blockDim.x);
   }
 
-  void kernel() {
+  INLINE void kernel() {
     // Offsets for left, middle, and right blocks
     const int left = 0;
     const int middle = blockDim.x;

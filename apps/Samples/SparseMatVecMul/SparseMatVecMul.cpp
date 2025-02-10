@@ -15,7 +15,7 @@ struct SparseMatVecMul : Kernel {
   int* x;
   int* y;
 
-  void kernel() {
+  INLINE void kernel() {
     int row = blockDim.x * blockIdx.x + threadIdx.x;
     if (row < num_rows) {
       int dot = 0;

@@ -11,12 +11,12 @@ template <int BlockSize> struct Scan : Kernel {
   int* tempIn;
   int* tempOut;
 
-  void init() {
+  INLINE void init() {
     declareShared(&tempIn, BlockSize);
     declareShared(&tempOut, BlockSize);
   }
 
-  void kernel() {
+  INLINE void kernel() {
     // Shorthand for local thread id
     int t = threadIdx.x;
 

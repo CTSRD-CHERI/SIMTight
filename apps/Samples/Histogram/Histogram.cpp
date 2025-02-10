@@ -9,11 +9,11 @@ struct Histogram : Kernel {
   // Histogram bins in shared local memory
   int* bins;
 
-  void init() {
+  INLINE void init() {
     declareShared(&bins, 256);
   }
 
-  void kernel() {
+  INLINE void kernel() {
     // Initialise bins
     for (int i = threadIdx.x; i < 256; i += blockDim.x)
       bins[i] = 0;
