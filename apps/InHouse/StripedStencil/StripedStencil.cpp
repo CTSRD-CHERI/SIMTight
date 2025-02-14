@@ -64,10 +64,15 @@ struct SimpleStencil : Kernel {
   unsigned y_size;
   int *out_buf, *in_buf;
 
-  void kernel() {
-    // Data blocks to the left, middle, and right of current output
-    auto buffer = shared.array<int>(blockDim.y, 3 * blockDim.x);
+  // Shared local memory: data blocks to the left, middle, and
+  // right of current output
+  Array2D<int> buffer;
 
+  INLINE void init() {
+    declareShared(&buffer, blockDim.y, 3 * blockDim.x);
+  }
+
+  INLINE void kernel() {
     // Offsets for left, middle, and right blocks
     const int left = 0;
     const int middle = blockDim.x;

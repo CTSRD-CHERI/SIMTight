@@ -2,7 +2,7 @@
 #include <Rand.h>
 
 // Euclid's algorithm
-int gcd(int x, int y) {
+INLINE int gcd(int x, int y) {
   noclPush();
     while (x != y) {
       noclPush();
@@ -21,7 +21,7 @@ struct VecGCD : Kernel {
   int len;
   int *a, *b, *result;
 
-  void kernel() {
+  INLINE void kernel() {
     for (int i = threadIdx.x; i < len; i += blockDim.x)
       result[i] = gcd(a[i], b[i]);
   }

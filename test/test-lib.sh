@@ -155,9 +155,11 @@ prepare_fpga() {
   if [ "$TestFPGA" == "yup-e" ]; then
     QPROG="de10-pro-e"
   fi
-  echo -n "FPGA image available: "
-  test -f "../$QPROG/output_files/DE10_Pro.sof"
-  assert $? "" "" " (run 'make' in $QPROG dir)"
+  if [ "$NoPgm" == "" ]; then
+    echo -n "FPGA image available: "
+    test -f "../$QPROG/output_files/DE10_Pro.sof"
+    assert $? "" "" " (run 'make' in $QPROG dir)"
+  fi
   # Check that FPGA is visisble
   echo -n "FPGA available: "
   JTAG_CABLE=$(jtagconfig 2> /dev/null | grep DE10-Pro)

@@ -142,38 +142,40 @@ host stack.
 
 ## Shared local memory, atomics, and barrier synchronisation
 
-A key feature of CUDA is efficient local memory that is shared by all
-threads in a block.  In NoCL, shared local memory can be allocated
-using the impllict `shared` variable (inherited from the `Kernel`
-class) of type `SharedLocalMem`.  Here's an example kernel that
-declares a 256-element shared local array per thread block:
+A key feature of CUDA is efficient local memory that is shared by all threads
+in a block.  In NoCL, shared local memory buffers are declared in the `init`
+method.  Here's an example kernel that declares a 256-element shared local
+array per thread block:
 
 ```cpp
 // Kernel for computing 256-bin histograms
 struct Histogram : Kernel {
-  int len;
-  unsigned char* input;
+  // Parameters
+  int len; unsigned char* in; int* out;
+
+  // Histogram bins in shared local memory
   int* bins;
 
-  void kernel() {
-    // Store histogram bins in shared local memory
-    int* histo = shared.array<int, 256>();
+  void init() {
+    declareShared(&bins, 256);
+  }
 
+  void kernel() {
     // Initialise bins
     for (int i = threadIdx.x; i < 256; i += blockDim.x)
-      histo[i] = 0;
+      bins[i] = 0;
 
     __syncthreads();
 
     // Update bins
     for (int i = threadIdx.x; i < len; i += blockDim.x)
-      atomicAdd(&histo[input[i]], 1);
+      atomicAdd(&bins[in[i]], 1);
 
     __syncthreads();
 
     // Write bins to global memory
     for (int i = threadIdx.x; i < 256; i += blockDim.x)
-      bins[i] = histo[i];
+      out[i] = bins[i];
   }
 };
 ```

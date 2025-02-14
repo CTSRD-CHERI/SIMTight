@@ -41,10 +41,16 @@ struct BitonicSortLocal : Kernel {
   T *d_SrcKey_arg;
   T *d_SrcVal_arg;
 
-  void kernel() {
-    T* l_key = shared.array<T, LOCAL_SIZE_LIMIT>();
-    T* l_val = shared.array<T, LOCAL_SIZE_LIMIT>();
+  // Shared local memory
+  T* l_key;
+  T* l_val;
 
+  INLINE void init() {
+    declareShared(&l_key, LOCAL_SIZE_LIMIT);
+    declareShared(&l_val, LOCAL_SIZE_LIMIT);
+  }
+
+  INLINE void kernel() {
     // Offset to the beginning of subbatch and load data
     T* d_SrcKey =
       d_SrcKey_arg + blockIdx.x * LOCAL_SIZE_LIMIT + threadIdx.x;
@@ -110,7 +116,7 @@ struct BitonicMergeGlobal : Kernel {
   unsigned stride;
   unsigned sortDir;
 
-  void kernel() {
+  INLINE void kernel() {
     unsigned global_id = blockDim.x * blockIdx.x + threadIdx.x;
     unsigned global_comparatorI = global_id;
     unsigned comparatorI = global_comparatorI & (arrayLength / 2 - 1);
@@ -146,10 +152,16 @@ struct BitonicMergeLocal : Kernel {
   unsigned size;
   unsigned sortDir;
 
-  void kernel() {
-    T* l_key = shared.array<T, LOCAL_SIZE_LIMIT>();
-    T* l_val = shared.array<T, LOCAL_SIZE_LIMIT>();
+  // Shared local memory
+  T* l_key;
+  T* l_val;
 
+  INLINE void init() {
+    declareShared(&l_key, LOCAL_SIZE_LIMIT);
+    declareShared(&l_val, LOCAL_SIZE_LIMIT);
+  }
+
+  INLINE void kernel() {
     T* d_SrcKey =
       d_SrcKey_arg + blockIdx.x * LOCAL_SIZE_LIMIT + threadIdx.x;
     T* d_SrcVal =
