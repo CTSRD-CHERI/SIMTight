@@ -15,12 +15,12 @@ Instruction Multiple Threads (SIMT)_ model, featuring:
   * Runs [CUDA-like C++ library](doc/NoCL.md) and [benchmark suite](apps/)
     (in pure capability mode when CHERI enabled)
 
-Further details about SIMTight can be found in the following publications.
+Further details about SIMTight can be found in the following documents.
 
   * *Advanced Dynamic Scalarisation for RISC-V GPGPUs*, ICCD 2024
     ([paper](https://www.repository.cam.ac.uk/handle/1810/373257), [slides](doc/iccd2024-slides.pdf))
   * *CHERI-SIMT report: implementing capability memory protection in GPGPUs*, Technical Report
-    ([paper](https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-997.html))
+    ([report](https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-997.html))
 
 SIMTight was developed on the [CAPcelerate
 project](https://ctsrd-cheri.github.io/capcelerate-website/),
