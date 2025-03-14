@@ -1,6 +1,6 @@
 # SIMTight
 
-SIMTight is a fully synthesisable GPGPU core implementing the _Single
+SIMTight is a synthesisable GPGPU core implementing the _Single
 Instruction Multiple Threads (SIMT)_ model, featuring:
 
   * RISC-V instruction set (`rv32ima_zfinx_xcheri`)
@@ -20,7 +20,10 @@ Further details about SIMTight can be found in the following publications.
   * *Advanced Dynamic Scalarisation for RISC-V GPGPUs*, ICCD 2024
     ([paper](https://www.repository.cam.ac.uk/handle/1810/373257), [slides](doc/iccd2024-slides.pdf))
 
-SIMTight is being developed on the [CAPcelerate
+  * *CHERI-SIMT report: implementing capability memory protection in GPGPUs*, Technical Report
+    ([paper](https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-997.html))
+
+SIMTight was developed on the [CAPcelerate
 project](https://ctsrd-cheri.github.io/capcelerate-website/),
 part of the UKRI's Digital Security by Design programme.
 
@@ -52,7 +55,11 @@ For GHC 9.2.1 or later, [ghcup](https://www.haskell.org/ghcup/) can be
 used.
 
 If you're having difficulty meeting the dependencies, please
-use our [docker container](docker/).
+use our [docker container](docker/):
+
+```sh
+make shell
+```
 
 ## Getting started
 
@@ -169,7 +176,7 @@ vector lanes:
   * `#define SIMTUseSharedBoundsUnit 1`
 
 Various optimisations are enabled by this setting. It leads to a large
-reduction in area overhead, at almost no performance cost accross the
+reduction in area overhead, at almost no performance cost across the
 benchmark suite.
 
 Another option that reduces the area overhead of CHERI is:
@@ -192,7 +199,7 @@ zero, i.e. all elements are equal.
 
 SIMTight implements _dynamic scalarisation_ (i.e. in hardware, at
 runtime), and it can be enabled separately for the integer register
-file and the register file holding capability meta-data.  To enable
+file and the register file holding capability metadata.  To enable
 scalarisation of both register files, edit
 [inc/Config.h](inc/Config.h) and apply the following settings:
 
@@ -204,8 +211,7 @@ enable scalariastion of affine vectors, apply the following settings
 
   * `#define SIMTEnableAffineScalarisation 1`
 
-Note that affine scalarisation is never used in the register file
-holding capability meta-data, where it wouldn't make much sense.
+Note that affine scalarisation only applies to the integer register file.
 
 SIMTight exploits scalarisation to reduce register file storage
 requirements. Hence, it is desirable to set the number of physical
@@ -226,13 +232,13 @@ least-recently-used. To enable the latter:
   * `#define SIMTUseLRUSpill 1`
 
 When CHERI is enabled, it's possible to share vector register memory
-between the integer and capability meta-data register files.  
+between the integer and capability metadata register files.  
 
   * `#define SIMTUseSharedVecScratchpad 1`
 
 In this case, both register file sizes must be defined the same.  This
 option causes a one cycle pipeline bubble when loading a capability
-meta-data vector from the register file.
+metadata vector from the register file.
 
 SIMTight also supports an experimental _scalarised vector store buffer_ (also
 referred to as the compressed stack cache) to reduce the cost of
@@ -250,13 +256,13 @@ workloads, this increases perforance density significantly.
 
   * `#define SIMTEnableScalarUnit 1`
 
-To enable the intial value optimisation (also referred to as the null value optimisation) in the capability meta-data register file:
+To enable the intial value optimisation (also referred to as the null value optimisation) in the capability metadata register file:
 
   * `#define SIMTCapRFUseInitValOpt 1`
 
 This a simple form of partial scalarisation allowing compact storage
 of vectors that can be partioned into an arbitrary scalar value and
-the initial value (null capability meta-data in this case) using a bit
+the initial value (null capability metadata in this case) using a bit
 mask.
 
 <div style="text-align: center;" align="center">
