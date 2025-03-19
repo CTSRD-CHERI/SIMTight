@@ -38,7 +38,7 @@ CHERI-RISC-V ISA.  A sample project is included for the
 <img src="doc/SoC.svg" width="450">
 </div>
 
-## Build instructions
+## Dependencies
 
 We'll need Verilator, a RISC-V compiler, and GHC 9.2.1 or later.
 
