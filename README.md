@@ -53,12 +53,9 @@ $ sudo apt install libgmp-dev
 For GHC 9.2.1 or later, [ghcup](https://www.haskell.org/ghcup/) can be
 used.
 
-If you're having difficulty meeting the dependencies, please
-use our [docker container](docker/):
-
-```sh
-$ make shell
-```
+If you're having difficulty meeting the dependencies, please use our
+[docker container](docker/): simply type `make shell` after a
+recursive clone of this repo.
 
 ## Getting started
 
