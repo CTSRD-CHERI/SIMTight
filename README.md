@@ -1,7 +1,7 @@
 # SIMTight
 
 SIMTight is a synthesisable GPGPU core implementing the _Single
-Instruction Multiple Threads (SIMT)_ model, featuring:
+Instruction Multiple Threads (SIMT)_ execution model, featuring:
 
   * RISC-V instruction set (`rv32ima_zfinx_xcheri`)
   * Low-area design with high IPC on classic GPGPU workloads
@@ -26,9 +26,9 @@ SIMTight was developed on the [CAPcelerate
 project](https://ctsrd-cheri.github.io/capcelerate-website/),
 part of the UKRI's Digital Security by Design programme.
 
-## Default SoC
+## Evaluation SoC
 
-The default SIMTight SoC consists of a host CPU and a 32-lane 64-warp
+The SIMTight evaluation SoC consists of a host CPU and a 32-lane 64-warp
 streaming multiprocessor sharing DRAM, both supporting the
 CHERI-RISC-V ISA.  A sample project is included for the
 [DE10-Pro](http://de10-pro.terasic.com) ([revD](de10-pro/) and
@@ -57,7 +57,7 @@ If you're having difficulty meeting the dependencies, please
 use our [docker container](docker/):
 
 ```sh
-make shell
+$ make shell
 ```
 
 ## Getting started
@@ -186,6 +186,9 @@ But beware, this setting removes some CHERI functionality. Specifically, it
 tells the SIMT core to ignore changes to the bounds and permissions of the PCC.
 Once the bounds and permissions of the PCC for each warp are set at kernel
 startup, they can never be changed.
+
+Further details for reproducing results can be found in the ([CHERI-SIMT
+report](https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-997.html)).
 
 ## Enabling scalarisation
 
