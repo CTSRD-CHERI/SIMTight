@@ -187,8 +187,8 @@ tells the SIMT core to ignore changes to the bounds and permissions of the PCC.
 Once the bounds and permissions of the PCC for each warp are set at kernel
 startup, they can never be changed.
 
-Further details for reproducing results can be found in the ([CHERI-SIMT
-report](https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-997.html)).
+Further details for reproducing results can be found in the [CHERI-SIMT
+report](https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-997.html).
 
 ## Enabling scalarisation
 
