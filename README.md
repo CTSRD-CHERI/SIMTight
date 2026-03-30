@@ -21,9 +21,9 @@ Further details about SIMTight can be found in the following documents.
     ([paper](https://www.repository.cam.ac.uk/handle/1810/373257), [slides](doc/iccd2024-slides.pdf))
   * *CHERI-SIMT report: implementing capability memory protection in GPGPUs*, Technical Report
     ([report](https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-997.html))
-  * *CHERI-SIMT: Implementing Capability Memory Protection in GPUs*, ASPLOS
-     2026 ([paper](https://www.repository.cam.ac.uk/items/f63db740-70c5-4e8b-a55
-a-a63874373dad))
+  * *CHERI-SIMT: Implementing Capability Memory Protection in GPUs*,
+    ASPLOS 2026
+    ([paper](https://www.repository.cam.ac.uk/items/f63db740-70c5-4e8b-a55a-a63874373dad))
 
 SIMTight was developed on the [CAPcelerate
 project](https://ctsrd-cheri.github.io/capcelerate-website/),
